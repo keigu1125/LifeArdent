@@ -1,64 +1,4 @@
-<<<<<<< HEAD:LifeArdent/time.h
-class Time
-=======
-#include "Arduboy.h"
-
-class Player
-{
-  public: int life = 0;
-  public: int c[4];
-  public: int win = 0;
-};
-
-class Players
-{
-  public: Player p[4];
-  public: int count = 0;
-
-  void Players::init()
-  {
-    initLife();
-    
-    for (int i = 0; i < 4; i++)
-    {
-      p[i].win = 0;
-      for (int j = 0; j < 4; j++)
-      {
-        p[i].c[j] = 0;
-      }
-    }
-  }
-
-  void Players::initLife()
-  {
-    int life = (count == 4) ? 40 : 20;
-    for (int i = 0; i < 4; i++)
-    {
-      p[i].life = life;
-    }
-  }
-
-  void Players::addPlayer()
-  {
-    if (count < 4)
-    {
-      count++;
-      init();
-    }
-  }
-
-  void Players::subPlayer()
-  {
-    if (count > 1)
-    {
-      count--;
-      init();
-    }
-  }
-};
-
 class TimeFormat
->>>>>>> parent of f1c2ba0... just making other menus:mtg_counter/class.h
 {
   public: long defaultMillis = 0;
   public: int defaultHour = 0;
@@ -70,21 +10,21 @@ class TimeFormat
   public: int stopMinute = 0;
   public: int stopSecond = 0;
 
-    void Time::addTime(Time* tp)
+    void TimeFormat::addTime(TimeFormat* tp)
     {
       tp->addHour(stopHour);
       tp->addMinute(stopMinute);
       tp->addSecond(stopSecond);
     }
 
-    void Time::subTime(Time* tp)
+    void TimeFormat::subTime(TimeFormat* tp)
     {
       tp->addHour(stopHour * -1);
       tp->addMinute(stopMinute * -1);
       tp->addSecond(stopSecond * -1);
     }
 
-    void Time::addHour(int value)
+    void TimeFormat::addHour(int value)
     {
       stopHour += value;
       while (stopHour >= 24)
@@ -97,7 +37,7 @@ class TimeFormat
       }
     }
 
-    void Time::addMinute(int value)
+    void TimeFormat::addMinute(int value)
     {
       stopMinute += value;
       while (stopMinute >= 60)
@@ -118,7 +58,7 @@ class TimeFormat
       }
     }
 
-    void Time::addSecond(int value)
+    void TimeFormat::addSecond(int value)
     {
       stopSecond += value;
       while (stopSecond >= 60)
@@ -139,7 +79,7 @@ class TimeFormat
       }
     }
 
-    void Time::setDefaultTime()
+    void TimeFormat::setDefaultTime()
     {
       defaultMillis = millis();
 
@@ -152,7 +92,7 @@ class TimeFormat
       defaultSecond = t;
     };
 
-    void setStopTime()
+    void TimeFormat::setStopTime()
     {
       stopMillis = millis();
 
@@ -169,7 +109,7 @@ class TimeFormat
       stopSecond = defaultSecond;
     }
 
-    String Time::getDefaultTimeString()
+    String TimeFormat::getDefaultTimeString()
     {
       String strHour   = String(defaultHour);
       String strMin    = (defaultMinute < 10) ? "0" + String(defaultMinute) : String(defaultMinute);
@@ -180,27 +120,27 @@ class TimeFormat
       return strTime;
     }
 
-    int Time::getSubHour()
+    int TimeFormat::getSubHour()
     {
       return getSubMinute() / 60;
     }
 
-    int Time::getSubMinute()
+    int TimeFormat::getSubMinute()
     {
       return getSubSecond() / 60;
     }
 
-    int Time::getSubSecond()
+    int TimeFormat::getSubSecond()
     {
       return (getSubMillisecond()) / 1000;
     }
 
-    long Time::getSubMillisecond()
+    long TimeFormat::getSubMillisecond()
     {
       return defaultMillis - stopMillis;
     }
 
-    String Time::getSubTimeString()
+    String TimeFormat::getSubTimeString()
     {
       int h = defaultHour - stopHour;
       int m = defaultMinute - stopMinute;

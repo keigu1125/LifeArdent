@@ -13,6 +13,19 @@ enum Menu
   M_TAIL = 8
 };
 
+enum UtilMenuMax
+{
+  MAX_PLAYER = 0,
+  MAX_DICE = 2,
+  MAX_MATCH = 2,
+  MAX_TIME = 1,
+  MAX_DISCARD = 2,
+  MAX_STORM = 7,  
+  MAX_COUNT = 3,
+  MAX_SOUND = 0,
+  MAX_SETTING = 0
+};
+
 enum PlayMode
 {
   PM_HEAD = 0,

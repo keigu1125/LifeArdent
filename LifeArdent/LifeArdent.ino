@@ -5,6 +5,7 @@
 #include "image_form.h"
 #include "image_icon.h"
 #include "player.h"
+#include "setting.h"
 #include "form.h"
 #include "displayMenu.h"
 #include "displayLife.h"
@@ -14,12 +15,16 @@ Arduboy ab;
 
 const int FRAME_RATE = 20;
 const int BUTTON_REPEAT = 350;
-const int BEEP_LIFE = 40;
+const int TONE_LIFE = 40;
 const int TIME_TITLE = 3000;
+const int BASE_TONE = 1000;
+
+Form* activeForm = NULL;
 
 DisplayMenu menu;
 DisplayLife life;
 DisplayUtil util;
+Setting setting;
 
 bool isTitle = true;
 bool isMain = false;
@@ -29,27 +34,33 @@ bool isFlash = false;
 
 int pressCnt = 0;
 
-int changeLife = 0;
-
-Time tStw;
-Time tPressed;
-
-String time = "0:00:00";
+String TimeFormat = "0:00:00";
 
 void setup()
 {
+  init();
+
   ab.beginNoLogo();
   ab.setFrameRate(FRAME_RATE);
 
   menu.ab = &ab;
   life.ab = &ab;
   util.ab = &ab;
+  menu.setting = &setting;
+  life.setting = &setting;
+  util.setting = &setting;
+  menu.menu = &menu;
+  life.menu = &menu;
   util.menu = &menu;
+  menu.life = &life;
   util.life = &life;
+  life.life = &life;
+  menu.util = &util;
+  life.util = &util;
+  util.util = &util;
 
-  menu.isCursor = true;
-
-  life.initMode(P2);
+  setting.initMode(P2);
+  menu.activeMenu();
 }
 
 void loop()
@@ -87,17 +98,24 @@ void dispTitle()
   {
     isTitle = false;
     isMain = true;
+    return;
   }
 
   ab.drawBitmap(0, 0, mtg_logo, 128, 64, WHITE);
 }
 
+void dispSleep()
+{
+  drawText(&ab, 13, 20, 1, ">> LIFE ARDENT <<");
+  drawText(&ab, 13, 40, 1, "   SLEEP  MODE");
+}
+
 void button()
 {
-  if (isTitle && someButtonPressed())
+  if (!someButtonPressed())
   {
-    isTitle = false;
-    isMain = true;
+    setting.tPressed.setDefaultTime();
+    pressCnt = 0;
     return;
   }
 
@@ -106,14 +124,14 @@ void button()
     return;
   }
 
-  upButton();
-  downButton();
-  leftButton();
-  rightButton();
+  if (isTitle)
+  {
+    isTitle = false;
+    isMain = true;
+    return true;
+  }
 
-  aButton();
-  bButton();
-
+  pressButton();
   buttonSound();
 }
 
@@ -126,16 +144,9 @@ bool someButtonPressed()
 
 bool buttonPressOnce()
 {
-  if (!someButtonPressed())
-  {
-    menu.tPressed.setDefaultTime();
-    pressCnt = 0;
-    return false;
-  }
+  setting.tPressed.setStopTime();  
 
-  menu.tPressed.setStopTime();
-
-  if (abs(menu.tPressed.getSubMillisecond()) >= BUTTON_REPEAT)
+  if (abs(setting.tPressed.getSubMillisecond()) >= BUTTON_REPEAT)
   {
     return false;
   }
@@ -147,345 +158,77 @@ bool buttonPressOnce()
 
 void buttonSound()
 {
-  if (!someButtonPressed())
+  if (setting.isSound)
   {
-    return;
-  }
-
-  if (menu.isSound)
-  {
-    int tone = 1000;
+    int tone = BASE_TONE;
     if (life.isCursor)
     {
-      int l = life.p[life.cursorP].life;
-      tone = 1000 - (BEEP_LIFE * 20) + ((l <= 0) ? 0 : ((l > 200) ? 200 : l) * BEEP_LIFE);
+      tone = life.getLifeTone(BASE_TONE, TONE_LIFE);
     }
     ab.tunes.tone(tone, 20);
   }
 }
 
-void upButton()
+void setActiveForm()
 {
-  if (!ab.pressed(UP_BUTTON))
-  {
-    return;
-  }
+  activeForm = NULL;
 
   if (menu.isCursor)
   {
-    menu.setCursor(-1);
+    activeForm = &menu;
   }
 
   if (life.isCursor)
   {
-    if (life.isCursorC)
-    {
-      if (life.cursorC != life.cursorP && life.p[life.cursorP].c[life.cursorC] < 21)
-      {
-        life.p[life.cursorP].c[life.cursorC]++;
-        life.p[life.cursorP].life--;
-        menu.changeLife--;
-      }
-    }
-    else
-    {
-      life.p[life.cursorP].life++;
-      menu.changeLife++;
-    }
-  }
-}
-
-void downButton()
-{
-  if (!ab.pressed(DOWN_BUTTON))
-  {
-    return;
-  }
-
-  if (menu.isCursor)
-  {
-    menu.setCursor(+1);
-  }
-
-  if (life.isCursor)
-  {
-    if (life.isCursorC)
-    {
-      if (life.cursorC != life.cursorP && life.p[life.cursorP].c[life.cursorC] > 0)
-      {
-        life.p[life.cursorP].c[life.cursorC]--;
-        life.p[life.cursorP].life++;
-        menu.changeLife++;
-      }
-    }
-    else
-    {
-      life.p[life.cursorP].life--;
-      menu.changeLife--;
-    }
-  }
-}
-
-void leftButton()
-{
-  if (!ab.pressed(LEFT_BUTTON))
-  {
-    return;
-  }
-
-  if (!isMain)
-  {
-    return;
-  }
-
-  menu.changeLife = 0;
-
-  if (menu.isCursor)
-  {
-    menu.isCursor = false;
-    life.isCursor = true;
-    life.cursorP = life.pCount - 1;
-    return;
+    activeForm = &life;
   }
 
   if (util.isCursor)
   {
-    switch (menu.cursorM)
-    {
-      case 0:
-        life.initMode(life.mode - 1);
-        break;
-    }
-    return;
-  }
-
-  if (life.isCursor)
-  {
-    if (life.isCursorC)
-    {
-      life.cursorC--;
-      if (life.cursorC < 0)
-      {
-        life.cursorC = 3;
-      }
-    }
-    else
-    {
-      if (life.cursorP > 0)
-      {
-        life.cursorP--;
-      }
-      else
-      {
-        menu.isCursor = true;
-        life.isCursor = false;
-      }
-    }
-    return;
+    activeForm = &util;
   }
 }
 
-void rightButton()
+void pressButton()
 {
-  if (!ab.pressed(RIGHT_BUTTON))
+  setActiveForm();
+
+  if (activeForm == NULL)
   {
     return;
   }
 
-  if (!isMain)
+  if (ab.pressed(UP_BUTTON))
   {
-    return;
+    activeForm->upButton();
   }
 
-  menu.changeLife = 0;
-
-  if (menu.isCursor)
+  if (ab.pressed(DOWN_BUTTON))
   {
-    menu.isCursor = false;
-    life.isCursor = true;
-    life.cursorP = PM_HEAD;
-    return;
+    activeForm->downButton();
   }
 
-  if (util.isCursor)
+  if (ab.pressed(LEFT_BUTTON))
   {
-    switch (menu.cursorM)
-    {
-      case 0:
-        life.initMode(life.mode + 1);
-        break;
-    }
-    return;
+    activeForm->leftButton();
   }
 
-  if (life.isCursor)
+  if (ab.pressed(RIGHT_BUTTON))
   {
-    if (life.isCursorC)
-    {
-      life.cursorC++;
-      if (life.cursorC >= 4)
-      {
-        life.cursorC = 0;
-      }
-    }
-    else
-    {
-      if (life.cursorP < life.pCount - 1)
-      {
-        life.cursorP++;
-      }
-      else
-      {
-        menu.isCursor = true;
-        life.isCursor = false;
-      }
-      return;
-    }
-  }
-}
-
-void aButton()
-{
-  if (!ab.pressed(A_BUTTON))
-  {
-    return;
+    activeForm->rightButton();
   }
 
-  if (ab.pressed(B_BUTTON))
+  if (ab.pressed(A_BUTTON) && ab.pressed(B_BUTTON))
   {
-    abButton();
-    return;
+    activeForm->abButton();
   }
-
-  if (menu.isCursor)
+  else if (ab.pressed(A_BUTTON))
   {
-    switch (menu.cursorM)
-    {
-      case M_PLAYER:
-        util.isCursor = false;
-        menu.isCursor = true;
-        life.isCursor = false;
-        break;
-      case M_DICE:
-        break;
-      case M_MATCH:
-        break;
-      case M_TIME:
-        break;
-      case M_DISCARD:
-        break;
-      case M_STORM:
-        break;
-      case M_COUNT:
-        break;
-      case M_SOUND:
-        menu.isSound = !menu.isSound;
-        break;
-      case M_SETTING:
-        break;
-    }
-    return;
+    activeForm->aButton();
   }
-
-  if (util.isCursor)
+  else if (ab.pressed(B_BUTTON))
   {
-
-    util.isCursor = false;
-    menu.isCursor = true;
-    life.isCursor = false;
-
-    return;
-  }
-
-  if (life.isCursor)
-  {
-    if (life.mode == P2)
-    {
-      int value = (life.cursorP == 0) ? - 1 : + 1;
-
-      life.p[0].life += value;
-      life.p[1].life -= value;
-      menu.changeLife--;
-    }
-    else if (life.mode == EDH)
-    {
-      life.isCursorC = !life.isCursorC;
-      life.cursorC = life.cursorP;
-    }
-  }
-}
-
-void bButton()
-{
-  if (!ab.pressed(B_BUTTON))
-  {
-    return;
-  }
-
-  if (ab.pressed(A_BUTTON))
-  {
-    abButton();
-    return;
-  }
-
-  if (menu.isCursor)
-  {
-    switch (menu.cursorM) {
-      case M_PLAYER:
-        util.isCursor = true;
-        menu.isCursor = false;
-        life.isCursor = false;
-        break;
-      case M_DICE:
-        break;
-      case M_MATCH:
-        break;
-      case M_TIME:
-        break;
-      case M_DISCARD:
-        break;
-      case M_STORM:
-        break;
-      case M_COUNT:
-        break;
-      case M_SOUND:
-        menu.isSound = !menu.isSound;
-        break;
-      case M_SETTING:
-        break;
-    }
-    return;
-  }
-
-  if (life.isCursor)
-  {
-    if (life.mode == P2)
-    {
-      int value = (life.cursorP == 0) ? + 1 : - 1;
-
-      life.p[0].life += value;
-      life.p[1].life -= value;
-      menu.changeLife++;
-    }
-    else if (life.mode == EDH)
-    {
-      life.isCursorC = !life.isCursorC;
-      life.cursorC = life.cursorP;
-    }
-  }
-}
-
-void abButton()
-{
-  if (!ab.pressed(A_BUTTON) || !ab.pressed(B_BUTTON))
-  {
-    return;
-  }
-
-  if (life.isCursor)
-  {
-    life.initPlayerLife();
-    menu.changeLife = 0;
+    activeForm->bButton();
   }
 }
 

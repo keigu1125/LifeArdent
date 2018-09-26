@@ -2,25 +2,17 @@ class DisplayLife : public Form {
   private:
     int rectW = 9;
     int rectH = 7;
-    int PLAYER_COUNT = 6;
   public:
     boolean isCursorC = false;
-
-    Player p[6];
-    int pCount = 0;
-
-    int cursorP = 0;
     int cursorC = 0;
-
-    int mode = PM_HEAD;
-
-    bool isFlash = false;
 
     DisplayLife()
     {
       x = 30;
       y = 0;
       isCursor = false;
+      cursor = 0;
+      cursorMax = PM_TAIL;
     }
 
     void DisplayLife::display()
@@ -38,138 +30,157 @@ class DisplayLife : public Form {
       }
     }
 
-    void DisplayLife::initMode(int value)
+    int DisplayLife::getLifeTone(int baseTone, int toneLife)
     {
-      if (value <= PM_TAIL && value >= PM_HEAD)
-      {
-        mode = value;
-        initMode();
-      }
-
-      initPlayer();
+      int l = setting->p[cursor].life;
+      return baseTone - (toneLife * 20) + ((l <= 0) ? 0 : ((l > 200) ? 200 : l) * toneLife);
     }
 
-    void DisplayLife::initPlayer()
+    virtual void upButton()
     {
-      initPlayerLife();
-
-      for (int i = 0; i < PLAYER_COUNT; i++)
+      if (isCursorC)
       {
-        p[i].poison = 0;
-        p[i].win = 0;
+        if (cursorC != cursor && setting->p[cursor].c[cursorC] < 21)
+        {
+          setting->p[cursor].c[cursorC]++;
+          setting->p[cursor].life--;
+          setting->changeLife--;
+        }
       }
-    }
-
-    void DisplayLife::initPlayerLife()
-    {
-      int life = (mode == EDH) ? 40 : 20;
-      for (int i = 0; i < PLAYER_COUNT; i++)
+      else
       {
-        p[i].life = life;
-        p[i].initC();
-      }
-      if (mode == ARCH)
-      {
-        p[0].life = 40;
+        setting->p[cursor].life++;
+        setting->changeLife++;
       }
     }
 
-    String DisplayLife::getModeName(int mode)
+    virtual void downButton()
     {
-      String ret = "    ";
-      switch (mode)
+      if (isCursorC)
       {
-        case P1:
-          ret = "Solo";
-          break;
-        case P2:
-          ret = "VS 2";
-          break;
-        case P3:
-          ret = "VS 3";
-          break;
-        case EDH:
-          ret = "EDH ";
-          break;
-        case ARCH:
-          ret = "Arch";
-          break;
-        case EMP:
-          ret = "Empr";
-          break;
+        if (cursorC != cursor && setting->p[cursor].c[cursorC] > 0)
+        {
+          setting->p[cursor].c[cursorC]--;
+          setting->p[cursor].life++;
+          setting->changeLife++;
+        }
       }
+      else
+      {
+        setting->p[cursor].life--;
+        setting->changeLife--;
+      }
+    }
 
-      return ret;
+    virtual void leftButton()
+    {
+      setting->changeLife = 0;
+
+      if (isCursorC)
+      {
+        cursorC--;
+        if (cursorC < 0)
+        {
+          cursorC = 3;
+        }
+      }
+      else
+      {
+        if (cursor > 0)
+        {
+          cursor--;
+        }
+        else
+        {
+          activeMenu();
+        }
+      }
+    }
+
+    virtual void rightButton()
+    {
+      setting->changeLife = 0;
+
+      if (isCursorC)
+      {
+        cursorC++;
+        if (cursorC >= 4)
+        {
+          cursorC = 0;
+        }
+      }
+      else
+      {
+        if (cursor < setting->pCount - 1)
+        {
+          cursor++;
+        }
+        else
+        {
+          activeMenu();
+        }
+      }
+    }
+
+    virtual void aButton()
+    {
+      if (setting->mode == P2)
+      {
+        int value = (cursor == 0) ? - 1 : + 1;
+
+        setting->p[0].life += value;
+        setting->p[1].life -= value;
+        setting->changeLife--;
+      }
+      else if (setting->mode == EDH)
+      {
+        isCursorC = !isCursorC;
+        cursorC = cursor;
+      }
+    }
+
+    virtual void bButton()
+    {
+      if (setting->mode == P2)
+      {
+        int value = (cursor == 0) ? + 1 : - 1;
+
+        setting->p[0].life += value;
+        setting->p[1].life -= value;
+        setting->changeLife++;
+      }
+      else if (setting->mode == EDH)
+      {
+        isCursorC = !isCursorC;
+        cursorC = cursor;
+      }
+    }
+
+    virtual void abButton()
+    {
+      setting->initPlayerLife();
+      setting->changeLife = 0;
     }
 
   private:
-    void DisplayLife::initMode()
-    {
-      switch (mode) {
-        case P1:
-          pCount = 1;
-          p[0].setXY( 0,  0, 97, 52);
-          break;
-        case P2:
-          pCount = 2;
-          p[0].setXY( 0,  0, 48, 52);
-          p[1].setXY(49,  0, 48, 52);
-          break;
-        case P3:
-          pCount = 3;
-          p[0].setXY( 0,  0, 48, 26);
-          p[1].setXY(49,  0, 48, 26);
-          p[2].setXY(24, 25, 48, 26);
-          break;
-        case EDH:
-          pCount = 4;
-          p[0].setXY( 0,  0, 48, 26);
-          p[1].setXY(49,  0, 48, 26);
-          p[2].setXY( 0, 25, 48, 27);
-          p[3].setXY(49, 25, 48, 27);
-          break;
-        case ARCH:
-          pCount = 4;
-          p[0].setXY( 0,  0, 97, 26);
-          p[1].setXY( 0, 25, 33, 27);
-          p[2].setXY(32, 25, 33, 27);
-          p[3].setXY(64, 25, 33, 27);
-          break;
-        case EMP:
-          pCount = 6;
-          p[0].setXY( 0,  0, 33, 26);
-          p[1].setXY(32,  0, 33, 26);
-          p[2].setXY(64,  0, 33, 26);
-          p[3].setXY( 0, 25, 33, 27);
-          p[4].setXY(32, 25, 33, 27);
-          p[5].setXY(64, 25, 33, 27);
-          break;
-      }
-
-      cursorC = 0;
-      cursorP = 0;
-
-      initPlayer();
-    }
-
     void DisplayLife::drawFrame()
     {
-      int cMax = (mode == EDH) ? 4 : 1;
-      for (int i = 0; i < pCount; i++)
+      int cMax = (setting->mode == EDH) ? 4 : 1;
+      for (int i = 0; i < setting->pCount; i++)
       {
-        int drawX = x + p[i].x;
-        int drawY = y + p[i].y;
-        ab->drawRect(drawX, drawY, p[i].w, p[i].h, WHITE);
+        int drawX = x + setting->p[i].x;
+        int drawY = y + setting->p[i].y;
+        ab->drawRect(drawX, drawY, setting->p[i].w, setting->p[i].h, WHITE);
         for (int j = 0; j < cMax; j++)
         {
           int drawCX = drawX;
           int drawCY = drawY;
-          drawCX += (j == 1 || j == 3) ? (p[i].w - rectW - 2) : 0;
-          drawCY += (j == 2 || j == 3) ? (p[i].h - rectH - 2) : 0;
+          drawCX += (j == 1 || j == 3) ? (setting->p[i].w - rectW - 2) : 0;
+          drawCY += (j == 2 || j == 3) ? (setting->p[i].h - rectH - 2) : 0;
           ab->drawRect(drawCX, drawCY, rectW + 2, rectH + 2, WHITE);
         }
       }
-      if (mode == ARCH)
+      if (setting->mode == ARCH)
       {
         ab->drawBitmap(x + 17, y + 1, symbol_arch, 63, 24, WHITE);
       }
@@ -177,12 +188,12 @@ class DisplayLife : public Form {
 
     void DisplayLife::drawCursor()
     {
-      int drawX = x + p[cursorP].x + 1;
-      int drawY = y + p[cursorP].y + 1;
-      if (mode == EDH)
+      int drawX = x + setting->p[cursor].x + 1;
+      int drawY = y + setting->p[cursor].y + 1;
+      if (setting->mode == EDH)
       {
-        drawX += (cursorP == 1 || cursorP == 3) ? (p[cursorP].w - rectW - 2) : 0;
-        drawY += (cursorP == 2 || cursorP == 3) ? (p[cursorP].h - rectH - 2) : 0;
+        drawX += (cursor == 1 || cursor == 3) ? (setting->p[cursor].w - rectW - 2) : 0;
+        drawY += (cursor == 2 || cursor == 3) ? (setting->p[cursor].h - rectH - 2) : 0;
       }
 
       ab->fillRect(drawX, drawY, rectW, rectH, 1);
@@ -190,7 +201,7 @@ class DisplayLife : public Form {
 
     void DisplayLife::drawLife()
     {
-      switch (mode) {
+      switch (setting->mode) {
         case P1:
           drawLifeP1();
           break;
@@ -212,9 +223,9 @@ class DisplayLife : public Form {
 
     void DisplayLife::drawCursorC()
     {
-      int drawX = x + p[cursorP].x + 3;
-      int drawY = y + p[cursorP].y + 1;
-      drawX += (cursorC == 1 || cursorC == 3) ? (p[cursorP].w - rectW - 4) : 0;
+      int drawX = x + setting->p[cursor].x + 3;
+      int drawY = y + setting->p[cursor].y + 1;
+      drawX += (cursorC == 1 || cursorC == 3) ? (setting->p[cursor].w - rectW - 4) : 0;
       drawY += rectH + 3;
 
       switch (cursorC)
@@ -232,7 +243,7 @@ class DisplayLife : public Form {
 
     void DisplayLife::drawLifeP1()
     {
-      int life = p[0].life;
+      int life = setting->p[0].life;
 
       int drawX = x;
       int drawY = y;
@@ -269,9 +280,9 @@ class DisplayLife : public Form {
 
       for (int i = 0; i < 2; i++)
       {
-        life = p[i].life;
-        drawX = x + p[i].x;
-        drawY = y + p[i].y;
+        life = setting->p[i].life;
+        drawX = x + setting->p[i].x;
+        drawY = y + setting->p[i].y;
 
         if (life >= 100 || life <= -10)
         {
@@ -303,26 +314,26 @@ class DisplayLife : public Form {
       int drawY = 0;
       int fSize = 0;
 
-      for (int i = 0; i < pCount; i++)
+      for (int i = 0; i < setting->pCount; i++)
       {
         bool isLose = false;
 
-        life = p[i].life;
+        life = setting->p[i].life;
 
-        drawX = x + p[i].x;
-        drawY = y + p[i].y;
+        drawX = x + setting->p[i].x;
+        drawY = y + setting->p[i].y;
 
-        if (mode == EDH)
+        if (setting->mode == EDH)
         {
           for (int j = 0; j < 4; j++)
           {
             int drawMiniX = drawX + 1;
             int drawMiniY = drawY + 1;
 
-            drawMiniX += (j == 1 || j == 3) ? (p[i].w - rectW - 2) : 0;
-            drawMiniY += (j == 2 || j == 3) ? (p[i].h - rectH - 2) : 0;
+            drawMiniX += (j == 1 || j == 3) ? (setting->p[i].w - rectW - 2) : 0;
+            drawMiniY += (j == 2 || j == 3) ? (setting->p[i].h - rectH - 2) : 0;
 
-            int miniLife = p[i].c[j];
+            int miniLife = setting->p[i].c[j];
 
             if (j != i)
             {
@@ -362,12 +373,12 @@ class DisplayLife : public Form {
       int fSize = 0;
 
       // DRAW PLAYER
-      for (int i = 1; i < pCount; i++)
+      for (int i = 1; i < setting->pCount; i++)
       {
-        life = p[i].life;
+        life = setting->p[i].life;
 
-        drawX = x + p[i].x;
-        drawY = y + p[i].y;
+        drawX = x + setting->p[i].x;
+        drawY = y + setting->p[i].y;
 
         if (life >= 100 || life <= -10)
         {
@@ -392,10 +403,10 @@ class DisplayLife : public Form {
       }
 
       // DRAW ARCH
-      life = p[0].life;
+      life = setting->p[0].life;
 
-      drawX = x + p[0].x;
-      drawY = y + p[0].y;
+      drawX = x + setting->p[0].x;
+      drawY = y + setting->p[0].y;
 
       if (life >= 100 || life <= -10)
       {
@@ -429,12 +440,12 @@ class DisplayLife : public Form {
       int drawY = 0;
       int fSize = 0;
 
-      for (int i = 0; i < pCount; i++)
+      for (int i = 0; i < setting->pCount; i++)
       {
-        life = p[i].life;
+        life = setting->p[i].life;
 
-        drawX = x + p[i].x;
-        drawY = y + p[i].y;
+        drawX = x + setting->p[i].x;
+        drawY = y + setting->p[i].y;
 
         if (life >= 100 || life <= -10)
         {
