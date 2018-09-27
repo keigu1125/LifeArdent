@@ -1,6 +1,10 @@
 class DisplayMenu : public Form {
+  private:
+    char* image;
+    const char imageSizeX = 11;
+    const char imageSizeY = 14;
   public:
-    int LIFE_RESET_SECOND = 5;
+    short LIFE_RESET_SECOND = 5000;
 
     DisplayMenu()
     {
@@ -49,20 +53,20 @@ class DisplayMenu : public Form {
 
     void dispChangeLife()
     {
-      if (abs(setting->tPressed.getSubSecond()) >= LIFE_RESET_SECOND)
+      if (abs(setting->tPressed.getSubMillisecond()) >= LIFE_RESET_SECOND)
       {
         setting->changeLife = 0;
       }
 
-      int life = setting->changeLife;
+      short life = setting->changeLife;
       
       if (life == 0)
       {
         return;
       }
 
-      int addX = (life >= 100 || life <= -100) ? 3 : (life >= 10 || life <= -10) ? 6 : 11;
-      int addY = 23;
+      short addX = (life >= 100 || life <= -100) ? 3 : (life >= 10 || life <= -10) ? 6 : 11;
+      short addY = 23;
       String txt = (life > 0) ? "+" + String(life) : life;
 
       drawText(ab, x + addX, y + addY, 1, txt);
@@ -142,11 +146,8 @@ class DisplayMenu : public Form {
     }
 
   private:
-    char* image;
-    int imageSizeX = 11;
-    int imageSizeY = 14;
-
-    void DisplayMenu::setImage() {
+    void DisplayMenu::setImage()
+    {
       switch (cursor) {
         case M_PLAYER:
           image = i_player;

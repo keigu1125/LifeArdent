@@ -1,4 +1,4 @@
-void drawArrowLeft(Arduboy* ab, int x, int y, bool white)
+void drawArrowLeft(Arduboy* ab, short x, short y, bool white)
 {
   ab->drawLine(x + 0, y + 0, x + 0, y + 6, white);
   ab->drawLine(x + 1, y + 1, x + 1, y + 5, white);
@@ -6,7 +6,7 @@ void drawArrowLeft(Arduboy* ab, int x, int y, bool white)
   ab->drawLine(x + 3, y + 3, x + 3, y + 3, white);
 }
 
-void drawArrowTop(Arduboy* ab, int x, int y, bool white)
+void drawArrowTop(Arduboy* ab, short x, short y, bool white)
 {
   ab->drawLine(x + 3, y + 0, x + 3, y + 0, white);
   ab->drawLine(x + 2, y + 1, x + 4, y + 1, white);
@@ -14,7 +14,7 @@ void drawArrowTop(Arduboy* ab, int x, int y, bool white)
   ab->drawLine(x + 0, y + 3, x + 6, y + 3, white);
 }
 
-void drawArrowDown(Arduboy* ab, int x, int y, bool white)
+void drawArrowDown(Arduboy* ab, short x, short y, bool white)
 {
   ab->drawLine(x + 3, y + 3, x + 3, y + 3, white);
   ab->drawLine(x + 2, y + 2, x + 4, y + 2, white);
@@ -22,21 +22,21 @@ void drawArrowDown(Arduboy* ab, int x, int y, bool white)
   ab->drawLine(x + 0, y + 0, x + 6, y + 0, white);
 }
 
-void drawText(Arduboy* ab, int a, int b, int fs, String mes)
+void drawText(Arduboy* ab, short a, short b, short fs, String mes)
 {
   ab->setCursor(a, b);
   ab->setTextSize(fs);
   ab->print(mes);
 }
 
-void drawText(Arduboy* ab, int a, int b, int fs, int mes)
+void drawText(Arduboy* ab, short a, short b, short fs, int mes)
 {
   ab->setCursor(a, b);
   ab->setTextSize(fs);
   ab->print(mes);
 }
 
-void drawOneSmallNumber(Arduboy* ab, int x, int y, int number, bool white)
+void drawOneSmallNumber(Arduboy* ab, short x, short y, short number, bool white)
 {
   int color = (white) ? "1" : "0";
 
@@ -166,7 +166,7 @@ void drawOneSmallNumber(Arduboy* ab, int x, int y, int number, bool white)
   }
 }
 
-void drawSmallNumber(Arduboy* ab, int x, int y, int num, bool white)
+void drawSmallNumber(Arduboy* ab, short x, short y, short num, bool white)
 {
   int s = num;
   int maxDigit = 2;

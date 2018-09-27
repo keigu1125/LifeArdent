@@ -1,30 +1,21 @@
 class TimeFormat
 {
-  public: long defaultMillis = 0;
-  public: int defaultHour = 0;
-  public: int defaultMinute = 0;
-  public: int defaultSecond = 0;
+  public:
+    long defaultMillis = 0;
+    short defaultHour = 0;
+    short defaultMinute = 0;
+    short defaultSecond = 0;
 
-  public: long stopMillis = 0;
-  public: int stopHour = 0;
-  public: int stopMinute = 0;
-  public: int stopSecond = 0;
+    long stopMillis = 0;
+    short stopHour = 0;
+    short stopMinute = 0;
+    short stopSecond = 0;
 
-    void TimeFormat::addTime(TimeFormat* tp)
-    {
-      tp->addHour(stopHour);
-      tp->addMinute(stopMinute);
-      tp->addSecond(stopSecond);
-    }
+    short h = 0;
+    short m = 0;
+    short s = 0;
 
-    void TimeFormat::subTime(TimeFormat* tp)
-    {
-      tp->addHour(stopHour * -1);
-      tp->addMinute(stopMinute * -1);
-      tp->addSecond(stopSecond * -1);
-    }
-
-    void TimeFormat::addHour(int value)
+    void TimeFormat::addHour(short value)
     {
       stopHour += value;
       while (stopHour >= 24)
@@ -37,7 +28,7 @@ class TimeFormat
       }
     }
 
-    void TimeFormat::addMinute(int value)
+    void TimeFormat::addMinute(short value)
     {
       stopMinute += value;
       while (stopMinute >= 60)
@@ -58,7 +49,7 @@ class TimeFormat
       }
     }
 
-    void TimeFormat::addSecond(int value)
+    void TimeFormat::addSecond(short value)
     {
       stopSecond += value;
       while (stopSecond >= 60)
@@ -120,21 +111,6 @@ class TimeFormat
       return strTime;
     }
 
-    int TimeFormat::getSubHour()
-    {
-      return getSubMinute() / 60;
-    }
-
-    int TimeFormat::getSubMinute()
-    {
-      return getSubSecond() / 60;
-    }
-
-    int TimeFormat::getSubSecond()
-    {
-      return (getSubMillisecond()) / 1000;
-    }
-
     long TimeFormat::getSubMillisecond()
     {
       return defaultMillis - stopMillis;
@@ -142,9 +118,9 @@ class TimeFormat
 
     String TimeFormat::getSubTimeString()
     {
-      int h = defaultHour - stopHour;
-      int m = defaultMinute - stopMinute;
-      int s = defaultSecond - stopSecond;
+      h = defaultHour - stopHour;
+      m = defaultMinute - stopMinute;
+      s = defaultSecond - stopSecond;
 
       while (s >= 60)
       {

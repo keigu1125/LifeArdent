@@ -1,10 +1,10 @@
 class DisplayLife : public Form {
   private:
-    int rectW = 9;
-    int rectH = 7;
+    const char rectW = 9;
+    const char rectH = 7;
   public:
     boolean isCursorC = false;
-    int cursorC = 0;
+    char cursorC = 0;
 
     DisplayLife()
     {
@@ -30,9 +30,9 @@ class DisplayLife : public Form {
       }
     }
 
-    int DisplayLife::getLifeTone(int baseTone, int toneLife)
+    int DisplayLife::getLifeTone(short baseTone, short toneLife)
     {
-      int l = setting->p[cursor].life;
+      short l = setting->p[cursor].life;
       return baseTone - (toneLife * 20) + ((l <= 0) ? 0 : ((l > 200) ? 200 : l) * toneLife);
     }
 
@@ -126,7 +126,7 @@ class DisplayLife : public Form {
     {
       if (setting->mode == P2)
       {
-        int value = (cursor == 0) ? - 1 : + 1;
+        char value = (cursor == 0) ? - 1 : + 1;
 
         setting->p[0].life += value;
         setting->p[1].life -= value;
@@ -143,7 +143,7 @@ class DisplayLife : public Form {
     {
       if (setting->mode == P2)
       {
-        int value = (cursor == 0) ? + 1 : - 1;
+        char value = (cursor == 0) ? + 1 : - 1;
 
         setting->p[0].life += value;
         setting->p[1].life -= value;
@@ -165,16 +165,16 @@ class DisplayLife : public Form {
   private:
     void DisplayLife::drawFrame()
     {
-      int cMax = (setting->mode == EDH) ? 4 : 1;
-      for (int i = 0; i < setting->pCount; i++)
+      char cMax = (setting->mode == EDH) ? 4 : 1;
+      for (short i = 0; i < setting->pCount; i++)
       {
-        int drawX = x + setting->p[i].x;
-        int drawY = y + setting->p[i].y;
+        short drawX = x + setting->p[i].x;
+        short drawY = y + setting->p[i].y;
         ab->drawRect(drawX, drawY, setting->p[i].w, setting->p[i].h, WHITE);
-        for (int j = 0; j < cMax; j++)
+        for (short j = 0; j < cMax; j++)
         {
-          int drawCX = drawX;
-          int drawCY = drawY;
+          short drawCX = drawX;
+          short drawCY = drawY;
           drawCX += (j == 1 || j == 3) ? (setting->p[i].w - rectW - 2) : 0;
           drawCY += (j == 2 || j == 3) ? (setting->p[i].h - rectH - 2) : 0;
           ab->drawRect(drawCX, drawCY, rectW + 2, rectH + 2, WHITE);
@@ -188,8 +188,8 @@ class DisplayLife : public Form {
 
     void DisplayLife::drawCursor()
     {
-      int drawX = x + setting->p[cursor].x + 1;
-      int drawY = y + setting->p[cursor].y + 1;
+      short drawX = x + setting->p[cursor].x + 1;
+      short drawY = y + setting->p[cursor].y + 1;
       if (setting->mode == EDH)
       {
         drawX += (cursor == 1 || cursor == 3) ? (setting->p[cursor].w - rectW - 2) : 0;
@@ -223,8 +223,8 @@ class DisplayLife : public Form {
 
     void DisplayLife::drawCursorC()
     {
-      int drawX = x + setting->p[cursor].x + 3;
-      int drawY = y + setting->p[cursor].y + 1;
+      short drawX = x + setting->p[cursor].x + 3;
+      short drawY = y + setting->p[cursor].y + 1;
       drawX += (cursorC == 1 || cursorC == 3) ? (setting->p[cursor].w - rectW - 4) : 0;
       drawY += rectH + 3;
 
@@ -245,9 +245,9 @@ class DisplayLife : public Form {
     {
       int life = setting->p[0].life;
 
-      int drawX = x;
-      int drawY = y;
-      int fSize = 0;
+      short drawX = x;
+      short drawY = y;
+      char fSize = 0;
 
       if (life >= 100 || life <= -10)
       {
@@ -273,10 +273,10 @@ class DisplayLife : public Form {
 
     void DisplayLife::drawLifeP2()
     {
-      int drawX = 0;
-      int drawY = 0;
-      int fSize = 0;
-      int life = 0;
+      short drawX = 0;
+      short drawY = 0;
+      char fSize = 0;
+      short life = 0;
 
       for (int i = 0; i < 2; i++)
       {
@@ -309,12 +309,12 @@ class DisplayLife : public Form {
 
     void DisplayLife:: drawLifeP4()
     {
-      int life = 0;
-      int drawX = 0;
-      int drawY = 0;
-      int fSize = 0;
+      short life = 0;
+      short drawX = 0;
+      short drawY = 0;
+      char fSize = 0;
 
-      for (int i = 0; i < setting->pCount; i++)
+      for (short i = 0; i < setting->pCount; i++)
       {
         bool isLose = false;
 
@@ -325,10 +325,10 @@ class DisplayLife : public Form {
 
         if (setting->mode == EDH)
         {
-          for (int j = 0; j < 4; j++)
+          for (short j = 0; j < 4; j++)
           {
-            int drawMiniX = drawX + 1;
-            int drawMiniY = drawY + 1;
+            short drawMiniX = drawX + 1;
+            short drawMiniY = drawY + 1;
 
             drawMiniX += (j == 1 || j == 3) ? (setting->p[i].w - rectW - 2) : 0;
             drawMiniY += (j == 2 || j == 3) ? (setting->p[i].h - rectH - 2) : 0;
@@ -367,10 +367,10 @@ class DisplayLife : public Form {
 
     void DisplayLife::drawLifeArch()
     {
-      int life = 0;
-      int drawX = 0;
-      int drawY = 0;
-      int fSize = 0;
+      short life = 0;
+      short drawX = 0;
+      short drawY = 0;
+      char fSize = 0;
 
       // DRAW PLAYER
       for (int i = 1; i < setting->pCount; i++)
@@ -435,12 +435,12 @@ class DisplayLife : public Form {
 
     void DisplayLife::drawLifeEmp()
     {
-      int life = 0;
-      int drawX = 0;
-      int drawY = 0;
-      int fSize = 0;
+      short life = 0;
+      short drawX = 0;
+      short drawY = 0;
+      char fSize = 0;
 
-      for (int i = 0; i < setting->pCount; i++)
+      for (short i = 0; i < setting->pCount; i++)
       {
         life = setting->p[i].life;
 

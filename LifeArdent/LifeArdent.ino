@@ -13,11 +13,11 @@
 
 Arduboy ab;
 
-const int FRAME_RATE = 20;
-const int BUTTON_REPEAT = 350;
-const int TONE_LIFE = 40;
-const int TIME_TITLE = 3000;
-const int BASE_TONE = 1000;
+const char FRAME_RATE = 20;
+const short BUTTON_REPEAT = 350;
+const char TONE_LIFE = 40;
+const short TIME_TITLE = 3000;
+const short BASE_TONE = 1000;
 
 Form* activeForm = NULL;
 
@@ -30,11 +30,7 @@ bool isTitle = true;
 bool isMain = false;
 bool isSetting = false;
 
-bool isFlash = false;
-
-int pressCnt = 0;
-
-String TimeFormat = "0:00:00";
+bool pressFirst = true;
 
 void setup()
 {
@@ -104,22 +100,16 @@ void dispTitle()
   ab.drawBitmap(0, 0, mtg_logo, 128, 64, WHITE);
 }
 
-void dispSleep()
-{
-  drawText(&ab, 13, 20, 1, ">> LIFE ARDENT <<");
-  drawText(&ab, 13, 40, 1, "   SLEEP  MODE");
-}
-
 void button()
 {
   if (!someButtonPressed())
   {
     setting.tPressed.setDefaultTime();
-    pressCnt = 0;
+    pressFirst = true;
     return;
   }
 
-  if (buttonPressOnce())
+  if (!arrowButtonPress())
   {
     return;
   }
@@ -142,25 +132,24 @@ bool someButtonPressed()
           ab.pressed(A_BUTTON)    || ab.pressed(B_BUTTON));
 }
 
-bool buttonPressOnce()
+bool arrowButtonPress()
 {
-  setting.tPressed.setStopTime();  
+  setting.tPressed.setStopTime();
 
-  if (abs(setting.tPressed.getSubMillisecond()) >= BUTTON_REPEAT)
+  if (pressFirst)
   {
-    return false;
+    pressFirst = false;
+    return true;
   }
 
-  pressCnt++;
-
-  return pressCnt != 1;
+  return (abs(setting.tPressed.getSubMillisecond()) >= BUTTON_REPEAT);
 }
 
 void buttonSound()
 {
   if (setting.isSound)
   {
-    int tone = BASE_TONE;
+    short tone = BASE_TONE;
     if (life.isCursor)
     {
       tone = life.getLifeTone(BASE_TONE, TONE_LIFE);

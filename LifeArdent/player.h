@@ -1,17 +1,17 @@
 class Player
 {
   public:
-    int x = 0;
-    int y = 0;
-    int w = 0;
-    int h = 0;
-    int life = 0;
-    int c[4];
-    int win = 0;
-    int counter1 = 0;
-    int counter2 = 0;
+    unsigned char x = 0;
+    unsigned char y = 0;
+    unsigned char w = 0;
+    unsigned char h = 0;
+    short life = 0;
+    short c[4];
+    unsigned char win = 0;
+    unsigned char counter1 = 0;
+    unsigned char counter2 = 0;
 
-    void Player::init(int life)
+    void Player::init(short life)
     {
       this->life = life;
       for (int i = 0; i < 4; i++)
@@ -23,7 +23,7 @@ class Player
       counter2 = 0;
     }
 
-    void Player::setXY(int x, int y, int w, int h)
+    void Player::setXY(unsigned char x, unsigned char y, unsigned char w, unsigned char h)
     {
       this->x = x;
       this->y = y;

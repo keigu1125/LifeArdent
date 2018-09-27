@@ -1,34 +1,35 @@
 class Setting
 {
   private:
-    int PLAYER_COUNT = 6;
+    short PLAYER_COUNT = 6;
   public:
     Player p[6];
-    int pCount = 0;
-    int mode = PM_HEAD;
-    int changeLife = 0;
+    unsigned char pCount = 0;
+    short mode = PM_HEAD;
+    short changeLife = 0;
     TimeFormat tPressed;
+    TimeFormat tTimer;
     boolean isSound = true;
     
     void Setting::initPlayer()
     {
-      for (int i = 0; i < PLAYER_COUNT; i++)
+      for (char i = 0; i < PLAYER_COUNT; i++)
       {
-        int life = (mode == EDH || (i == 0 && mode == ARCH)) ? 40 : 20;
+        short life = (mode == EDH || (i == 0 && mode == ARCH)) ? 40 : 20;
         p[i].init(life);
       }
     }
 
     void Setting::initPlayerLife()
     {
-      for (int i = 0; i < PLAYER_COUNT; i++)
+      for (char i = 0; i < PLAYER_COUNT; i++)
       {
-        int life = (mode == EDH || (i == 0 && mode == ARCH)) ? 40 : 20;
+        short life = (mode == EDH || (i == 0 && mode == ARCH)) ? 40 : 20;
         p[i].life = life;
       }
     }
 
-    void Setting::initMode(int value)
+    void Setting::initMode(char value)
     {
       if (value > PM_TAIL || value < PM_HEAD)
       {
@@ -82,7 +83,7 @@ class Setting
       initPlayer();
     }
 
-    String Setting::getModeName(int m)
+    String Setting::getModeName(char m)
     {
       String ret = "    ";
       switch (m)

@@ -3,11 +3,11 @@ class Form
   public:
     Arduboy* ab = NULL;
     Setting* setting = NULL;
-    int x = 0;
-    int y = 0;
+    unsigned char x = 0;
+    unsigned char y = 0;
     boolean isCursor = false;
-    int cursor = 0;
-    int cursorMax = 0;
+    unsigned char cursor = 0;
+    unsigned char cursorMax = 0;
 
     Form* menu = NULL;
     Form* util = NULL;
