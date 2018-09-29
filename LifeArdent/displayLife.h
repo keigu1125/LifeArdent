@@ -34,16 +34,16 @@ class DisplayLife : public Form {
     {
       if (isCursorC)
       {
-        if (cursorC != cursor && addValue(&setting->p[cursor].c[cursorC], 21))
+        if (cursorC != cursor && addValue(&format->p[cursor].c[cursorC], 21))
         {
-          setting->p[cursor].life--;
-          setting->changeLife--;
+          format->p[cursor].life--;
+          format->changeLife--;
         }
       }
       else
       {
-        setting->p[cursor].life++;
-        setting->changeLife++;
+        format->p[cursor].life++;
+        format->changeLife++;
       }
     }
 
@@ -51,22 +51,22 @@ class DisplayLife : public Form {
     {
       if (isCursorC)
       {
-        if (cursorC != cursor && subValue(&setting->p[cursor].c[cursorC],  0))
+        if (cursorC != cursor && subValue(&format->p[cursor].c[cursorC],  0))
         {
-          setting->p[cursor].life++;
-          setting->changeLife++;
+          format->p[cursor].life++;
+          format->changeLife++;
         }
       }
       else
       {
-        setting->p[cursor].life--;
-        setting->changeLife--;
+        format->p[cursor].life--;
+        format->changeLife--;
       }
     }
 
     virtual void leftButton()
     {
-      setting->changeLife = 0;
+      format->changeLife = 0;
 
       if (isCursorC)
       {
@@ -80,13 +80,13 @@ class DisplayLife : public Form {
 
     virtual void rightButton()
     {
-      setting->changeLife = 0;
+      format->changeLife = 0;
 
       if (isCursorC)
       {
         rotateUp(&cursorC, 0, 3);
       }
-      else if (!addValue(&cursor, setting->pCount - 1))
+      else if (!addValue(&cursor, format->pCount - 1))
       {
         activeMenu();
       }
@@ -94,15 +94,15 @@ class DisplayLife : public Form {
 
     virtual void aButton()
     {
-      if (setting->mode == P2)
+      if (format->mode == P2)
       {
         char value = (cursor == 0) ? - 1 : + 1;
 
-        setting->p[0].life += value;
-        setting->p[1].life -= value;
-        setting->changeLife--;
+        format->p[0].life += value;
+        format->p[1].life -= value;
+        format->changeLife--;
       }
-      else if (setting->mode == EDH)
+      else if (format->mode == EDH)
       {
         isCursorC = !isCursorC;
         cursorC = cursor;
@@ -111,15 +111,15 @@ class DisplayLife : public Form {
 
     virtual void bButton()
     {
-      if (setting->mode == P2)
+      if (format->mode == P2)
       {
         char value = (cursor == 0) ? + 1 : - 1;
 
-        setting->p[0].life += value;
-        setting->p[1].life -= value;
-        setting->changeLife++;
+        format->p[0].life += value;
+        format->p[1].life -= value;
+        format->changeLife++;
       }
-      else if (setting->mode == EDH)
+      else if (format->mode == EDH)
       {
         isCursorC = !isCursorC;
         cursorC = cursor;
@@ -128,29 +128,29 @@ class DisplayLife : public Form {
 
     virtual void abButton()
     {
-      setting->initPlayerLife();
-      setting->changeLife = 0;
+      format->initPlayerLife();
+      format->changeLife = 0;
     }
 
   private:
     void DisplayLife::drawFrame()
     {
-      byte cMax = (setting->mode == EDH) ? 4 : 1;
-      for (byte i = 0; i < setting->pCount; i++)
+      byte cMax = (format->mode == EDH) ? 4 : 1;
+      for (byte i = 0; i < format->pCount; i++)
       {
-        byte drawX = x + setting->p[i].x;
-        byte drawY = y + setting->p[i].y;
-        ab->drawRect(drawX, drawY, setting->p[i].w, setting->p[i].h, WHITE);
+        byte drawX = x + format->p[i].x;
+        byte drawY = y + format->p[i].y;
+        ab->drawRect(drawX, drawY, format->p[i].w, format->p[i].h, WHITE);
         for (short j = 0; j < cMax; j++)
         {
           byte drawCX = drawX;
           byte drawCY = drawY;
-          drawCX += (j == 1 || j == 3) ? (setting->p[i].w - rectW - 2) : 0;
-          drawCY += (j == 2 || j == 3) ? (setting->p[i].h - rectH - 2) : 0;
+          drawCX += (j == 1 || j == 3) ? (format->p[i].w - rectW - 2) : 0;
+          drawCY += (j == 2 || j == 3) ? (format->p[i].h - rectH - 2) : 0;
           ab->drawRect(drawCX, drawCY, rectW + 2, rectH + 2, WHITE);
         }
       }
-      if (setting->mode == ARCH)
+      if (format->mode == ARCH)
       {
         ab->drawBitmap(x + 17, y + 1, symbol_arch, 63, 24, WHITE);
       }
@@ -158,12 +158,12 @@ class DisplayLife : public Form {
 
     void DisplayLife::drawCursor()
     {
-      byte drawX = x + setting->p[cursor].x + 1;
-      byte drawY = y + setting->p[cursor].y + 1;
-      if (setting->mode == EDH)
+      byte drawX = x + format->p[cursor].x + 1;
+      byte drawY = y + format->p[cursor].y + 1;
+      if (format->mode == EDH)
       {
-        drawX += (cursor == 1 || cursor == 3) ? (setting->p[cursor].w - rectW - 2) : 0;
-        drawY += (cursor == 2 || cursor == 3) ? (setting->p[cursor].h - rectH - 2) : 0;
+        drawX += (cursor == 1 || cursor == 3) ? (format->p[cursor].w - rectW - 2) : 0;
+        drawY += (cursor == 2 || cursor == 3) ? (format->p[cursor].h - rectH - 2) : 0;
       }
 
       ab->fillRect(drawX, drawY, rectW, rectH, 1);
@@ -171,7 +171,7 @@ class DisplayLife : public Form {
 
     void DisplayLife::drawLife()
     {
-      for (byte i = 0; i < setting->pCount; i++)
+      for (byte i = 0; i < format->pCount; i++)
       {
         drawLife(i);
       }
@@ -179,9 +179,9 @@ class DisplayLife : public Form {
 
     void DisplayLife::drawCursorC()
     {
-      byte drawX = x + setting->p[cursor].x + 3;
-      byte drawY = y + setting->p[cursor].y + 1;
-      drawX += (cursorC == 1 || cursorC == 3) ? (setting->p[cursor].w - rectW - 4) : 0;
+      byte drawX = x + format->p[cursor].x + 3;
+      byte drawY = y + format->p[cursor].y + 1;
+      drawX += (cursorC == 1 || cursorC == 3) ? (format->p[cursor].w - rectW - 4) : 0;
       drawY += rectH + 3;
 
       switch (cursorC)
@@ -199,13 +199,13 @@ class DisplayLife : public Form {
 
     void DisplayLife::drawLife(byte i)
     {
-      short life = setting->p[i].life;
+      short life = format->p[i].life;
 
       byte fSize = 2;
-      byte drawX = x + setting->p[i].x;
-      byte drawY = y + setting->p[i].y;
+      byte drawX = x + format->p[i].x;
+      byte drawY = y + format->p[i].y;
 
-      switch (setting->mode)
+      switch (format->mode)
       {
         case PlayMode::P1:
           if (life >= 100 || life <= -10)
@@ -249,17 +249,17 @@ class DisplayLife : public Form {
           break;
         case PlayMode::P3:
         case PlayMode::EDH:
-          if (setting->mode == EDH)
+          if (format->mode == EDH)
           {
             for (byte j = 0; j < 4; j++)
             {
               byte drawMiniX = drawX + 1;
               byte drawMiniY = drawY + 1;
 
-              drawMiniX += (j == 1 || j == 3) ? (setting->p[i].w - rectW - 2) : 0;
-              drawMiniY += (j == 2 || j == 3) ? (setting->p[i].h - rectH - 2) : 0;
+              drawMiniX += (j == 1 || j == 3) ? (format->p[i].w - rectW - 2) : 0;
+              drawMiniY += (j == 2 || j == 3) ? (format->p[i].h - rectH - 2) : 0;
 
-              int miniLife = setting->p[i].c[j];
+              byte miniLife = format->p[i].c[j];
 
               if (j != i)
               {

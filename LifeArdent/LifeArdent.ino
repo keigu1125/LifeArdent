@@ -1,17 +1,18 @@
-#include "Arduboy.h"
+#include "Arduboy2.h"
 #include "time.h"
 #include "enum.h"
 #include "drawUtil.h"
 #include "image_form.h"
 #include "image_icon.h"
 #include "player.h"
-#include "setting.h"
+#include "format.h"
 #include "form.h"
 #include "displayMenu.h"
 #include "displayLife.h"
 #include "displayUtil.h"
 
-Arduboy ab;
+Arduboy2 ab;
+BeepPin1 beep;
 
 #define FRAME_RATE 20
 #define BUTTON_REPEAT 350
@@ -26,7 +27,7 @@ Form* activeForm = NULL;
 DisplayMenu menu;
 DisplayLife life;
 DisplayUtil util;
-Setting setting;
+Format format;
 
 bool isTitle = true;
 bool isMain = false;
@@ -37,16 +38,17 @@ bool pressFirst = true;
 void setup()
 {
   init();
-
-  ab.beginNoLogo();
+  ab.boot();
+  ab.audio.begin();
+  beep.begin();
   ab.setFrameRate(FRAME_RATE);
 
   menu.ab = &ab;
   life.ab = &ab;
   util.ab = &ab;
-  menu.setting = &setting;
-  life.setting = &setting;
-  util.setting = &setting;
+  menu.format = &format;
+  life.format = &format;
+  util.format = &format;
   menu.menu = &menu;
   life.menu = &menu;
   util.menu = &menu;
@@ -57,7 +59,7 @@ void setup()
   life.util = &util;
   util.util = &util;
 
-  setting.initMode(P2);
+  format.initMode(P2);
   menu.activeMenu();
 }
 
@@ -99,14 +101,14 @@ void dispTitle()
     return;
   }
 
-  ab.drawBitmap(0, 0, mtg_logo, 128, 64, WHITE);
+  ab.drawBitmap(0, 17, mtg_logo, 128, 34, WHITE);
 }
 
 void button()
 {
   if (!someButtonPressed())
   {
-    setting.tPressed.setDefaultTime();
+    format.tPressed.setDefaultTime();
     pressFirst = true;
     return;
   }
@@ -136,7 +138,7 @@ bool someButtonPressed()
 
 bool arrowButtonPress()
 {
-  setting.tPressed.setStopTime();
+  format.tPressed.setStopTime();
 
   if (pressFirst)
   {
@@ -144,23 +146,25 @@ bool arrowButtonPress()
     return true;
   }
 
-  return (abs(setting.tPressed.getSubMillisecond()) >= BUTTON_REPEAT);
+  return (abs(format.tPressed.getSubMillisecond()) >= BUTTON_REPEAT);
 }
 
 void buttonSound()
 {
-  if (!setting.isSound)
+  if (!format.isSound)
   {
     return;
   }
 
-  short tone = BASE_TONE;
+  short t = BASE_TONE;
   if (life.isCursor)
   {
-    short l = setting.p[life.cursor].life;
-    tone = BASE_TONE - (TONE_LIFE * TONE_ONELIFE) + ((l <= 0) ? 0 : ((l > TONE_MIN) ? TONE_MIN : l) * TONE_LIFE);
+    short l = format.p[life.cursor].life;
+    t = BASE_TONE - (TONE_LIFE * TONE_ONELIFE) + ((l <= 0) ? 0 : ((l > TONE_MIN) ? TONE_MIN : l) * TONE_LIFE);
   }
-  ab.tunes.tone(tone, 20);
+  beep.tone(t);
+  ab.delayShort(20);
+  beep.noTone();
 }
 
 void setActiveForm()

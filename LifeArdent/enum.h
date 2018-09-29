@@ -17,7 +17,7 @@ enum UtilMenuMax
 {
   MAX_PLAYER = 0,
   MAX_DICE = 1,
-  MAX_MATCH = 1,
+  MAX_MATCH = 2,
   MAX_TIME = 0,
   MAX_DISCARD = 1,
   MAX_STORM = 6,  

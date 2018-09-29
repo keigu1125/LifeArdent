@@ -46,7 +46,7 @@ bool subValue(byte* target, byte min)
   return false;
 }
 
-void drawArrowLeft(Arduboy* ab, byte x, byte y, bool white)
+void drawArrowLeft(Arduboy2* ab, byte x, byte y, bool white)
 {
   ab->drawLine(x + 0, y + 0, x + 0, y + 6, white);
   ab->drawLine(x + 1, y + 1, x + 1, y + 5, white);
@@ -54,7 +54,7 @@ void drawArrowLeft(Arduboy* ab, byte x, byte y, bool white)
   ab->drawLine(x + 3, y + 3, x + 3, y + 3, white);
 }
 
-void drawArrowTop(Arduboy* ab, byte x, byte y, bool white)
+void drawArrowTop(Arduboy2* ab, byte x, byte y, bool white)
 {
   ab->drawLine(x + 3, y + 0, x + 3, y + 0, white);
   ab->drawLine(x + 2, y + 1, x + 4, y + 1, white);
@@ -62,7 +62,7 @@ void drawArrowTop(Arduboy* ab, byte x, byte y, bool white)
   ab->drawLine(x + 0, y + 3, x + 6, y + 3, white);
 }
 
-void drawArrowDown(Arduboy* ab, byte x, byte y, bool white)
+void drawArrowDown(Arduboy2* ab, byte x, byte y, bool white)
 {
   ab->drawLine(x + 3, y + 3, x + 3, y + 3, white);
   ab->drawLine(x + 2, y + 2, x + 4, y + 2, white);
@@ -70,21 +70,21 @@ void drawArrowDown(Arduboy* ab, byte x, byte y, bool white)
   ab->drawLine(x + 0, y + 0, x + 6, y + 0, white);
 }
 
-void drawText(Arduboy* ab, byte a, byte b, byte fs, String mes)
+void drawText(Arduboy2* ab, byte a, byte b, byte fs, String mes)
 {
   ab->setCursor(a, b);
   ab->setTextSize(fs);
   ab->print(mes);
 }
 
-void drawText(Arduboy* ab, byte a, byte b, byte fs, int mes)
+void drawText(Arduboy2* ab, byte a, byte b, byte fs, short mes)
 {
   ab->setCursor(a, b);
   ab->setTextSize(fs);
   ab->print(mes);
 }
 
-void drawOneSmallNumber(Arduboy* ab, byte x, byte y, byte number, bool color)
+void drawOneSmallNumber(Arduboy2* ab, byte x, byte y, byte number, bool color)
 {
   switch (number)
   {
@@ -212,11 +212,11 @@ void drawOneSmallNumber(Arduboy* ab, byte x, byte y, byte number, bool color)
   }
 }
 
-void drawSmallNumber(Arduboy* ab, byte x, byte y, byte num, bool white)
+void drawSmallNumber(Arduboy2* ab, byte x, byte y, byte num, bool white)
 {
-  int s = num;
-  int maxDigit = 2;
-  int digit = 0;
+  byte s = num;
+  byte maxDigit = 2;
+  byte digit = 0;
 
   if (s > 99)
   {
@@ -262,7 +262,7 @@ void drawSmallNumber(Arduboy* ab, byte x, byte y, byte num, bool white)
   }
 }
 
-void drawBigDice(Arduboy* ab, byte x, byte y, byte number)
+void drawBigDice(Arduboy2* ab, byte x, byte y, byte number)
 {
   if (number == 0)
   {

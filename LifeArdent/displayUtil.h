@@ -13,8 +13,8 @@ class DisplayUtil : public Form {
     byte storm[7];
     byte dCount = 2;
     byte d[8];
-    byte page = 0;
-    String out = "";
+    byte cPage = 0;
+    byte mPage = 0;
     String stopTime = "0:00:00";
 
     bool isTimer = false;
@@ -35,23 +35,23 @@ class DisplayUtil : public Form {
 
     void DisplayUtil::display()
     {
-      out = "";
+      String out = "";
       if (isCursor)
       {
         switch (menu->cursor)
         {
           case Menu::M_PLAYER:
-            out += setting->getModeName(setting->mode - 1);
-            out += (setting->mode > PM_HEAD) ? " << " : "    ";
-            out += setting->getModeName(setting->mode);
-            out += (setting->mode < PM_TAIL) ? " >> " : "    ";
-            out += setting->getModeName(setting->mode + 1);
+            out += format->getModeName(format->mode - 1);
+            out += (format->mode > PM_HEAD) ? " << " : "    ";
+            out += format->getModeName(format->mode);
+            out += (format->mode < PM_TAIL) ? " >> " : "    ";
+            out += format->getModeName(format->mode + 1);
             break;
           case Menu::M_DICE:
             dispDice();
             break;
           case Menu::M_MATCH:
-            out = "Count Match win.";
+            dispMatch();
             break;
           case Menu::M_TIME:
             dispTimer();
@@ -103,7 +103,7 @@ class DisplayUtil : public Form {
             out = "Count Storm & mana.";
             break;
           case Menu::M_COUNT:
-            if (setting->isCounterUsed())
+            if (format->isCounterUsed())
             {
               dispCounter();
             }
@@ -113,7 +113,7 @@ class DisplayUtil : public Form {
             }
             break;
           case Menu::M_SOUND:
-            out = (setting->isSound) ? "Set Sound. [ ON ]" : out = "Set Sound. [MUTE]";
+            out = (format->isSound) ? "Set Sound. [ ON ]" : out = "Set Sound. [MUTE]";
             break;
           case Menu::M_SETTING:
             out = "Life Ardent Settings.";
@@ -141,7 +141,7 @@ class DisplayUtil : public Form {
           case Menu::M_STORM:
             break;
           case Menu::M_COUNT:
-            if (setting->isCounterUsed())
+            if (format->isCounterUsed())
             {
               dispCounter();
             }
@@ -166,6 +166,19 @@ class DisplayUtil : public Form {
           addValue(&dCount, DICE_MAX);
           break;
         case Menu::M_MATCH:
+          switch (cursorC)
+          {
+            case 0:
+              addValue(&mPage, 4);
+              addValue(&mPage, 4);
+              break;
+            case 1:
+              addValue(&format->p[mPage].win, 4);
+              break;
+            case 2:
+              addValue(&format->p[mPage + 1].win, 4);
+              break;
+          }
           break;
         case Menu::M_TIME:
           break;
@@ -189,13 +202,13 @@ class DisplayUtil : public Form {
           switch (cursorC)
           {
             case 0:
-              addValue(&page, (setting->PLAYER_COUNT) - 1);
+              addValue(&cPage, (format->PLAYER_COUNT) - 1);
               break;
             case 1:
-              addValue(&setting->p[page].counter1, 10);
+              addValue(&format->p[cPage].counter1, 10);
               break;
             case 2:
-              addValue(&setting->p[page].counter2, 10);
+              addValue(&format->p[cPage].counter2, 10);
               break;
           }
           break;
@@ -217,6 +230,20 @@ class DisplayUtil : public Form {
           subValue(&dCount, 1);
           break;
         case Menu::M_MATCH:
+          switch (cursorC)
+          {
+            case 0:
+              subValue(&mPage, 0);
+              subValue(&mPage, 0);
+              break;
+            case 1:
+              subValue(&format->p[mPage].win, 0);
+              break;
+            case 2:
+              subValue(&format->p[mPage + 1].win, 0);
+              break;
+          }
+          break;
           break;
         case Menu::M_TIME:
           break;
@@ -242,13 +269,13 @@ class DisplayUtil : public Form {
           switch (cursorC)
           {
             case 0:
-              subValue(&page, 0);
+              subValue(&cPage, 0);
               break;
             case 1:
-              subValue(&setting->p[page].counter1, 0);
+              subValue(&format->p[cPage].counter1, 0);
               break;
             case 2:
-              subValue(&setting->p[page].counter2, 0);
+              subValue(&format->p[cPage].counter2, 0);
               break;
           }
           break;
@@ -265,7 +292,7 @@ class DisplayUtil : public Form {
       switch (menu->cursor)
       {
         case Menu::M_PLAYER:
-          setting->initMode(setting->mode - 1);
+          format->initMode(format->mode - 1);
           return;
         case Menu::M_SOUND:
         case Menu::M_SETTING:
@@ -299,7 +326,7 @@ class DisplayUtil : public Form {
       switch (menu->cursor)
       {
         case Menu::M_PLAYER:
-          setting->initMode(setting->mode + 1);
+          format->initMode(format->mode + 1);
           return;
         case Menu::M_SOUND:
         case Menu::M_SETTING:
@@ -353,13 +380,12 @@ class DisplayUtil : public Form {
         case Menu::M_TIME:
           if (!isTimer)
           {
-            stopTime = setting->tTimer.getSubTimeString();
-            setting->tTimer.setStopTime();
-            setting->tTimer.addHour(-setting->tTimer.h);
-            setting->tTimer.addMinute(-setting->tTimer.m);
-            setting->tTimer.addSecond(-setting->tTimer.s);
+            stopTime = format->tTimer.getSubTimeString();
+            format->tTimer.setStopTime();
+            format->tTimer.addHour(-format->tTimer.h);
+            format->tTimer.addMinute(-format->tTimer.m);
+            format->tTimer.addSecond(-format->tTimer.s);
           }
-          stopTime = setting->tTimer.getSubTimeString();
           isTimer = !isTimer;
           break;
         case Menu::M_DISCARD:
@@ -380,9 +406,9 @@ class DisplayUtil : public Form {
       {
         case Menu::M_TIME:
           isTimer = false;
-          setting->tTimer.setDefaultTime();
-          setting->tTimer.setStopTime();
-          stopTime = setting->tTimer.getSubTimeString();
+          format->tTimer.setDefaultTime();
+          format->tTimer.setStopTime();
+          stopTime = format->tTimer.getSubTimeString();
           break;
         case Menu::M_DISCARD:
           initDiscard();
@@ -397,7 +423,7 @@ class DisplayUtil : public Form {
         case Menu::M_MATCH:
           break;
         case Menu::M_COUNT:
-          setting->initCounter();
+          format->initCounter();
           break;
         case Menu::M_SOUND:
         case Menu::M_SETTING:
@@ -462,11 +488,11 @@ class DisplayUtil : public Form {
       }
 
       drawText(ab, x + 9, y, 1, "P");
-      drawText(ab, x + 19, y, 1, page + 1);
+      drawText(ab, x + 19, y, 1, cPage + 1);
       ab->drawLine(x + 29, y, x + 29, y + 6, WHITE);
       ab->drawLine(x + 78, y, x + 78, y + 6, WHITE);
 
-      for (byte i = 0; i < setting->p[page].counter1; i++)
+      for (byte i = 0; i < format->p[cPage].counter1; i++)
       {
         byte drawX = x + 37 + (i * 4);
         byte drawY = y + 7;
@@ -476,7 +502,7 @@ class DisplayUtil : public Form {
 
         ab->fillRect(drawX, drawY - h, w, h, WHITE);
       }
-      for (byte i = 0; i < setting->p[page].counter2; i++)
+      for (byte i = 0; i < format->p[cPage].counter2; i++)
       {
         byte drawX = x + 86 + (i * 4);
         byte drawY = y + 7;
@@ -485,6 +511,34 @@ class DisplayUtil : public Form {
         byte h = (i == 4) ? 4 : (i == 9) ? 7 : 2;
 
         ab->fillRect(drawX, drawY - h, w, h, WHITE);
+      }
+    }
+
+    void DisplayUtil::dispMatch()
+    {
+      if (isCursor)
+      {
+        drawArrowLeft(ab, x + ((cursorC == 0) ? 0 : x + 30 + ((cursorC - 1) * 49)), y, WHITE);
+      }
+
+      drawText(ab, x + 6, y, 1, String(mPage + 1) + " " + String(mPage + 2));
+      drawText(ab, x + 12, y + 2, 1, "~");
+      ab->drawLine(x + 29, y, x + 29, y + 6, WHITE);
+      ab->drawLine(x + 78, y, x + 78, y + 6, WHITE);
+
+      for (byte i = 0; i < format->p[mPage].win; i++)
+      {
+        byte drawX = x + 36 + (i * 10);
+        byte drawY = y - 1;
+
+        ab->drawBitmap(drawX, drawY, i_s_win, 9, 9, WHITE);
+      }
+      for (byte i = 0; i < format->p[mPage + 1].win; i++)
+      {
+        byte drawX = x + 85 + (i * 10);
+        byte drawY = y - 1;
+
+        ab->drawBitmap(drawX, drawY, i_s_win, 9, 9, WHITE);
       }
     }
 
@@ -548,16 +602,15 @@ class DisplayUtil : public Form {
     {
       if (isTimer)
       {
-        setting->tTimer.setDefaultTime();
+        format->tTimer.setDefaultTime();
       }
       if (isCursor)
       {
         drawArrowLeft(ab, x, y, WHITE);
       }
       ab->drawBitmap(x + 51, y - 1, (isTimer) ? i_s_play : i_s_stop, 9, 9, WHITE);
-      drawText(ab, x + 6, y, 1, (isTimer) ? setting->tTimer.getSubTimeString() : stopTime);
-      ab->fillRect(x + 64, y, setting->tTimer.m, 3, WHITE);
-      //ab->drawBitmap(x + 64, y + 4, i_timer_meter, 61, 3, WHITE);
+      drawText(ab, x + 6, y, 1, (isTimer) ? format->tTimer.getSubTimeString() : stopTime);
+      ab->fillRect(x + 64, y, format->tTimer.m, 3, WHITE);
       ab->drawLine(x + 64, y + 6, x + 124, y + 6, WHITE);
       for (byte i = 0; i <= 60; i += 5)
       {

@@ -20,7 +20,7 @@ class DisplayMenu : public Form {
 
       ab->drawBitmap(x, y, f_menu, 29, 53, WHITE);
 
-      if (setting->changeLife == 0)
+      if (format->changeLife == 0)
       {
         ab->drawBitmap(x + 9, y + 19, image, imageSizeX, imageSizeY, WHITE);
       }
@@ -49,7 +49,7 @@ class DisplayMenu : public Form {
 
     virtual void leftButton()
     {
-      life->cursor = life->setting->pCount - 1;
+      life->cursor = life->format->pCount - 1;
       activeLife();
     }
 
@@ -72,7 +72,7 @@ class DisplayMenu : public Form {
         case Menu::M_COUNT:
           break;
         case Menu::M_SOUND:
-          setting->isSound = !setting->isSound;
+          format->isSound = !format->isSound;
           break;
         case Menu::M_SETTING:
           break;
@@ -92,7 +92,7 @@ class DisplayMenu : public Form {
           activeUtil();
           break;
         case Menu::M_SOUND:
-          setting->isSound = !setting->isSound;
+          format->isSound = !format->isSound;
           break;
         case Menu::M_SETTING:
           break;
@@ -129,7 +129,7 @@ class DisplayMenu : public Form {
           image = i_poison;
           break;
         case Menu::M_SOUND:
-          image =  (setting->isSound) ? i_sound_on : i_sound_mute;
+          image =  (format->isSound) ? i_sound_on : i_sound_mute;
           break;
         case Menu::M_SETTING:
           image = i_setting;
@@ -139,12 +139,12 @@ class DisplayMenu : public Form {
 
     void dispChangeLife()
     {
-      if (abs(setting->tPressed.getSubMillisecond()) >= LIFE_RESET_SECOND)
+      if (abs(format->tPressed.getSubMillisecond()) >= LIFE_RESET_SECOND)
       {
-        setting->changeLife = 0;
+        format->changeLife = 0;
       }
 
-      short life = setting->changeLife;
+      short life = format->changeLife;
 
       if (life == 0)
       {

@@ -1,4 +1,4 @@
-class Setting
+class Format
 {
   private:
   public:
@@ -10,8 +10,8 @@ class Setting
     TimeFormat tPressed;
     TimeFormat tTimer;
     bool isSound = true;
-    
-    void Setting::initPlayer()
+
+    void Format::initPlayer()
     {
       for (byte i = 0; i < PLAYER_COUNT; i++)
       {
@@ -20,7 +20,7 @@ class Setting
       }
     }
 
-    void Setting::initPlayerLife()
+    void Format::initPlayerLife()
     {
       for (byte i = 0; i < PLAYER_COUNT; i++)
       {
@@ -29,7 +29,7 @@ class Setting
       }
     }
 
-    void Setting::initMode(byte value)
+    void Format::initMode(byte value)
     {
       if (value > PlayMode::PM_TAIL || value < PlayMode::PM_HEAD)
       {
@@ -83,7 +83,7 @@ class Setting
       initPlayer();
     }
 
-    String Setting::getModeName(PlayMode m)
+    String Format::getModeName(PlayMode m)
     {
       String ret = "    ";
       switch (m)
@@ -111,7 +111,7 @@ class Setting
       return ret;
     }
 
-    bool Setting::isCounterUsed()
+    bool Format::isCounterUsed()
     {
       for (Player pl : p)
       {
@@ -123,7 +123,7 @@ class Setting
       return false;
     }
 
-    void Setting::initCounter()
+    void Format::initCounter()
     {
       for (byte i = 0; i < PLAYER_COUNT; i++)
       {

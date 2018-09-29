@@ -1,8 +1,8 @@
 class Form
 {
   public:
-    Arduboy* ab = NULL;
-    Setting* setting = NULL;
+    Arduboy2* ab = NULL;
+    Format* format = NULL;
     byte x = 0;
     byte y = 0;
     bool isCursor = false;
