@@ -7,10 +7,10 @@ class DisplayMenu : public Form {
   public:
     DisplayMenu()
     {
-      x = 0;
-      y = 0;
-      isCursor = false;
-      cursor = Menu::M_HEAD;
+      // x = 0;
+      // y = 0;
+      // isCursor = false;
+      // cursor = Menu::M_HEAD;
       cursorMax = M_TAIL;
     }
 
@@ -159,4 +159,3 @@ class DisplayMenu : public Form {
     }
 
 };
-

@@ -16,16 +16,17 @@ class DisplayUtil : public Form {
     byte cPage = 0;
     byte mPage = 0;
     String stopTime = "0:00:00";
-
     bool isTimer = false;
+    bool isLedTimer = false;
+    bool isLedStorm = false;
 
     DisplayUtil()
     {
       x = 1;
       y = 55;
-      isCursor = false;
-      cursor = 0;
-      cursorMax = 0;
+      // isCursor = false;
+      // cursor = 0;
+      // cursorMax = 0;
 
       // 乱数生成
       Serial.begin(9600);
@@ -113,7 +114,7 @@ class DisplayUtil : public Form {
             }
             break;
           case Menu::M_SOUND:
-            out = (format->isSound) ? "Set Sound. [ ON ]" : out = "Set Sound. [MUTE]";
+            out = (format->isSound) ? "Set Sound. [ ON ]" : "Set Sound. [MUTE]";
             break;
           case Menu::M_SETTING:
             out = "Life Ardent Settings.";
@@ -622,4 +623,3 @@ class DisplayUtil : public Form {
     }
 
 };
-

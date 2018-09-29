@@ -9,9 +9,9 @@ class DisplayLife : public Form {
     DisplayLife()
     {
       x = 30;
-      y = 0;
-      isCursor = false;
-      cursor = 0;
+      // y = 0;
+      // isCursor = false;
+      // cursor = 0;
       cursorMax = PM_TAIL;
     }
 
@@ -357,4 +357,3 @@ class DisplayLife : public Form {
     }
 
 };
-

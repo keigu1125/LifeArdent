@@ -13,6 +13,22 @@ enum Menu
   M_TAIL = 8
 };
 
+enum SettingMenu
+{
+  SM_HEAD = 0,
+  SM_SHOW_TITLE = 0,
+  SM_DEFAULT_SOUND = 1,
+  SM_DEFAULT_BASETONE1 = 2,
+  SM_DEFAULT_BASETONE2 = 3,
+  SM_LED_TIMER = 4,
+  SM_LED_STORM = 5,
+  SM_DEFAULT_FORMAT = 6,
+  SM_FRAME_RATE_BASE = 7,
+  SM_FRAME_RATE_REPEAT = 8,
+  SM_BLACK_SCREEN = 9,
+  SM_TAIL = 9,
+};
+
 enum UtilMenuMax
 {
   MAX_PLAYER = 0,
@@ -37,4 +53,3 @@ enum PlayMode
   EMP  = 5,
   PM_TAIL = 5
 };
-

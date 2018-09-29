@@ -12,6 +12,7 @@ class Form
     Form* menu = NULL;
     Form* util = NULL;
     Form* life = NULL;
+    Form* sett = NULL;
 
     virtual void upButton() = 0;
     virtual void downButton() = 0;
@@ -26,6 +27,7 @@ class Form
       menu->isCursor = true;
       life->isCursor = false;
       util->isCursor = false;
+      sett->isCursor = false;
     }
 
     void activeLife()
@@ -33,6 +35,7 @@ class Form
       menu->isCursor = false;
       life->isCursor = true;
       util->isCursor = false;
+      sett->isCursor = false;
     }
 
     void activeUtil()
@@ -40,6 +43,14 @@ class Form
       menu->isCursor = false;
       life->isCursor = false;
       util->isCursor = true;
+      sett->isCursor = false;
+    }
+
+    void activeSetting()
+    {
+      menu->isCursor = false;
+      life->isCursor = false;
+      util->isCursor = false;
+      sett->isCursor = true;
     }
 };
-

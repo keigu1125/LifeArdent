@@ -84,130 +84,130 @@ void drawText(Arduboy2* ab, byte a, byte b, byte fs, short mes)
   ab->print(mes);
 }
 
-void drawOneSmallNumber(Arduboy2* ab, byte x, byte y, byte number, bool color)
+void drawOneSmallNumber(Arduboy2* ab, byte x, byte y, byte number, bool white)
 {
   switch (number)
   {
     case 0:
-      ab->drawPixel(x + 1, y + 1, color);
-      ab->drawPixel(x + 2, y + 1, color);
-      ab->drawPixel(x + 3, y + 1, color);
-      ab->drawPixel(x + 1, y + 2, color);
-      ab->drawPixel(x + 3, y + 2, color);
-      ab->drawPixel(x + 1, y + 3, color);
-      ab->drawPixel(x + 3, y + 3, color);
-      ab->drawPixel(x + 1, y + 4, color);
-      ab->drawPixel(x + 3, y + 4, color);
-      ab->drawPixel(x + 1, y + 5, color);
-      ab->drawPixel(x + 2, y + 5, color);
-      ab->drawPixel(x + 3, y + 5, color);
+      ab->drawPixel(x + 1, y + 1, white);
+      ab->drawPixel(x + 2, y + 1, white);
+      ab->drawPixel(x + 3, y + 1, white);
+      ab->drawPixel(x + 1, y + 2, white);
+      ab->drawPixel(x + 3, y + 2, white);
+      ab->drawPixel(x + 1, y + 3, white);
+      ab->drawPixel(x + 3, y + 3, white);
+      ab->drawPixel(x + 1, y + 4, white);
+      ab->drawPixel(x + 3, y + 4, white);
+      ab->drawPixel(x + 1, y + 5, white);
+      ab->drawPixel(x + 2, y + 5, white);
+      ab->drawPixel(x + 3, y + 5, white);
       break;
     case 1:
-      ab->drawPixel(x + 3, y + 1, color);
-      ab->drawPixel(x + 3, y + 2, color);
-      ab->drawPixel(x + 3, y + 3, color);
-      ab->drawPixel(x + 3, y + 4, color);
-      ab->drawPixel(x + 3, y + 5, color);
+      ab->drawPixel(x + 3, y + 1, white);
+      ab->drawPixel(x + 3, y + 2, white);
+      ab->drawPixel(x + 3, y + 3, white);
+      ab->drawPixel(x + 3, y + 4, white);
+      ab->drawPixel(x + 3, y + 5, white);
       break;
     case 2:
-      ab->drawPixel(x + 1, y + 1, color);
-      ab->drawPixel(x + 2, y + 1, color);
-      ab->drawPixel(x + 3, y + 1, color);
-      ab->drawPixel(x + 3, y + 2, color);
-      ab->drawPixel(x + 1, y + 3, color);
-      ab->drawPixel(x + 2, y + 3, color);
-      ab->drawPixel(x + 3, y + 3, color);
-      ab->drawPixel(x + 1, y + 4, color);
-      ab->drawPixel(x + 1, y + 5, color);
-      ab->drawPixel(x + 2, y + 5, color);
-      ab->drawPixel(x + 3, y + 5, color);
+      ab->drawPixel(x + 1, y + 1, white);
+      ab->drawPixel(x + 2, y + 1, white);
+      ab->drawPixel(x + 3, y + 1, white);
+      ab->drawPixel(x + 3, y + 2, white);
+      ab->drawPixel(x + 1, y + 3, white);
+      ab->drawPixel(x + 2, y + 3, white);
+      ab->drawPixel(x + 3, y + 3, white);
+      ab->drawPixel(x + 1, y + 4, white);
+      ab->drawPixel(x + 1, y + 5, white);
+      ab->drawPixel(x + 2, y + 5, white);
+      ab->drawPixel(x + 3, y + 5, white);
       break;
     case 3:
-      ab->drawPixel(x + 1, y + 1, color);
-      ab->drawPixel(x + 2, y + 1, color);
-      ab->drawPixel(x + 3, y + 1, color);
-      ab->drawPixel(x + 3, y + 2, color);
-      ab->drawPixel(x + 1, y + 3, color);
-      ab->drawPixel(x + 2, y + 3, color);
-      ab->drawPixel(x + 3, y + 3, color);
-      ab->drawPixel(x + 3, y + 4, color);
-      ab->drawPixel(x + 1, y + 5, color);
-      ab->drawPixel(x + 2, y + 5, color);
-      ab->drawPixel(x + 3, y + 5, color);
+      ab->drawPixel(x + 1, y + 1, white);
+      ab->drawPixel(x + 2, y + 1, white);
+      ab->drawPixel(x + 3, y + 1, white);
+      ab->drawPixel(x + 3, y + 2, white);
+      ab->drawPixel(x + 1, y + 3, white);
+      ab->drawPixel(x + 2, y + 3, white);
+      ab->drawPixel(x + 3, y + 3, white);
+      ab->drawPixel(x + 3, y + 4, white);
+      ab->drawPixel(x + 1, y + 5, white);
+      ab->drawPixel(x + 2, y + 5, white);
+      ab->drawPixel(x + 3, y + 5, white);
       break;
     case 4:
-      ab->drawPixel(x + 1, y + 1, color);
-      ab->drawPixel(x + 3, y + 1, color);
-      ab->drawPixel(x + 1, y + 2, color);
-      ab->drawPixel(x + 3, y + 2, color);
-      ab->drawPixel(x + 1, y + 3, color);
-      ab->drawPixel(x + 2, y + 3, color);
-      ab->drawPixel(x + 3, y + 3, color);
-      ab->drawPixel(x + 3, y + 4, color);
-      ab->drawPixel(x + 3, y + 5, color);
+      ab->drawPixel(x + 1, y + 1, white);
+      ab->drawPixel(x + 3, y + 1, white);
+      ab->drawPixel(x + 1, y + 2, white);
+      ab->drawPixel(x + 3, y + 2, white);
+      ab->drawPixel(x + 1, y + 3, white);
+      ab->drawPixel(x + 2, y + 3, white);
+      ab->drawPixel(x + 3, y + 3, white);
+      ab->drawPixel(x + 3, y + 4, white);
+      ab->drawPixel(x + 3, y + 5, white);
       break;
     case 5:
-      ab->drawPixel(x + 1, y + 1, color);
-      ab->drawPixel(x + 2, y + 1, color);
-      ab->drawPixel(x + 3, y + 1, color);
-      ab->drawPixel(x + 1, y + 2, color);
-      ab->drawPixel(x + 1, y + 3, color);
-      ab->drawPixel(x + 2, y + 3, color);
-      ab->drawPixel(x + 3, y + 3, color);
-      ab->drawPixel(x + 3, y + 4, color);
-      ab->drawPixel(x + 1, y + 5, color);
-      ab->drawPixel(x + 2, y + 5, color);
-      ab->drawPixel(x + 3, y + 5, color);
+      ab->drawPixel(x + 1, y + 1, white);
+      ab->drawPixel(x + 2, y + 1, white);
+      ab->drawPixel(x + 3, y + 1, white);
+      ab->drawPixel(x + 1, y + 2, white);
+      ab->drawPixel(x + 1, y + 3, white);
+      ab->drawPixel(x + 2, y + 3, white);
+      ab->drawPixel(x + 3, y + 3, white);
+      ab->drawPixel(x + 3, y + 4, white);
+      ab->drawPixel(x + 1, y + 5, white);
+      ab->drawPixel(x + 2, y + 5, white);
+      ab->drawPixel(x + 3, y + 5, white);
       break;
     case 6:
-      ab->drawPixel(x + 1, y + 1, color);
-      ab->drawPixel(x + 1, y + 2, color);
-      ab->drawPixel(x + 1, y + 3, color);
-      ab->drawPixel(x + 2, y + 3, color);
-      ab->drawPixel(x + 3, y + 3, color);
-      ab->drawPixel(x + 1, y + 4, color);
-      ab->drawPixel(x + 3, y + 4, color);
-      ab->drawPixel(x + 1, y + 5, color);
-      ab->drawPixel(x + 2, y + 5, color);
-      ab->drawPixel(x + 3, y + 5, color);
+      ab->drawPixel(x + 1, y + 1, white);
+      ab->drawPixel(x + 1, y + 2, white);
+      ab->drawPixel(x + 1, y + 3, white);
+      ab->drawPixel(x + 2, y + 3, white);
+      ab->drawPixel(x + 3, y + 3, white);
+      ab->drawPixel(x + 1, y + 4, white);
+      ab->drawPixel(x + 3, y + 4, white);
+      ab->drawPixel(x + 1, y + 5, white);
+      ab->drawPixel(x + 2, y + 5, white);
+      ab->drawPixel(x + 3, y + 5, white);
       break;
     case 7:
-      ab->drawPixel(x + 1, y + 1, color);
-      ab->drawPixel(x + 2, y + 1, color);
-      ab->drawPixel(x + 3, y + 1, color);
-      ab->drawPixel(x + 3, y + 2, color);
-      ab->drawPixel(x + 3, y + 3, color);
-      ab->drawPixel(x + 3, y + 4, color);
-      ab->drawPixel(x + 3, y + 5, color);
+      ab->drawPixel(x + 1, y + 1, white);
+      ab->drawPixel(x + 2, y + 1, white);
+      ab->drawPixel(x + 3, y + 1, white);
+      ab->drawPixel(x + 3, y + 2, white);
+      ab->drawPixel(x + 3, y + 3, white);
+      ab->drawPixel(x + 3, y + 4, white);
+      ab->drawPixel(x + 3, y + 5, white);
       break;
     case 8:
-      ab->drawPixel(x + 1, y + 1, color);
-      ab->drawPixel(x + 2, y + 1, color);
-      ab->drawPixel(x + 3, y + 1, color);
-      ab->drawPixel(x + 1, y + 2, color);
-      ab->drawPixel(x + 3, y + 2, color);
-      ab->drawPixel(x + 1, y + 3, color);
-      ab->drawPixel(x + 2, y + 3, color);
-      ab->drawPixel(x + 3, y + 3, color);
-      ab->drawPixel(x + 1, y + 4, color);
-      ab->drawPixel(x + 3, y + 4, color);
-      ab->drawPixel(x + 1, y + 5, color);
-      ab->drawPixel(x + 2, y + 5, color);
-      ab->drawPixel(x + 3, y + 5, color);
+      ab->drawPixel(x + 1, y + 1, white);
+      ab->drawPixel(x + 2, y + 1, white);
+      ab->drawPixel(x + 3, y + 1, white);
+      ab->drawPixel(x + 1, y + 2, white);
+      ab->drawPixel(x + 3, y + 2, white);
+      ab->drawPixel(x + 1, y + 3, white);
+      ab->drawPixel(x + 2, y + 3, white);
+      ab->drawPixel(x + 3, y + 3, white);
+      ab->drawPixel(x + 1, y + 4, white);
+      ab->drawPixel(x + 3, y + 4, white);
+      ab->drawPixel(x + 1, y + 5, white);
+      ab->drawPixel(x + 2, y + 5, white);
+      ab->drawPixel(x + 3, y + 5, white);
       break;
     case 9:
-      ab->drawPixel(x + 1, y + 1, color);
-      ab->drawPixel(x + 2, y + 1, color);
-      ab->drawPixel(x + 3, y + 1, color);
-      ab->drawPixel(x + 1, y + 2, color);
-      ab->drawPixel(x + 3, y + 2, color);
-      ab->drawPixel(x + 1, y + 3, color);
-      ab->drawPixel(x + 2, y + 3, color);
-      ab->drawPixel(x + 3, y + 3, color);
-      ab->drawPixel(x + 3, y + 4, color);
-      ab->drawPixel(x + 1, y + 5, color);
-      ab->drawPixel(x + 2, y + 5, color);
-      ab->drawPixel(x + 3, y + 5, color);
+      ab->drawPixel(x + 1, y + 1, white);
+      ab->drawPixel(x + 2, y + 1, white);
+      ab->drawPixel(x + 3, y + 1, white);
+      ab->drawPixel(x + 1, y + 2, white);
+      ab->drawPixel(x + 3, y + 2, white);
+      ab->drawPixel(x + 1, y + 3, white);
+      ab->drawPixel(x + 2, y + 3, white);
+      ab->drawPixel(x + 3, y + 3, white);
+      ab->drawPixel(x + 3, y + 4, white);
+      ab->drawPixel(x + 1, y + 5, white);
+      ab->drawPixel(x + 2, y + 5, white);
+      ab->drawPixel(x + 3, y + 5, white);
       break;
   }
 }
@@ -269,51 +269,42 @@ void drawBigDice(Arduboy2* ab, byte x, byte y, byte number)
     return;
   }
 
-  ab->fillRect(x, y, 8, 8, 1);
+  ab->fillRect(x, y, 8, 8, WHITE);
 
   switch (number)
   {
     case 1:
-      ab->drawRect(x + 3, y + 3, 2, 2, 0);
+      ab->drawRect(x + 3, y + 3, 2, 2, BLACK);
       break;
     case 2:
-      ab->drawRect(x + 5, y + 1, 2, 2, 0);
-      ab->drawRect(x + 1, y + 5, 2, 2, 0);
+      ab->drawRect(x + 5, y + 1, 2, 2, BLACK);
+      ab->drawRect(x + 1, y + 5, 2, 2, BLACK);
       break;
     case 3:
-      ab->drawRect(x + 3, y + 3, 2, 2, 0);
-      ab->drawRect(x + 5, y + 1, 2, 2, 0);
-      ab->drawRect(x + 1, y + 5, 2, 2, 0);
+      ab->drawRect(x + 3, y + 3, 2, 2, BLACK);
+      ab->drawRect(x + 5, y + 1, 2, 2, BLACK);
+      ab->drawRect(x + 1, y + 5, 2, 2, BLACK);
       break;
     case 4:
-      ab->drawRect(x + 1, y + 1, 2, 2, 0);
-      ab->drawRect(x + 5, y + 1, 2, 2, 0);
-      ab->drawRect(x + 1, y + 5, 2, 2, 0);
-      ab->drawRect(x + 5, y + 5, 2, 2, 0);
+      ab->drawRect(x + 1, y + 1, 2, 2, BLACK);
+      ab->drawRect(x + 5, y + 1, 2, 2, BLACK);
+      ab->drawRect(x + 1, y + 5, 2, 2, BLACK);
+      ab->drawRect(x + 5, y + 5, 2, 2, BLACK);
       break;
     case 5:
-      ab->drawRect(x + 3, y + 3, 2, 2, 0);
-      ab->drawRect(x + 1, y + 1, 2, 2, 0);
-      ab->drawRect(x + 5, y + 1, 2, 2, 0);
-      ab->drawRect(x + 1, y + 5, 2, 2, 0);
-      ab->drawRect(x + 5, y + 5, 2, 2, 0);
+      ab->drawRect(x + 3, y + 3, 2, 2, BLACK);
+      ab->drawRect(x + 1, y + 1, 2, 2, BLACK);
+      ab->drawRect(x + 5, y + 1, 2, 2, BLACK);
+      ab->drawRect(x + 1, y + 5, 2, 2, BLACK);
+      ab->drawRect(x + 5, y + 5, 2, 2, BLACK);
       break;
     case 6:
-      ab->drawRect(x + 1, y + 0, 2, 2, 0);
-      ab->drawRect(x + 1, y + 3, 2, 2, 0);
-      ab->drawRect(x + 1, y + 6, 2, 2, 0);
-      ab->drawRect(x + 5, y + 0, 2, 2, 0);
-      ab->drawRect(x + 5, y + 3, 2, 2, 0);
-      ab->drawRect(x + 5, y + 6, 2, 2, 0);
-      break;
-    case 7:
-      ab->drawRect(x + 3, y + 3, 2, 2, 0);
-      ab->drawRect(x + 1, y + 0, 2, 2, 0);
-      ab->drawRect(x + 1, y + 3, 2, 2, 0);
-      ab->drawRect(x + 1, y + 6, 2, 2, 0);
-      ab->drawRect(x + 5, y + 0, 2, 2, 0);
-      ab->drawRect(x + 5, y + 3, 2, 2, 0);
-      ab->drawRect(x + 5, y + 6, 2, 2, 0);
+      ab->drawRect(x + 1, y + 0, 2, 2, BLACK);
+      ab->drawRect(x + 1, y + 3, 2, 2, BLACK);
+      ab->drawRect(x + 1, y + 6, 2, 2, BLACK);
+      ab->drawRect(x + 5, y + 0, 2, 2, BLACK);
+      ab->drawRect(x + 5, y + 3, 2, 2, BLACK);
+      ab->drawRect(x + 5, y + 6, 2, 2, BLACK);
       break;
   }
 }
