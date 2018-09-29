@@ -1,17 +1,16 @@
 class DisplayMenu : public Form {
   private:
     char* image;
-    const char imageSizeX = 11;
-    const char imageSizeY = 14;
+#define imageSizeX 11
+#define imageSizeY 14
+#define LIFE_RESET_SECOND 5000
   public:
-    short LIFE_RESET_SECOND = 5000;
-
     DisplayMenu()
     {
       x = 0;
       y = 0;
       isCursor = false;
-      cursor = M_HEAD;
+      cursor = Menu::M_HEAD;
       cursorMax = M_TAIL;
     }
 
@@ -38,48 +37,14 @@ class DisplayMenu : public Form {
       }
     }
 
-    void DisplayMenu::setCursor(int value)
-    {
-      cursor += value;
-      if (cursor < M_HEAD)
-      {
-        cursor = M_TAIL;
-      }
-      else if (cursor > M_TAIL)
-      {
-        cursor = M_HEAD;
-      }
-    }
-
-    void dispChangeLife()
-    {
-      if (abs(setting->tPressed.getSubMillisecond()) >= LIFE_RESET_SECOND)
-      {
-        setting->changeLife = 0;
-      }
-
-      short life = setting->changeLife;
-      
-      if (life == 0)
-      {
-        return;
-      }
-
-      short addX = (life >= 100 || life <= -100) ? 3 : (life >= 10 || life <= -10) ? 6 : 11;
-      short addY = 23;
-      String txt = (life > 0) ? "+" + String(life) : life;
-
-      drawText(ab, x + addX, y + addY, 1, txt);
-    }
-
     virtual void upButton()
     {
-      setCursor(-1);
+      subValue(&cursor, Menu::M_HEAD);
     }
 
     virtual void downButton()
     {
-      setCursor(+1);
+      addValue(&cursor, Menu::M_TAIL);
     }
 
     virtual void leftButton()
@@ -98,25 +63,18 @@ class DisplayMenu : public Form {
     {
       switch (cursor)
       {
-        case M_PLAYER:
-          activeMenu();
+        case Menu::M_PLAYER:
+        case Menu::M_DICE:
+        case Menu::M_MATCH:
+        case Menu::M_TIME:
+        case Menu::M_DISCARD:
+        case Menu::M_STORM:
+        case Menu::M_COUNT:
           break;
-        case M_DICE:
-          break;
-        case M_MATCH:
-          break;
-        case M_TIME:
-          break;
-        case M_DISCARD:
-          break;
-        case M_STORM:
-          break;
-        case M_COUNT:
-          break;
-        case M_SOUND:
+        case Menu::M_SOUND:
           setting->isSound = !setting->isSound;
           break;
-        case M_SETTING:
+        case Menu::M_SETTING:
           break;
       }
     }
@@ -124,19 +82,19 @@ class DisplayMenu : public Form {
     virtual void bButton()
     {
       switch (cursor) {
-        case M_PLAYER:
-        case M_DICE:
-        case M_MATCH:
-        case M_TIME:
-        case M_DISCARD:
-        case M_STORM:
-        case M_COUNT:
+        case Menu::M_PLAYER:
+        case Menu::M_DICE:
+        case Menu::M_MATCH:
+        case Menu::M_TIME:
+        case Menu::M_DISCARD:
+        case Menu::M_STORM:
+        case Menu::M_COUNT:
           activeUtil();
           break;
-        case M_SOUND:
+        case Menu::M_SOUND:
           setting->isSound = !setting->isSound;
           break;
-        case M_SETTING:
+        case Menu::M_SETTING:
           break;
       }
     }
@@ -149,34 +107,56 @@ class DisplayMenu : public Form {
     void DisplayMenu::setImage()
     {
       switch (cursor) {
-        case M_PLAYER:
+        case Menu::M_PLAYER:
           image = i_player;
           break;
-        case M_DICE:
+        case Menu::M_DICE:
           image = i_dice;
           break;
-        case M_MATCH:
+        case Menu::M_MATCH:
           image = i_match;
           break;
-        case M_TIME:
+        case Menu::M_TIME:
           image = i_timer;
           break;
-        case M_DISCARD:
+        case Menu::M_DISCARD:
           image = i_discard;
           break;
-        case M_STORM:
+        case Menu::M_STORM:
           image = i_storm;
           break;
-        case M_COUNT:
+        case Menu::M_COUNT:
           image = i_poison;
           break;
-        case M_SOUND:
+        case Menu::M_SOUND:
           image =  (setting->isSound) ? i_sound_on : i_sound_mute;
           break;
-        case M_SETTING:
+        case Menu::M_SETTING:
           image = i_setting;
           break;
       }
     }
+
+    void dispChangeLife()
+    {
+      if (abs(setting->tPressed.getSubMillisecond()) >= LIFE_RESET_SECOND)
+      {
+        setting->changeLife = 0;
+      }
+
+      short life = setting->changeLife;
+
+      if (life == 0)
+      {
+        return;
+      }
+
+      byte addX = (life >= 100 || life <= -100) ? 3 : (life >= 10 || life <= -10) ? 6 : 11;
+      byte addY = 23;
+      String txt = (life > 0) ? "+" + String(life) : life;
+
+      drawText(ab, x + addX, y + addY, 1, txt);
+    }
+
 };
 

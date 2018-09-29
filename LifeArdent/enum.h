@@ -16,12 +16,12 @@ enum Menu
 enum UtilMenuMax
 {
   MAX_PLAYER = 0,
-  MAX_DICE = 2,
-  MAX_MATCH = 2,
-  MAX_TIME = 1,
-  MAX_DISCARD = 2,
-  MAX_STORM = 7,  
-  MAX_COUNT = 3,
+  MAX_DICE = 1,
+  MAX_MATCH = 1,
+  MAX_TIME = 0,
+  MAX_DISCARD = 1,
+  MAX_STORM = 6,  
+  MAX_COUNT = 2,
   MAX_SOUND = 0,
   MAX_SETTING = 0
 };

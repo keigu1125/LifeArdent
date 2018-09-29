@@ -13,11 +13,13 @@
 
 Arduboy ab;
 
-const char FRAME_RATE = 20;
-const short BUTTON_REPEAT = 350;
-const char TONE_LIFE = 40;
-const short TIME_TITLE = 3000;
-const short BASE_TONE = 1000;
+#define FRAME_RATE 20
+#define BUTTON_REPEAT 350
+#define TONE_LIFE 40
+#define TIME_TITLE 3000
+#define BASE_TONE 1000
+#define TONE_ONELIFE 20
+#define TONE_MIN 200
 
 Form* activeForm = NULL;
 
@@ -90,7 +92,7 @@ void disp()
 
 void dispTitle()
 {
-  if (millis() > TIME_TITLE)
+  if (isTitle && millis() > TIME_TITLE)
   {
     isTitle = false;
     isMain = true;
@@ -147,15 +149,18 @@ bool arrowButtonPress()
 
 void buttonSound()
 {
-  if (setting.isSound)
+  if (!setting.isSound)
   {
-    short tone = BASE_TONE;
-    if (life.isCursor)
-    {
-      tone = life.getLifeTone(BASE_TONE, TONE_LIFE);
-    }
-    ab.tunes.tone(tone, 20);
+    return;
   }
+
+  short tone = BASE_TONE;
+  if (life.isCursor)
+  {
+    short l = setting.p[life.cursor].life;
+    tone = BASE_TONE - (TONE_LIFE * TONE_ONELIFE) + ((l <= 0) ? 0 : ((l > TONE_MIN) ? TONE_MIN : l) * TONE_LIFE);
+  }
+  ab.tunes.tone(tone, 20);
 }
 
 void setActiveForm()
@@ -166,13 +171,11 @@ void setActiveForm()
   {
     activeForm = &menu;
   }
-
-  if (life.isCursor)
+  else if (life.isCursor)
   {
     activeForm = &life;
   }
-
-  if (util.isCursor)
+  else if (util.isCursor)
   {
     activeForm = &util;
   }
@@ -191,18 +194,15 @@ void pressButton()
   {
     activeForm->upButton();
   }
-
-  if (ab.pressed(DOWN_BUTTON))
+  else if (ab.pressed(DOWN_BUTTON))
   {
     activeForm->downButton();
   }
-
-  if (ab.pressed(LEFT_BUTTON))
+  else if (ab.pressed(LEFT_BUTTON))
   {
     activeForm->leftButton();
   }
-
-  if (ab.pressed(RIGHT_BUTTON))
+  else if (ab.pressed(RIGHT_BUTTON))
   {
     activeForm->rightButton();
   }

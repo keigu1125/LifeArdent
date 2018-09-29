@@ -1,19 +1,19 @@
 class Setting
 {
   private:
-    short PLAYER_COUNT = 6;
   public:
+    byte PLAYER_COUNT = 6;
     Player p[6];
-    unsigned char pCount = 0;
-    short mode = PM_HEAD;
+    byte pCount = 0;
+    byte mode = PM_HEAD;
     short changeLife = 0;
     TimeFormat tPressed;
     TimeFormat tTimer;
-    boolean isSound = true;
+    bool isSound = true;
     
     void Setting::initPlayer()
     {
-      for (char i = 0; i < PLAYER_COUNT; i++)
+      for (byte i = 0; i < PLAYER_COUNT; i++)
       {
         short life = (mode == EDH || (i == 0 && mode == ARCH)) ? 40 : 20;
         p[i].init(life);
@@ -22,16 +22,16 @@ class Setting
 
     void Setting::initPlayerLife()
     {
-      for (char i = 0; i < PLAYER_COUNT; i++)
+      for (byte i = 0; i < PLAYER_COUNT; i++)
       {
         short life = (mode == EDH || (i == 0 && mode == ARCH)) ? 40 : 20;
         p[i].life = life;
       }
     }
 
-    void Setting::initMode(char value)
+    void Setting::initMode(byte value)
     {
-      if (value > PM_TAIL || value < PM_HEAD)
+      if (value > PlayMode::PM_TAIL || value < PlayMode::PM_HEAD)
       {
         return;
       }
@@ -40,36 +40,36 @@ class Setting
 
       switch (mode)
       {
-        case P1:
+        case PlayMode::P1:
           pCount = 1;
           p[0].setXY( 0,  0, 97, 53);
           break;
-        case P2:
+        case PlayMode::P2:
           pCount = 2;
           p[0].setXY( 0,  0, 48, 53);
           p[1].setXY(49,  0, 48, 53);
           break;
-        case P3:
+        case PlayMode::P3:
           pCount = 3;
           p[0].setXY( 0,  0, 48, 27);
           p[1].setXY(49,  0, 48, 27);
           p[2].setXY(24, 26, 48, 27);
           break;
-        case EDH:
+        case PlayMode::EDH:
           pCount = 4;
           p[0].setXY( 0,  0, 48, 27);
           p[1].setXY(49,  0, 48, 27);
           p[2].setXY( 0, 26, 48, 27);
           p[3].setXY(49, 26, 48, 27);
           break;
-        case ARCH:
+        case PlayMode::ARCH:
           pCount = 4;
           p[0].setXY( 0,  0, 97, 27);
           p[1].setXY( 0, 26, 33, 27);
           p[2].setXY(32, 26, 33, 27);
           p[3].setXY(64, 26, 33, 27);
           break;
-        case EMP:
+        case PlayMode::EMP:
           pCount = 6;
           p[0].setXY( 0,  0, 33, 27);
           p[1].setXY(32,  0, 33, 27);
@@ -83,27 +83,27 @@ class Setting
       initPlayer();
     }
 
-    String Setting::getModeName(char m)
+    String Setting::getModeName(PlayMode m)
     {
       String ret = "    ";
       switch (m)
       {
-        case P1:
+        case PlayMode::P1:
           ret = "Solo";
           break;
-        case P2:
+        case PlayMode::P2:
           ret = "VS 2";
           break;
-        case P3:
+        case PlayMode::P3:
           ret = "VS 3";
           break;
-        case EDH:
+        case PlayMode::EDH:
           ret = "EDH ";
           break;
-        case ARCH:
+        case PlayMode::ARCH:
           ret = "Arch";
           break;
-        case EMP:
+        case PlayMode::EMP:
           ret = "Empr";
           break;
       }
@@ -111,5 +111,25 @@ class Setting
       return ret;
     }
 
+    bool Setting::isCounterUsed()
+    {
+      for (Player pl : p)
+      {
+        if (pl.counter1 != 0 || pl.counter2 != 0)
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    void Setting::initCounter()
+    {
+      for (byte i = 0; i < PLAYER_COUNT; i++)
+      {
+        p[i].counter1 = 0;
+        p[i].counter2 = 0;
+      }
+    }
 };
 

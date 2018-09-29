@@ -1,55 +1,28 @@
 class DisplayUtil : public Form {
   private:
-    const char HAND_MAX = 11;
-    const char DISCARD_MAX = 9;
-    const char STORM_MAX = 7;
+#define DICE_ALL_MAX 8
+#define DICE_MAX 3
+#define CARD_MAX 11
+#define DISCARD_MAX 9
+#define STORM_MAX 7
   public:
-    char hand = 7;
-    char discard = 2;
-    char card[11];
-    char cursorC = 0;
-    char storm[7];
-
+    byte hand = 7;
+    byte discard = 2;
+    byte card[11];
+    byte cursorC = 0;
+    byte storm[7];
+    byte dCount = 2;
+    byte d[8];
+    byte page = 0;
+    String out = "";
     String stopTime = "0:00:00";
 
     bool isTimer = false;
 
-    void DisplayUtil::initStorm()
-    {
-      for (int i = 0; i < STORM_MAX; i++)
-      {
-        storm[i] = 0;
-      }
-    }
-
-    void DisplayUtil::initDiscard()
-    {
-      for (int i = 0; i < HAND_MAX; i++)
-      {
-        card[i] = 0;
-      }
-    }
-
-    void DisplayUtil::discardRoll()
-    {
-      initDiscard();
-
-      int dc = 0;
-      while (dc < discard)
-      {
-        int r = random(hand);
-        if (card[r] == 0)
-        {
-          card[r] = 1;
-          dc++;
-        }
-      }
-    }
-
     DisplayUtil()
     {
-      x = 0;
-      y = 53;
+      x = 1;
+      y = 55;
       isCursor = false;
       cursor = 0;
       cursorMax = 0;
@@ -60,89 +33,43 @@ class DisplayUtil : public Form {
       Serial.end();
     }
 
-    void DisplayUtil::dispTimer()
-    {
-      if (isTimer)
-      {
-        setting->tTimer.setDefaultTime();
-      }
-      if (isCursor)
-      {
-        drawArrowLeft(ab, x + 1, y + 2, WHITE);
-      }
-      ab->drawBitmap(x + 52, y + 1, (isTimer) ? i_s_play : i_s_stop, 9, 9, WHITE);
-      ab->drawBitmap(x + 65, y + 6, i_timer_meter, 61, 3, WHITE);
-      drawText(ab, x + 7, y + 2, 1, (isTimer) ? setting->tTimer.getSubTimeString() : stopTime);
-      ab->fillRect(x + 65, y + 2, setting->tTimer.m, 3, WHITE);
-    }
-
     void DisplayUtil::display()
     {
+      out = "";
       if (isCursor)
       {
-        String out = "";
-        short drawX = 0;
-        short drawY = y + 2;
         switch (menu->cursor)
         {
-          case M_PLAYER:
+          case Menu::M_PLAYER:
             out += setting->getModeName(setting->mode - 1);
             out += (setting->mode > PM_HEAD) ? " << " : "    ";
             out += setting->getModeName(setting->mode);
             out += (setting->mode < PM_TAIL) ? " >> " : "    ";
             out += setting->getModeName(setting->mode + 1);
-            text(out);
             break;
-          case M_DICE:
-            text("Dice Roll, max 5D6.");
+          case Menu::M_DICE:
+            dispDice();
             break;
-          case M_MATCH:
-            text("Count Match win.");
+          case Menu::M_MATCH:
+            out = "Count Match win.";
             break;
-          case M_TIME:
+          case Menu::M_TIME:
             dispTimer();
             break;
-          case M_DISCARD:
-            drawX = x + ((cursorC == 0) ? 1 : 28);
-            drawArrowLeft(ab, drawX, drawY, WHITE);
-            ab->drawBitmap(x +  6, drawY - 1, i_s_hand, 9, 9, WHITE);
-            ab->drawBitmap(x + 32, drawY - 1, i_s_down, 9, 9, WHITE);
-            drawText(ab, x + 15, drawY, 1, hand);
-            drawText(ab, x + 41, drawY, 1, discard);
-            ab->drawLine(x + 48, drawY, x + 48, drawY + 6, WHITE);
-            for (int i = 0; i < hand; i++)
-            {
-              drawX = x + 42 + (HAND_MAX - i) * 7;
-              ab->drawBitmap(drawX, drawY - 1, (card[i] == 0) ? i_s_card : i_s_discard, 9, 9, WHITE);
-            }
+          case Menu::M_DISCARD:
+            dispDiscard();
             break;
-          case M_STORM:
-            ab->drawBitmap(x +   3, drawY - 1, i_s_storm, 9, 9, WHITE);
-            ab->drawBitmap(x +  27, drawY - 1, i_s_white, 9, 9, WHITE);
-            ab->drawBitmap(x +  44, drawY - 1, i_s_blue , 9, 9, WHITE);
-            ab->drawBitmap(x +  61, drawY - 1, i_s_black, 9, 9, WHITE);
-            ab->drawBitmap(x +  78, drawY - 1, i_s_red  , 9, 9, WHITE);
-            ab->drawBitmap(x +  95, drawY - 1, i_s_green, 9, 9, WHITE);
-            ab->drawBitmap(x + 112, drawY - 1, i_s_less , 9, 9, WHITE);
-
-            drawText(ab, x +  13, drawY, 1, storm[0]);
-            for (int i = 1; i < STORM_MAX; i++)
-            {
-              drawText(ab, x + 19 + (i * 17), drawY, 1, storm[i]);
-            }
-            
-            drawX = (cursorC == 0) ? 1 : x + 8 + (cursorC * 17);
-            ab->drawRect(drawX, drawY, 2, 7, WHITE);
-
+          case Menu::M_STORM:
+            dispStorm();
             break;
-          case M_COUNT:
-            text("Count Poison,Energy.");
+          case Menu::M_COUNT:
+            dispCounter();
             break;
-          case M_SOUND:
+          case Menu::M_SOUND:
             activeMenu();
             break;
-          case M_SETTING:
-            text("Life Ardent Settings.");
+          case Menu::M_SETTING:
+            out = "Life Ardent Settings.";
             break;
         }
       }
@@ -150,46 +77,46 @@ class DisplayUtil : public Form {
       {
         switch (menu->cursor)
         {
-          case M_PLAYER:
-            text("Select Format.");
+          case Menu::M_PLAYER:
+            out = "Select Format.";
             break;
-          case M_DICE:
-            text("Dice Roll, max 5D6.");
+          case Menu::M_DICE:
+            out = "Dice Roll, max 5D6.";
             break;
-          case M_MATCH:
-            text("Count Match win.");
+          case Menu::M_MATCH:
+            out = "Count Match win.";
             break;
-          case M_TIME:
+          case Menu::M_TIME:
             if (isTimer)
             {
               dispTimer();
             }
             else
             {
-              text("50 min stopwatch.");
+              out = "50 min stopwatch.";
             }
             break;
-          case M_DISCARD:
-            text("Choose Random Discard.");
+          case Menu::M_DISCARD:
+            out = "Choose Random Discard.";
             break;
-          case M_STORM:
-            text("Count Storm & mana.");
+          case Menu::M_STORM:
+            out = "Count Storm & mana.";
             break;
-          case M_COUNT:
-            text("Count Poison,Energy.");
-            break;
-          case M_SOUND:
-            if (setting->isSound)
+          case Menu::M_COUNT:
+            if (setting->isCounterUsed())
             {
-              text("Set Sound. [ ON ]");
+              dispCounter();
             }
             else
             {
-              text("Set Sound. [MUTE]");
+              out = "Count Player Counter.";
             }
             break;
-          case M_SETTING:
-            text("Life Ardent Settings.");
+          case Menu::M_SOUND:
+            out = (setting->isSound) ? "Set Sound. [ ON ]" : out = "Set Sound. [MUTE]";
+            break;
+          case Menu::M_SETTING:
+            out = "Life Ardent Settings.";
             break;
         }
       }
@@ -197,218 +124,218 @@ class DisplayUtil : public Form {
       {
         switch (menu->cursor)
         {
-          case M_PLAYER:
+          case Menu::M_PLAYER:
             break;
-          case M_DICE:
+          case Menu::M_DICE:
             break;
-          case M_MATCH:
+          case Menu::M_MATCH:
             break;
-          case M_TIME:
+          case Menu::M_TIME:
             if (isTimer)
             {
               dispTimer();
             }
             break;
-          case M_DISCARD:
+          case Menu::M_DISCARD:
             break;
-          case M_STORM:
+          case Menu::M_STORM:
             break;
-          case M_COUNT:
+          case Menu::M_COUNT:
+            if (setting->isCounterUsed())
+            {
+              dispCounter();
+            }
             break;
-          case M_SOUND:
+          case Menu::M_SOUND:
             break;
-          case M_SETTING:
+          case Menu::M_SETTING:
             break;
         }
       }
+      drawText(ab, x, y, 1, out);
     }
 
     virtual void upButton()
     {
+      byte max = 0;
       switch (menu->cursor)
       {
-        case M_PLAYER:
+        case Menu::M_PLAYER:
           break;
-        case M_DICE:
+        case Menu::M_DICE:
+          addValue(&dCount, DICE_MAX);
           break;
-        case M_MATCH:
+        case Menu::M_MATCH:
           break;
-        case M_TIME:
+        case Menu::M_TIME:
           break;
-        case M_DISCARD:
+        case Menu::M_DISCARD:
           switch (cursorC)
           {
             case 0:
-              if (hand < HAND_MAX)
-              {
-                hand++;
-              }
+              addValue(&hand, CARD_MAX);
               break;
             case 1:
-              if (discard < hand && discard < DISCARD_MAX)
-              {
-                discard++;
-              }
+              max = (DISCARD_MAX < hand) ? DISCARD_MAX : hand;
+              addValue(&discard, max);
               break;
           }
           break;
-        case M_STORM:
-          if (cursorC == 0)
+        case Menu::M_STORM:
+          max = (cursorC == 0) ? 99 : 9;
+          addValue(&storm[cursorC], max);
+          break;
+        case Menu::M_COUNT:
+          switch (cursorC)
           {
-            if (storm[cursorC] < 99)
-            {
-              storm[cursorC]++;
-            }
-          }
-          else
-          {
-            if (storm[cursorC] < 9)
-            {
-              storm[cursorC]++;
-            }
+            case 0:
+              addValue(&page, (setting->PLAYER_COUNT) - 1);
+              break;
+            case 1:
+              addValue(&setting->p[page].counter1, 10);
+              break;
+            case 2:
+              addValue(&setting->p[page].counter2, 10);
+              break;
           }
           break;
-        case M_COUNT:
+        case Menu::M_SOUND:
           break;
-        case M_SOUND:
-          break;
-        case M_SETTING:
+        case Menu::M_SETTING:
           break;
       }
     }
 
     virtual void downButton()
     {
+      byte max = 0;
       switch (menu->cursor)
       {
-        case M_PLAYER:
+        case Menu::M_PLAYER:
           break;
-        case M_DICE:
+        case Menu::M_DICE:
+          subValue(&dCount, 1);
           break;
-        case M_MATCH:
+        case Menu::M_MATCH:
           break;
-        case M_TIME:
+        case Menu::M_TIME:
           break;
-        case M_DISCARD:
+        case Menu::M_DISCARD:
           switch (cursorC)
           {
             case 0:
-              if (hand > 1)
+              subValue(&hand, 1);
+              if (hand < discard)
               {
-                hand--;
-                if (hand < discard)
-                {
-                  discard = hand;
-                }
+                discard = hand;
               }
               break;
             case 1:
-              if (discard > 1)
-              {
-                discard--;
-              }
+              subValue(&discard, 1);
               break;
           }
           break;
-        case M_STORM:
-          if (storm[cursorC] > 0)
+        case Menu::M_STORM:
+          subValue(&storm[cursorC], 0);
+          break;
+        case Menu::M_COUNT:
+          switch (cursorC)
           {
-            storm[cursorC]--;
+            case 0:
+              subValue(&page, 0);
+              break;
+            case 1:
+              subValue(&setting->p[page].counter1, 0);
+              break;
+            case 2:
+              subValue(&setting->p[page].counter2, 0);
+              break;
           }
           break;
-        case M_COUNT:
+        case Menu::M_SOUND:
           break;
-        case M_SOUND:
-          break;
-        case M_SETTING:
+        case Menu::M_SETTING:
           break;
       }
     }
 
     virtual void leftButton()
     {
-      short max = 0;
+      byte max = 0;
       switch (menu->cursor)
       {
-        case M_PLAYER:
+        case Menu::M_PLAYER:
           setting->initMode(setting->mode - 1);
           return;
-        case M_SOUND:
-        case M_SETTING:
+        case Menu::M_SOUND:
+        case Menu::M_SETTING:
           return;
-        case M_DICE:
+        case Menu::M_DICE:
           max = UtilMenuMax::MAX_DICE;
           break;
-        case M_MATCH:
+        case Menu::M_MATCH:
           max = UtilMenuMax::MAX_MATCH;
           break;
-        case M_TIME:
+        case Menu::M_TIME:
           max = UtilMenuMax::MAX_TIME;
           break;
-        case M_DISCARD:
+        case Menu::M_DISCARD:
           max = UtilMenuMax::MAX_DISCARD;
           break;
-        case M_STORM:
+        case Menu::M_STORM:
           max = UtilMenuMax::MAX_STORM;
           break;
-        case M_COUNT:
+        case Menu::M_COUNT:
           max = UtilMenuMax::MAX_COUNT;
           break;
       }
 
-      cursorC--;
-      if (cursorC < 0)
-      {
-        cursorC = max - 1;
-      }
+      rotateDown(&cursorC, 0, max);
     }
 
     virtual void rightButton()
     {
-      short max = 0;
+      byte max = 0;
       switch (menu->cursor)
       {
-        case M_PLAYER:
+        case Menu::M_PLAYER:
           setting->initMode(setting->mode + 1);
           return;
-        case M_SOUND:
-        case M_SETTING:
+        case Menu::M_SOUND:
+        case Menu::M_SETTING:
           return;
-        case M_DICE:
+        case Menu::M_DICE:
           max = UtilMenuMax::MAX_DICE;
           break;
-        case M_MATCH:
+        case Menu::M_MATCH:
           max = UtilMenuMax::MAX_MATCH;
           break;
-        case M_TIME:
+        case Menu::M_TIME:
           max = UtilMenuMax::MAX_TIME;
           break;
-        case M_DISCARD:
+        case Menu::M_DISCARD:
           max = UtilMenuMax::MAX_DISCARD;
           break;
-        case M_STORM:
+        case Menu::M_STORM:
           max = UtilMenuMax::MAX_STORM;
           break;
-        case M_COUNT:
+        case Menu::M_COUNT:
           max = UtilMenuMax::MAX_COUNT;
           break;
       }
 
-      cursorC++;
-      if (cursorC >= max)
-      {
-        cursorC = 0;
-      }
+      rotateUp(&cursorC, 0, max);
     }
 
     virtual void aButton()
     {
       cursorC = 0;
-
       hand = 7;
       discard = 1;
+      dCount = 2;
       initDiscard();
       initStorm();
+      initDice();
 
       activeMenu();
     }
@@ -417,37 +344,32 @@ class DisplayUtil : public Form {
     {
       switch (menu->cursor)
       {
-        case M_PLAYER:
+        case Menu::M_PLAYER:
           activeMenu();
           break;
-        case M_DICE:
+        case Menu::M_DICE:
+          diceRoll();
           break;
-        case M_MATCH:
-          break;
-        case M_TIME:
-          isTimer = !isTimer;
-          if (isTimer)
+        case Menu::M_TIME:
+          if (!isTimer)
           {
+            stopTime = setting->tTimer.getSubTimeString();
             setting->tTimer.setStopTime();
             setting->tTimer.addHour(-setting->tTimer.h);
             setting->tTimer.addMinute(-setting->tTimer.m);
             setting->tTimer.addSecond(-setting->tTimer.s);
           }
-          else
-          {
-            stopTime = setting->tTimer.getSubTimeString();
-          }
+          stopTime = setting->tTimer.getSubTimeString();
+          isTimer = !isTimer;
           break;
-        case M_DISCARD:
+        case Menu::M_DISCARD:
           discardRoll();
           break;
-        case M_STORM:
-          break;
-        case M_COUNT:
-          break;
-        case M_SOUND:
-          break;
-        case M_SETTING:
+        case Menu::M_MATCH:
+        case Menu::M_STORM:
+        case Menu::M_COUNT:
+        case Menu::M_SOUND:
+        case Menu::M_SETTING:
           break;
       }
     }
@@ -456,35 +378,195 @@ class DisplayUtil : public Form {
     {
       switch (menu->cursor)
       {
-        case M_PLAYER:
-          break;
-        case M_DICE:
-          break;
-        case M_MATCH:
-          break;
-        case M_TIME:
+        case Menu::M_TIME:
           isTimer = false;
-          stopTime = "0:00:00";
+          setting->tTimer.setDefaultTime();
+          setting->tTimer.setStopTime();
+          stopTime = setting->tTimer.getSubTimeString();
           break;
-        case M_DISCARD:
+        case Menu::M_DISCARD:
           initDiscard();
           break;
-        case M_STORM:
+        case Menu::M_STORM:
           initStorm();
           break;
-        case M_COUNT:
+        case Menu::M_PLAYER:
+        case Menu::M_DICE:
+          initDice();
           break;
-        case M_SOUND:
+        case Menu::M_MATCH:
           break;
-        case M_SETTING:
+        case Menu::M_COUNT:
+          setting->initCounter();
+          break;
+        case Menu::M_SOUND:
+        case Menu::M_SETTING:
           break;
       }
     }
 
   private:
-    void DisplayUtil::text(String text)
+    void DisplayUtil::initStorm()
     {
-      drawText(ab, x + 1, y + 2, 1, text);
+      for (byte i = 0; i < STORM_MAX; i++)
+      {
+        storm[i] = 0;
+      }
     }
+
+    void DisplayUtil::initDiscard()
+    {
+      for (byte i = 0; i < CARD_MAX; i++)
+      {
+        card[i] = 0;
+      }
+    }
+
+    void DisplayUtil::initDice()
+    {
+      for (byte i = 0; i < DICE_ALL_MAX; i++)
+      {
+        d[i] = 0;
+      }
+    }
+
+    void DisplayUtil::discardRoll()
+    {
+      initDiscard();
+
+      byte dc = 0;
+      while (dc < discard)
+      {
+        byte r = random(hand);
+        if (card[r] == 0)
+        {
+          card[r] = 1;
+          dc++;
+        }
+      }
+    }
+
+    void DisplayUtil::diceRoll()
+    {
+      for (byte i = 0; i < DICE_ALL_MAX; i++)
+      {
+        d[i] = random(6) + 1;
+      }
+    }
+
+    void DisplayUtil::dispCounter()
+    {
+      if (isCursor)
+      {
+        drawArrowLeft(ab, x + ((cursorC == 0) ? 0 : x + 30 + ((cursorC - 1) * 49)), y, WHITE);
+      }
+
+      drawText(ab, x + 9, y, 1, "P");
+      drawText(ab, x + 19, y, 1, page + 1);
+      ab->drawLine(x + 29, y, x + 29, y + 6, WHITE);
+      ab->drawLine(x + 78, y, x + 78, y + 6, WHITE);
+
+      for (byte i = 0; i < setting->p[page].counter1; i++)
+      {
+        byte drawX = x + 37 + (i * 4);
+        byte drawY = y + 7;
+
+        byte w = 2;
+        byte h = (i == 4) ? 4 : (i == 9) ? 7 : 2;
+
+        ab->fillRect(drawX, drawY - h, w, h, WHITE);
+      }
+      for (byte i = 0; i < setting->p[page].counter2; i++)
+      {
+        byte drawX = x + 86 + (i * 4);
+        byte drawY = y + 7;
+
+        byte w = 2;
+        byte h = (i == 4) ? 4 : (i == 9) ? 7 : 2;
+
+        ab->fillRect(drawX, drawY - h, w, h, WHITE);
+      }
+    }
+
+    void DisplayUtil::dispStorm()
+    {
+      ab->drawBitmap(x +   2, y - 1, i_s_storm, 9, 9, WHITE);
+      ab->drawBitmap(x +  26, y - 1, i_s_white, 9, 9, WHITE);
+      ab->drawBitmap(x +  43, y - 1, i_s_blue , 9, 9, WHITE);
+      ab->drawBitmap(x +  60, y - 1, i_s_black, 9, 9, WHITE);
+      ab->drawBitmap(x +  77, y - 1, i_s_red  , 9, 9, WHITE);
+      ab->drawBitmap(x +  94, y - 1, i_s_green, 9, 9, WHITE);
+      ab->drawBitmap(x + 111, y - 1, i_s_less , 9, 9, WHITE);
+
+      drawText(ab, x +  12, y, 1, storm[0]);
+      for (byte i = 1; i < STORM_MAX; i++)
+      {
+        drawText(ab, x + 18 + (i * 17), y, 1, storm[i]);
+      }
+
+      ab->drawRect(x + ((cursorC == 0) ? 0 : x + 6 + (cursorC * 17)), y, 2, 7, WHITE);
+    }
+
+    void DisplayUtil::dispDice()
+    {
+      byte dSum1 = 0;
+      byte dSum2 = 0;
+      drawArrowLeft(ab, x, y, WHITE);
+      drawText(ab, x + 7, y, 1, dCount);
+      drawText(ab, x + 13, y, 1, "d6");
+      ab->drawLine(x + 29, y, x + 29, y + 6, WHITE);
+      ab->drawLine(x + 78, y, x + 78, y + 6, WHITE);
+      for (byte i = 0; i < dCount; i++)
+      {
+        drawBigDice(ab, x + 33 + (10 * i), y, d[i]);
+        dSum1 += d[i];
+      }
+      drawText(ab, x + 64, y, 1, dSum1);
+      for (byte i = 0; i < dCount; i++)
+      {
+        drawBigDice(ab, x + 82 + (10 * i), y, d[i + 4]);
+        dSum2 += d[i + 4];
+      }
+      drawText(ab, x + 113, y, 1, dSum2);
+    }
+
+    void DisplayUtil::dispDiscard()
+    {
+      drawArrowLeft(ab, x + ((cursorC == 0) ? 0 : 27), y, WHITE);
+      ab->drawBitmap(x +  5, y - 1, i_s_hand, 9, 9, WHITE);
+      ab->drawBitmap(x + 31, y - 1, i_s_down, 9, 9, WHITE);
+      drawText(ab, x + 14, y, 1, hand);
+      drawText(ab, x + 40, y, 1, discard);
+      ab->drawLine(x + 47, y, x + 47, y + 6, WHITE);
+      for (byte i = 0; i < hand; i++)
+      {
+        ab->drawBitmap(x + 41 + (CARD_MAX - i) * 7, y - 1, (card[i] == 0) ? i_s_card : i_s_discard, 9, 9, WHITE);
+      }
+    }
+
+    void DisplayUtil::dispTimer()
+    {
+      if (isTimer)
+      {
+        setting->tTimer.setDefaultTime();
+      }
+      if (isCursor)
+      {
+        drawArrowLeft(ab, x, y, WHITE);
+      }
+      ab->drawBitmap(x + 51, y - 1, (isTimer) ? i_s_play : i_s_stop, 9, 9, WHITE);
+      drawText(ab, x + 6, y, 1, (isTimer) ? setting->tTimer.getSubTimeString() : stopTime);
+      ab->fillRect(x + 64, y, setting->tTimer.m, 3, WHITE);
+      //ab->drawBitmap(x + 64, y + 4, i_timer_meter, 61, 3, WHITE);
+      ab->drawLine(x + 64, y + 6, x + 124, y + 6, WHITE);
+      for (byte i = 0; i <= 60; i += 5)
+      {
+        byte hight = (i % 10 == 0) ? 2 : 1;
+        byte lineX = x + 64 + i;
+        byte lineY = y + 6;
+        ab->drawLine(lineX, lineY - hight, lineX, lineY, WHITE);
+      }
+    }
+
 };
 

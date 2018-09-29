@@ -1,10 +1,10 @@
 class DisplayLife : public Form {
   private:
-    const char rectW = 9;
-    const char rectH = 7;
+    #define rectW 9
+    #define rectH 7
   public:
-    boolean isCursorC = false;
-    char cursorC = 0;
+    bool isCursorC = false;
+    byte cursorC = 0;
 
     DisplayLife()
     {
@@ -30,19 +30,12 @@ class DisplayLife : public Form {
       }
     }
 
-    int DisplayLife::getLifeTone(short baseTone, short toneLife)
-    {
-      short l = setting->p[cursor].life;
-      return baseTone - (toneLife * 20) + ((l <= 0) ? 0 : ((l > 200) ? 200 : l) * toneLife);
-    }
-
     virtual void upButton()
     {
       if (isCursorC)
       {
-        if (cursorC != cursor && setting->p[cursor].c[cursorC] < 21)
+        if (cursorC != cursor && addValue(&setting->p[cursor].c[cursorC], 21))
         {
-          setting->p[cursor].c[cursorC]++;
           setting->p[cursor].life--;
           setting->changeLife--;
         }
@@ -58,9 +51,8 @@ class DisplayLife : public Form {
     {
       if (isCursorC)
       {
-        if (cursorC != cursor && setting->p[cursor].c[cursorC] > 0)
+        if (cursorC != cursor && subValue(&setting->p[cursor].c[cursorC],  0))
         {
-          setting->p[cursor].c[cursorC]--;
           setting->p[cursor].life++;
           setting->changeLife++;
         }
@@ -78,22 +70,11 @@ class DisplayLife : public Form {
 
       if (isCursorC)
       {
-        cursorC--;
-        if (cursorC < 0)
-        {
-          cursorC = 3;
-        }
+        rotateDown(&cursorC, 0, 3);
       }
-      else
+      else if (!subValue(&cursor, 0))
       {
-        if (cursor > 0)
-        {
-          cursor--;
-        }
-        else
-        {
-          activeMenu();
-        }
+        activeMenu();
       }
     }
 
@@ -103,22 +84,11 @@ class DisplayLife : public Form {
 
       if (isCursorC)
       {
-        cursorC++;
-        if (cursorC >= 4)
-        {
-          cursorC = 0;
-        }
+        rotateUp(&cursorC, 0, 3);
       }
-      else
+      else if (!addValue(&cursor, setting->pCount - 1))
       {
-        if (cursor < setting->pCount - 1)
-        {
-          cursor++;
-        }
-        else
-        {
-          activeMenu();
-        }
+        activeMenu();
       }
     }
 
@@ -165,16 +135,16 @@ class DisplayLife : public Form {
   private:
     void DisplayLife::drawFrame()
     {
-      char cMax = (setting->mode == EDH) ? 4 : 1;
-      for (short i = 0; i < setting->pCount; i++)
+      byte cMax = (setting->mode == EDH) ? 4 : 1;
+      for (byte i = 0; i < setting->pCount; i++)
       {
-        short drawX = x + setting->p[i].x;
-        short drawY = y + setting->p[i].y;
+        byte drawX = x + setting->p[i].x;
+        byte drawY = y + setting->p[i].y;
         ab->drawRect(drawX, drawY, setting->p[i].w, setting->p[i].h, WHITE);
         for (short j = 0; j < cMax; j++)
         {
-          short drawCX = drawX;
-          short drawCY = drawY;
+          byte drawCX = drawX;
+          byte drawCY = drawY;
           drawCX += (j == 1 || j == 3) ? (setting->p[i].w - rectW - 2) : 0;
           drawCY += (j == 2 || j == 3) ? (setting->p[i].h - rectH - 2) : 0;
           ab->drawRect(drawCX, drawCY, rectW + 2, rectH + 2, WHITE);
@@ -188,8 +158,8 @@ class DisplayLife : public Form {
 
     void DisplayLife::drawCursor()
     {
-      short drawX = x + setting->p[cursor].x + 1;
-      short drawY = y + setting->p[cursor].y + 1;
+      byte drawX = x + setting->p[cursor].x + 1;
+      byte drawY = y + setting->p[cursor].y + 1;
       if (setting->mode == EDH)
       {
         drawX += (cursor == 1 || cursor == 3) ? (setting->p[cursor].w - rectW - 2) : 0;
@@ -201,30 +171,16 @@ class DisplayLife : public Form {
 
     void DisplayLife::drawLife()
     {
-      switch (setting->mode) {
-        case P1:
-          drawLifeP1();
-          break;
-        case P2:
-          drawLifeP2();
-          break;
-        case P3:
-        case EDH:
-          drawLifeP4();
-          break;
-        case ARCH:
-          drawLifeArch();
-          break;
-        case EMP:
-          drawLifeEmp();
-          break;
+      for (byte i = 0; i < setting->pCount; i++)
+      {
+        drawLife(i);
       }
     }
 
     void DisplayLife::drawCursorC()
     {
-      short drawX = x + setting->p[cursor].x + 3;
-      short drawY = y + setting->p[cursor].y + 1;
+      byte drawX = x + setting->p[cursor].x + 3;
+      byte drawY = y + setting->p[cursor].y + 1;
       drawX += (cursorC == 1 || cursorC == 3) ? (setting->p[cursor].w - rectW - 4) : 0;
       drawY += rectH + 3;
 
@@ -241,233 +197,164 @@ class DisplayLife : public Form {
       }
     }
 
-    void DisplayLife::drawLifeP1()
+    void DisplayLife::drawLife(byte i)
     {
-      int life = setting->p[0].life;
+      short life = setting->p[i].life;
 
-      short drawX = x;
-      short drawY = y;
-      char fSize = 0;
+      byte fSize = 2;
+      byte drawX = x + setting->p[i].x;
+      byte drawY = y + setting->p[i].y;
 
-      if (life >= 100 || life <= -10)
+      switch (setting->mode)
       {
-        fSize = 4;
-        drawX += 14;
-        drawY += 11;
-      }
-      else if (life >= 0 && life <= 9)
-      {
-        fSize = 5;
-        drawX += 36;
-        drawY += 8;
-      }
-      else
-      {
-        fSize = 5;
-        drawX += 21;
-        drawY += 8;
+        case PlayMode::P1:
+          if (life >= 100 || life <= -10)
+          {
+            fSize = 4;
+            drawX += 14;
+            drawY += 11;
+          }
+          else if (life >= 0 && life <= 9)
+          {
+            fSize = 5;
+            drawX += 36;
+            drawY += 8;
+          }
+          else
+          {
+            fSize = 5;
+            drawX += 21;
+            drawY += 8;
+          }
+          break;
+        case PlayMode::P2:
+          if (life >= 100 || life <= -10)
+          {
+            // fSize = 2;
+            drawX += 7;
+            drawY += 18;
+          }
+          else if (life >= 0 && life <= 9)
+          {
+            fSize = 3;
+            drawX += 18;
+            drawY += 15;
+          }
+          else
+          {
+            fSize = 3;
+            drawX += 8;
+            drawY += 15;
+          }
+          break;
+        case PlayMode::P3:
+        case PlayMode::EDH:
+          if (setting->mode == EDH)
+          {
+            for (byte j = 0; j < 4; j++)
+            {
+              byte drawMiniX = drawX + 1;
+              byte drawMiniY = drawY + 1;
+
+              drawMiniX += (j == 1 || j == 3) ? (setting->p[i].w - rectW - 2) : 0;
+              drawMiniY += (j == 2 || j == 3) ? (setting->p[i].h - rectH - 2) : 0;
+
+              int miniLife = setting->p[i].c[j];
+
+              if (j != i)
+              {
+                drawSmallNumber(ab, drawMiniX, drawMiniY, miniLife, true);
+              }
+            }
+          }
+
+          if (life >= 100 || life <= -10)
+          {
+            fSize = 1;
+            drawX += 15;
+            drawY += 9;
+          }
+          else if (life >= 0 && life <= 9)
+          {
+            // fSize = 2;
+            drawX += + 20;
+            drawY += + 6;
+          }
+          else
+          {
+            // fSize = 2;
+            drawX += 13;
+            drawY += 6;
+          }
+          break;
+        case PlayMode::ARCH:
+          if (i == 0)
+          {
+            if (life >= 100 || life <= -10)
+            {
+              // fSize = 2;
+              drawX += 30;
+              drawY += 6;
+            }
+            else if (life >= 0 && life <= 9)
+            {
+              // fSize = 2;
+              drawX += 44;
+              drawY += 6;
+            }
+            else
+            {
+              // fSize = 2;
+              drawX += 37;
+              drawY += 6;
+            }
+          }
+          else
+          {
+            if (life >= 100 || life <= -10)
+            {
+              fSize = 1;
+              drawX += 8;
+              drawY += 14;
+            }
+            else if (life >= 0 && life <= 9)
+            {
+              // fSize = 2;
+              drawX += 12;
+              drawY += 10;
+            }
+            else
+            {
+              // fSize = 2;
+              drawX += 5;
+              drawY += 10;
+            }
+          }
+          break;
+        case PlayMode::EMP:
+          if (life >= 100 || life <= -10)
+          {
+            fSize = 1;
+            drawX += 8;
+            drawY += 14;
+          }
+          else if (life >= 0 && life <= 9)
+          {
+            // fSize = 2;
+            drawX += 12;
+            drawY += 10;
+          }
+          else
+          {
+            // fSize = 2;
+            drawX += 5;
+            drawY += 10;
+          }
+          break;
       }
 
       drawText(ab, drawX, drawY, fSize, life);
     }
 
-    void DisplayLife::drawLifeP2()
-    {
-      short drawX = 0;
-      short drawY = 0;
-      char fSize = 0;
-      short life = 0;
-
-      for (int i = 0; i < 2; i++)
-      {
-        life = setting->p[i].life;
-        drawX = x + setting->p[i].x;
-        drawY = y + setting->p[i].y;
-
-        if (life >= 100 || life <= -10)
-        {
-          drawX += 7;
-          drawY += 18;
-          fSize = 2;
-        }
-        else if (life >= 0 && life <= 9)
-        {
-          drawX += 18;
-          drawY += 15;
-          fSize = 3;
-        }
-        else
-        {
-          drawX += 8;
-          drawY += 15;
-          fSize = 3;
-        }
-
-        drawText(ab, drawX, drawY, fSize, life);
-      }
-    }
-
-    void DisplayLife:: drawLifeP4()
-    {
-      short life = 0;
-      short drawX = 0;
-      short drawY = 0;
-      char fSize = 0;
-
-      for (short i = 0; i < setting->pCount; i++)
-      {
-        bool isLose = false;
-
-        life = setting->p[i].life;
-
-        drawX = x + setting->p[i].x;
-        drawY = y + setting->p[i].y;
-
-        if (setting->mode == EDH)
-        {
-          for (short j = 0; j < 4; j++)
-          {
-            short drawMiniX = drawX + 1;
-            short drawMiniY = drawY + 1;
-
-            drawMiniX += (j == 1 || j == 3) ? (setting->p[i].w - rectW - 2) : 0;
-            drawMiniY += (j == 2 || j == 3) ? (setting->p[i].h - rectH - 2) : 0;
-
-            int miniLife = setting->p[i].c[j];
-
-            if (j != i)
-            {
-              drawSmallNumber(ab, drawMiniX, drawMiniY, miniLife, true);
-            }
-          }
-        }
-
-        if (life >= 100 || life <= -10)
-        {
-          drawX += 15;
-          drawY += 9;
-          fSize = 1;
-        }
-        else if (life >= 0 && life <= 9)
-        {
-          drawX += + 20;
-          drawY += + 6;
-          fSize = 2;
-        }
-        else
-        {
-          drawX += 13;
-          drawY += 6;
-          fSize = 2;
-        }
-
-        drawText(ab, drawX, drawY, fSize, life);
-      }
-    }
-
-    void DisplayLife::drawLifeArch()
-    {
-      short life = 0;
-      short drawX = 0;
-      short drawY = 0;
-      char fSize = 0;
-
-      // DRAW PLAYER
-      for (int i = 1; i < setting->pCount; i++)
-      {
-        life = setting->p[i].life;
-
-        drawX = x + setting->p[i].x;
-        drawY = y + setting->p[i].y;
-
-        if (life >= 100 || life <= -10)
-        {
-          fSize = 1;
-          drawX += 8;
-          drawY += 14;
-        }
-        else if (life >= 0 && life <= 9)
-        {
-          fSize = 2;
-          drawX += 12;
-          drawY += 10;
-        }
-        else
-        {
-          fSize = 2;
-          drawX += 5;
-          drawY += 10;
-        }
-
-        drawText(ab, drawX, drawY, fSize, life);
-      }
-
-      // DRAW ARCH
-      life = setting->p[0].life;
-
-      drawX = x + setting->p[0].x;
-      drawY = y + setting->p[0].y;
-
-      if (life >= 100 || life <= -10)
-      {
-        fSize = 2;
-        drawX += 30;
-        drawY += 6;
-      }
-      else if (life >= 0 && life <= 9)
-      {
-        fSize = 2;
-        drawX += 44;
-        drawY += 6;
-      }
-      else
-      {
-        fSize = 2;
-        drawX += 37;
-        drawY += 6;
-      }
-
-      if (life > 0)
-      {
-        drawText(ab, drawX, drawY, fSize, life);
-      }
-    }
-
-    void DisplayLife::drawLifeEmp()
-    {
-      short life = 0;
-      short drawX = 0;
-      short drawY = 0;
-      char fSize = 0;
-
-      for (short i = 0; i < setting->pCount; i++)
-      {
-        life = setting->p[i].life;
-
-        drawX = x + setting->p[i].x;
-        drawY = y + setting->p[i].y;
-
-        if (life >= 100 || life <= -10)
-        {
-          fSize = 1;
-          drawX += 8;
-          drawY += 14;
-        }
-        else if (life >= 0 && life <= 9)
-        {
-          fSize = 2;
-          drawX += 12;
-          drawY += 10;
-        }
-        else
-        {
-          fSize = 2;
-          drawX += 5;
-          drawY += 10;
-        }
-
-        drawText(ab, drawX, drawY, fSize, life);
-      }
-    }
 };
 

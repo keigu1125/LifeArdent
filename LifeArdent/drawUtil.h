@@ -1,4 +1,52 @@
-void drawArrowLeft(Arduboy* ab, short x, short y, bool white)
+bool rotateUp(byte* target, byte min, byte max)
+{
+  if (*target == max)
+  {
+    *target = min;
+    return false;
+  }
+  else
+  {
+    (*target)++;
+    return true;
+  }
+}
+
+bool rotateDown(byte* target, byte min, byte max)
+{
+  if (*target == min)
+  {
+    *target = max;
+    return false;
+  }
+  else
+  {
+    (*target)--;
+    return true;
+  }
+}
+
+bool addValue(byte* target, byte max)
+{
+  if (*target <= max - 1)
+  {
+    (*target)++;
+    return true;
+  }
+  return false;
+}
+
+bool subValue(byte* target, byte min)
+{
+  if (*target >= min + 1)
+  {
+    (*target)--;
+    return true;
+  }
+  return false;
+}
+
+void drawArrowLeft(Arduboy* ab, byte x, byte y, bool white)
 {
   ab->drawLine(x + 0, y + 0, x + 0, y + 6, white);
   ab->drawLine(x + 1, y + 1, x + 1, y + 5, white);
@@ -6,7 +54,7 @@ void drawArrowLeft(Arduboy* ab, short x, short y, bool white)
   ab->drawLine(x + 3, y + 3, x + 3, y + 3, white);
 }
 
-void drawArrowTop(Arduboy* ab, short x, short y, bool white)
+void drawArrowTop(Arduboy* ab, byte x, byte y, bool white)
 {
   ab->drawLine(x + 3, y + 0, x + 3, y + 0, white);
   ab->drawLine(x + 2, y + 1, x + 4, y + 1, white);
@@ -14,7 +62,7 @@ void drawArrowTop(Arduboy* ab, short x, short y, bool white)
   ab->drawLine(x + 0, y + 3, x + 6, y + 3, white);
 }
 
-void drawArrowDown(Arduboy* ab, short x, short y, bool white)
+void drawArrowDown(Arduboy* ab, byte x, byte y, bool white)
 {
   ab->drawLine(x + 3, y + 3, x + 3, y + 3, white);
   ab->drawLine(x + 2, y + 2, x + 4, y + 2, white);
@@ -22,24 +70,22 @@ void drawArrowDown(Arduboy* ab, short x, short y, bool white)
   ab->drawLine(x + 0, y + 0, x + 6, y + 0, white);
 }
 
-void drawText(Arduboy* ab, short a, short b, short fs, String mes)
+void drawText(Arduboy* ab, byte a, byte b, byte fs, String mes)
 {
   ab->setCursor(a, b);
   ab->setTextSize(fs);
   ab->print(mes);
 }
 
-void drawText(Arduboy* ab, short a, short b, short fs, int mes)
+void drawText(Arduboy* ab, byte a, byte b, byte fs, int mes)
 {
   ab->setCursor(a, b);
   ab->setTextSize(fs);
   ab->print(mes);
 }
 
-void drawOneSmallNumber(Arduboy* ab, short x, short y, short number, bool white)
+void drawOneSmallNumber(Arduboy* ab, byte x, byte y, byte number, bool color)
 {
-  int color = (white) ? "1" : "0";
-
   switch (number)
   {
     case 0:
@@ -166,7 +212,7 @@ void drawOneSmallNumber(Arduboy* ab, short x, short y, short number, bool white)
   }
 }
 
-void drawSmallNumber(Arduboy* ab, short x, short y, short num, bool white)
+void drawSmallNumber(Arduboy* ab, byte x, byte y, byte num, bool white)
 {
   int s = num;
   int maxDigit = 2;
@@ -189,7 +235,7 @@ void drawSmallNumber(Arduboy* ab, short x, short y, short num, bool white)
     }
   }
 
-  int sb[digit];
+  byte sb[digit];
   s = num;
   if (s > 99)
   {
@@ -198,7 +244,7 @@ void drawSmallNumber(Arduboy* ab, short x, short y, short num, bool white)
   }
   else
   {
-    for (int i = 0; i < maxDigit; i++)
+    for (byte i = 0; i < maxDigit; i++)
     {
       if (maxDigit - digit > i)
       {
@@ -210,9 +256,64 @@ void drawSmallNumber(Arduboy* ab, short x, short y, short num, bool white)
     }
   }
 
-  for (int i = 0; i < digit; i++)
+  for (byte i = 0; i < digit; i++)
   {
     drawOneSmallNumber(ab, x + (i * 4), y, sb[digit - 1 - i], white);
   }
 }
 
+void drawBigDice(Arduboy* ab, byte x, byte y, byte number)
+{
+  if (number == 0)
+  {
+    return;
+  }
+
+  ab->fillRect(x, y, 8, 8, 1);
+
+  switch (number)
+  {
+    case 1:
+      ab->drawRect(x + 3, y + 3, 2, 2, 0);
+      break;
+    case 2:
+      ab->drawRect(x + 5, y + 1, 2, 2, 0);
+      ab->drawRect(x + 1, y + 5, 2, 2, 0);
+      break;
+    case 3:
+      ab->drawRect(x + 3, y + 3, 2, 2, 0);
+      ab->drawRect(x + 5, y + 1, 2, 2, 0);
+      ab->drawRect(x + 1, y + 5, 2, 2, 0);
+      break;
+    case 4:
+      ab->drawRect(x + 1, y + 1, 2, 2, 0);
+      ab->drawRect(x + 5, y + 1, 2, 2, 0);
+      ab->drawRect(x + 1, y + 5, 2, 2, 0);
+      ab->drawRect(x + 5, y + 5, 2, 2, 0);
+      break;
+    case 5:
+      ab->drawRect(x + 3, y + 3, 2, 2, 0);
+      ab->drawRect(x + 1, y + 1, 2, 2, 0);
+      ab->drawRect(x + 5, y + 1, 2, 2, 0);
+      ab->drawRect(x + 1, y + 5, 2, 2, 0);
+      ab->drawRect(x + 5, y + 5, 2, 2, 0);
+      break;
+    case 6:
+      ab->drawRect(x + 1, y + 0, 2, 2, 0);
+      ab->drawRect(x + 1, y + 3, 2, 2, 0);
+      ab->drawRect(x + 1, y + 6, 2, 2, 0);
+      ab->drawRect(x + 5, y + 0, 2, 2, 0);
+      ab->drawRect(x + 5, y + 3, 2, 2, 0);
+      ab->drawRect(x + 5, y + 6, 2, 2, 0);
+      break;
+    case 7:
+      ab->drawRect(x + 3, y + 3, 2, 2, 0);
+      ab->drawRect(x + 1, y + 0, 2, 2, 0);
+      ab->drawRect(x + 1, y + 3, 2, 2, 0);
+      ab->drawRect(x + 1, y + 6, 2, 2, 0);
+      ab->drawRect(x + 5, y + 0, 2, 2, 0);
+      ab->drawRect(x + 5, y + 3, 2, 2, 0);
+      ab->drawRect(x + 5, y + 6, 2, 2, 0);
+      break;
+  }
+}
