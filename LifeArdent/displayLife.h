@@ -331,26 +331,6 @@ class DisplayLife : public Form {
             }
           }
           break;
-        case PlayMode::EMP:
-          if (life >= 100 || life <= -10)
-          {
-            fSize = 1;
-            drawX += 8;
-            drawY += 14;
-          }
-          else if (life >= 0 && life <= 9)
-          {
-            // fSize = 2;
-            drawX += 12;
-            drawY += 10;
-          }
-          else
-          {
-            // fSize = 2;
-            drawX += 5;
-            drawY += 10;
-          }
-          break;
       }
 
       drawText(ab, drawX, drawY, fSize, life);

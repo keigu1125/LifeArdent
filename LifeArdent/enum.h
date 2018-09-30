@@ -50,6 +50,5 @@ enum PlayMode
   P3   = 2,
   EDH  = 3,
   ARCH = 4,
-  EMP  = 5,
-  PM_TAIL = 5
+  PM_TAIL = 4
 };

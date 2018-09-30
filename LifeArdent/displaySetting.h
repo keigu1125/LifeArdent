@@ -4,8 +4,7 @@ class DisplaySetting : public Form
 #define DEF_SHOW_TITLE        0x00
 #define DEF_IS_SOUND_DEFAULT  0x01
 #define DEF_IS_SOUND_TIMER    0x01
-#define DEF_BASE_TONE_1       864
-#define DEF_BASE_TONE_2       1296
+#define DEF_BASE_TONE         1000
 #define DEF_IS_LED_TIMER      0x01
 #define DEF_DEFAULT_FORMAT    0x01
 #define DEF_FRAME_RATE_MAIN   20
@@ -17,8 +16,7 @@ class DisplaySetting : public Form
     byte showTitle = 0x00;
     byte isSoundDefault = 0x00;
     byte isSoundTimer = 0x00;
-    short baseTone1 = 0;
-    short baseTone2 = 0;
+    short baseTone = 0;
     byte isLedTimer = 0x00;
     byte defaultFormat = 0x00;
     byte frameRateMain = 0x00;
@@ -139,8 +137,7 @@ class DisplaySetting : public Form
       showTitle = EEPROM.read(point++);
       isSoundDefault = EEPROM.read(point++);
       isSoundTimer = EEPROM.read(point++);
-      baseTone1 = (EEPROM.read(point++) << 8) | EEPROM.read(point++);
-      baseTone2 = (EEPROM.read(point++) << 8) | EEPROM.read(point++);
+      baseTone = (EEPROM.read(point++) << 8) | EEPROM.read(point++);
       isLedTimer = EEPROM.read(point++);
       defaultFormat = EEPROM.read(point++);
       frameRateMain = EEPROM.read(point++);
@@ -156,10 +153,8 @@ class DisplaySetting : public Form
       EEPROM.write(point++, showTitle);
       EEPROM.write(point++, isSoundDefault);
       EEPROM.write(point++, isSoundTimer);
-      EEPROM.write(point++, ((baseTone1 >> 8) & 0xFF));
-      EEPROM.write(point++, (baseTone1 & 0xFF));
-      EEPROM.write(point++, ((baseTone2 >> 8) & 0xFF));
-      EEPROM.write(point++, (baseTone2 & 0xFF));
+      EEPROM.write(point++, ((baseTone >> 8) & 0xFF));
+      EEPROM.write(point++, (baseTone & 0xFF));
       EEPROM.write(point++, isLedTimer);
       EEPROM.write(point++, defaultFormat);
       EEPROM.write(point++, frameRateMain);
@@ -173,8 +168,7 @@ class DisplaySetting : public Form
       showTitle = DEF_SHOW_TITLE;
       isSoundDefault = DEF_IS_SOUND_DEFAULT;
       isSoundTimer = DEF_IS_SOUND_TIMER;
-      baseTone1 = DEF_BASE_TONE_1;
-      baseTone2 = DEF_BASE_TONE_2;
+      baseTone = DEF_BASE_TONE;
       isLedTimer = DEF_IS_LED_TIMER;
       defaultFormat = DEF_DEFAULT_FORMAT;
       frameRateMain = DEF_FRAME_RATE_MAIN;

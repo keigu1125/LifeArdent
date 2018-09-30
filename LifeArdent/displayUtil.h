@@ -16,14 +16,15 @@ class DisplayUtil : public Form {
     byte d[8];
     byte cPage = 0;
     byte mPage = 0;
-    String stopTime = "0:00:00";
+
+    byte stopH = 0;
+    byte stomM = 0;
+    byte stopS = 0;
+
     bool isTimer = false;
     bool isAlarm = false;
     // MAX_PLAYER, MAX_DICE, MAX_MATCH, MAX_TIME, MAX_DISCARD, MAX_STORM, MAX_COUNR, MAX_SOUND, MAX_SETTING
     const byte utilMenuMax[9] = {0, 1, 2, 0, 1, 6, 2, 0, 0};
-
-    BeepPin1* beep1;
-    BeepPin2* beep2;
 
     DisplayUtil()
     {
@@ -323,7 +324,6 @@ class DisplayUtil : public Form {
         case Menu::M_TIME:
           if (!isTimer)
           {
-            stopTime = format->tTimer.getSubTimeString();
             format->tTimer.setStopTime();
             format->tTimer.addHour(-format->tTimer.h);
             format->tTimer.addMinute(-format->tTimer.m);
@@ -345,7 +345,6 @@ class DisplayUtil : public Form {
           isTimer = false;
           format->tTimer.setDefaultTime();
           format->tTimer.setStopTime();
-          stopTime = format->tTimer.getSubTimeString();
           break;
         case Menu::M_DISCARD:
           initArray(card, CARD_MAX);
@@ -518,7 +517,7 @@ class DisplayUtil : public Form {
         drawArrowLeft(ab, x, y, WHITE);
       }
       ab->drawBitmap(x + 51, y - 1, (isTimer) ? i_s_play : i_s_stop, 9, 9, WHITE);
-      drawText(ab, x + 6, y, 1, (isTimer) ? format->tTimer.getSubTimeString() : stopTime);
+      drawText(ab, x + 6, y, 1, (isTimer) ? format->tTimer.getSubTimeString() : format->tTimer.getHMS());
       ab->fillRect(x + 64, y, format->tTimer.m % 61, 3, WHITE);
       ab->drawLine(x + 64, y + 6, x + 124, y + 6, WHITE);
       for (byte i = 0; i <= 60; i += 5)

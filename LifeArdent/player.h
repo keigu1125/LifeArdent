@@ -31,4 +31,3 @@ class Player
       this->h = h;
     }
 };
-

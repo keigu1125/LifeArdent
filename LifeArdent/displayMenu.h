@@ -18,7 +18,14 @@ class DisplayMenu : public Form {
     {
       setImage();
 
-      ab->drawBitmap(x, y, f_menu, 29, 53, WHITE);
+      // ab->drawBitmap(x, y, f_menu, 29, 53, WHITE);
+
+      for (byte i = 0; i < 2; i++)
+      {
+        ab->drawRect(x, y + (i * 39), 28, 10, WHITE);
+      }
+      ab->drawRect(x + 1, y + 12, 27, 29, WHITE);
+      // ab->drawRect(x + 2, y + 13, 25, 27, WHITE);
 
       if (format->changeLife == 0)
       {
@@ -146,9 +153,7 @@ class DisplayMenu : public Form {
 
       byte addX = (life >= 100 || life <= -100) ? 3 : (life >= 10 || life <= -10) ? 6 : 10;
       byte addY = 23;
-      String txt = (life > 0) ? "+" + String(life) : life;
-
-      drawText(ab, x + addX, y + addY, 1, txt);
+      drawText(ab, x + addX, y + addY, 1, (life > 0) ? "+" + String(life) : life);
     }
 
 };

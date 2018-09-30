@@ -102,13 +102,7 @@ class TimeFormat
 
     String TimeFormat::getDefaultTimeString()
     {
-      String strHour   = String(defaultHour);
-      String strMin    = (defaultMinute < 10) ? "0" + String(defaultMinute) : String(defaultMinute);
-      String strSecond = (defaultSecond < 10) ? "0" + String(defaultSecond) : String(defaultSecond);
-
-      String strTime = strHour + ":" + strMin + ":" + strSecond;
-
-      return strTime;
+      return getHMS(defaultHour, defaultMinute, defaultSecond);
     }
 
     long TimeFormat::getSubMillisecond()
@@ -153,13 +147,16 @@ class TimeFormat
         h = 0;
       }
 
-      String strHour   = String(h);
-      String strMin    = (m < 10) ? "0" + String(m) : String(m);
-      String strSecond = (s < 10) ? "0" + String(s) : String(s);
+      return getHMS();
+    }
 
-      String strTime = strHour + ":" + strMin + ":" + strSecond;
-
-      return strTime;
+    String TimeFormat::getHMS()
+    {
+      return String(h) + ":" + ((m < 10) ? "0" + String(m) : String(m)) + ":" + ((s < 10) ? "0" + String(s) : String(s));
+    }
+    
+    String TimeFormat::getHMS(byte hh, byte mm, byte ss)
+    {
+      return String(hh) + ":" + ((mm < 10) ? "0" + String(mm) : String(mm)) + ":" + ((ss < 10) ? "0" + String(ss) : String(ss));
     }
 };
-

@@ -2,9 +2,9 @@ class Format
 {
   private:
   public:
-    byte PLAYER_COUNT = 6;
-    Player p[6];
+    Player p[4];
     byte pCount = 0;
+    const byte PLAYER_COUNT = 4;
     byte mode = PM_HEAD;
     short changeLife = 0;
     TimeFormat tPressed;
@@ -69,15 +69,6 @@ class Format
           p[2].setXY(32, 26, 33, 27);
           p[3].setXY(64, 26, 33, 27);
           break;
-        case PlayMode::EMP:
-          pCount = 6;
-          p[0].setXY( 0,  0, 33, 27);
-          p[1].setXY(32,  0, 33, 27);
-          p[2].setXY(64,  0, 33, 27);
-          p[3].setXY( 0, 26, 33, 27);
-          p[4].setXY(32, 26, 33, 27);
-          p[5].setXY(64, 26, 33, 27);
-          break;
       }
 
       initPlayer();
@@ -85,30 +76,21 @@ class Format
 
     String Format::getModeName(PlayMode m)
     {
-      String ret = "    ";
       switch (m)
       {
         case PlayMode::P1:
-          ret = "Solo";
-          break;
+          return "Solo";
         case PlayMode::P2:
-          ret = "VS 2";
-          break;
+          return "VS 2";
         case PlayMode::P3:
-          ret = "VS 3";
-          break;
+          return "VS 3";
         case PlayMode::EDH:
-          ret = "EDH ";
-          break;
+          return "EDH ";
         case PlayMode::ARCH:
-          ret = "Arch";
-          break;
-        case PlayMode::EMP:
-          ret = "Empr";
-          break;
+          return "Arch";
+        default:
+          return "    ";
       }
-
-      return ret;
     }
 
     bool Format::isCounterUsed()
