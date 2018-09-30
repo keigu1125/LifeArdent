@@ -46,6 +46,14 @@ bool subValue(byte* target, byte min)
   return false;
 }
 
+void initArray(byte* ar, byte size)
+{
+  for (byte i = 0; i < size; i++)
+  {
+    ar[i] = 0;
+  }
+}
+
 void drawArrowLeft(Arduboy2* ab, byte x, byte y, bool white)
 {
   ab->drawLine(x + 0, y + 0, x + 0, y + 6, white);

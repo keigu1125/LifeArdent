@@ -5,6 +5,7 @@ class DisplayUtil : public Form {
 #define CARD_MAX 11
 #define DISCARD_MAX 9
 #define STORM_MAX 7
+#define MATCH_MAX 6
   public:
     byte hand = 7;
     byte discard = 2;
@@ -17,8 +18,12 @@ class DisplayUtil : public Form {
     byte mPage = 0;
     String stopTime = "0:00:00";
     bool isTimer = false;
-    bool isLedTimer = false;
-    bool isLedStorm = false;
+    bool isAlarm = false;
+    // MAX_PLAYER, MAX_DICE, MAX_MATCH, MAX_TIME, MAX_DISCARD, MAX_STORM, MAX_COUNR, MAX_SOUND, MAX_SETTING
+    const byte utilMenuMax[9] = {0, 1, 2, 0, 1, 6, 2, 0, 0};
+
+    BeepPin1* beep1;
+    BeepPin2* beep2;
 
     DisplayUtil()
     {
@@ -125,11 +130,8 @@ class DisplayUtil : public Form {
       {
         switch (menu->cursor)
         {
-          case Menu::M_PLAYER:
-            break;
-          case Menu::M_DICE:
-            break;
           case Menu::M_MATCH:
+            dispMatch();
             break;
           case Menu::M_TIME:
             if (isTimer)
@@ -137,19 +139,11 @@ class DisplayUtil : public Form {
               dispTimer();
             }
             break;
-          case Menu::M_DISCARD:
-            break;
-          case Menu::M_STORM:
-            break;
           case Menu::M_COUNT:
             if (format->isCounterUsed())
             {
               dispCounter();
             }
-            break;
-          case Menu::M_SOUND:
-            break;
-          case Menu::M_SETTING:
             break;
         }
       }
@@ -245,7 +239,6 @@ class DisplayUtil : public Form {
               break;
           }
           break;
-          break;
         case Menu::M_TIME:
           break;
         case Menu::M_DISCARD:
@@ -280,79 +273,27 @@ class DisplayUtil : public Form {
               break;
           }
           break;
-        case Menu::M_SOUND:
-          break;
-        case Menu::M_SETTING:
-          break;
       }
     }
 
     virtual void leftButton()
     {
-      byte max = 0;
-      switch (menu->cursor)
+      if (menu->cursor == 0)
       {
-        case Menu::M_PLAYER:
           format->initMode(format->mode - 1);
           return;
-        case Menu::M_SOUND:
-        case Menu::M_SETTING:
-          return;
-        case Menu::M_DICE:
-          max = UtilMenuMax::MAX_DICE;
-          break;
-        case Menu::M_MATCH:
-          max = UtilMenuMax::MAX_MATCH;
-          break;
-        case Menu::M_TIME:
-          max = UtilMenuMax::MAX_TIME;
-          break;
-        case Menu::M_DISCARD:
-          max = UtilMenuMax::MAX_DISCARD;
-          break;
-        case Menu::M_STORM:
-          max = UtilMenuMax::MAX_STORM;
-          break;
-        case Menu::M_COUNT:
-          max = UtilMenuMax::MAX_COUNT;
-          break;
       }
-
-      rotateDown(&cursorC, 0, max);
+      rotateDown(&cursorC, 0, utilMenuMax[menu->cursor]);
     }
 
     virtual void rightButton()
     {
-      byte max = 0;
-      switch (menu->cursor)
+      if (menu->cursor == Menu::M_PLAYER)
       {
-        case Menu::M_PLAYER:
-          format->initMode(format->mode + 1);
-          return;
-        case Menu::M_SOUND:
-        case Menu::M_SETTING:
-          return;
-        case Menu::M_DICE:
-          max = UtilMenuMax::MAX_DICE;
-          break;
-        case Menu::M_MATCH:
-          max = UtilMenuMax::MAX_MATCH;
-          break;
-        case Menu::M_TIME:
-          max = UtilMenuMax::MAX_TIME;
-          break;
-        case Menu::M_DISCARD:
-          max = UtilMenuMax::MAX_DISCARD;
-          break;
-        case Menu::M_STORM:
-          max = UtilMenuMax::MAX_STORM;
-          break;
-        case Menu::M_COUNT:
-          max = UtilMenuMax::MAX_COUNT;
-          break;
+        format->initMode(format->mode + 1);
+        return;
       }
-
-      rotateUp(&cursorC, 0, max);
+      rotateUp(&cursorC, 0, utilMenuMax[menu->cursor]);
     }
 
     virtual void aButton()
@@ -361,9 +302,10 @@ class DisplayUtil : public Form {
       hand = 7;
       discard = 1;
       dCount = 2;
-      initDiscard();
-      initStorm();
-      initDice();
+
+      initArray(card, CARD_MAX);
+      initArray(storm, STORM_MAX);
+      initArray(d, DICE_ALL_MAX);
 
       activeMenu();
     }
@@ -392,12 +334,6 @@ class DisplayUtil : public Form {
         case Menu::M_DISCARD:
           discardRoll();
           break;
-        case Menu::M_MATCH:
-        case Menu::M_STORM:
-        case Menu::M_COUNT:
-        case Menu::M_SOUND:
-        case Menu::M_SETTING:
-          break;
       }
     }
 
@@ -412,55 +348,27 @@ class DisplayUtil : public Form {
           stopTime = format->tTimer.getSubTimeString();
           break;
         case Menu::M_DISCARD:
-          initDiscard();
+          initArray(card, CARD_MAX);
           break;
         case Menu::M_STORM:
-          initStorm();
+          initArray(storm, STORM_MAX);
           break;
-        case Menu::M_PLAYER:
         case Menu::M_DICE:
-          initDice();
+          initArray(d, DICE_ALL_MAX);
           break;
         case Menu::M_MATCH:
+          format->initMatch();
           break;
         case Menu::M_COUNT:
           format->initCounter();
-          break;
-        case Menu::M_SOUND:
-        case Menu::M_SETTING:
           break;
       }
     }
 
   private:
-    void DisplayUtil::initStorm()
-    {
-      for (byte i = 0; i < STORM_MAX; i++)
-      {
-        storm[i] = 0;
-      }
-    }
-
-    void DisplayUtil::initDiscard()
-    {
-      for (byte i = 0; i < CARD_MAX; i++)
-      {
-        card[i] = 0;
-      }
-    }
-
-    void DisplayUtil::initDice()
-    {
-      for (byte i = 0; i < DICE_ALL_MAX; i++)
-      {
-        d[i] = 0;
-      }
-    }
-
     void DisplayUtil::discardRoll()
     {
-      initDiscard();
-
+      initArray(card, CARD_MAX);
       byte dc = 0;
       while (dc < discard)
       {
@@ -611,7 +519,7 @@ class DisplayUtil : public Form {
       }
       ab->drawBitmap(x + 51, y - 1, (isTimer) ? i_s_play : i_s_stop, 9, 9, WHITE);
       drawText(ab, x + 6, y, 1, (isTimer) ? format->tTimer.getSubTimeString() : stopTime);
-      ab->fillRect(x + 64, y, format->tTimer.m, 3, WHITE);
+      ab->fillRect(x + 64, y, format->tTimer.m % 61, 3, WHITE);
       ab->drawLine(x + 64, y + 6, x + 124, y + 6, WHITE);
       for (byte i = 0; i <= 60; i += 5)
       {
@@ -619,6 +527,11 @@ class DisplayUtil : public Form {
         byte lineX = x + 64 + i;
         byte lineY = y + 6;
         ab->drawLine(lineX, lineY - hight, lineX, lineY, WHITE);
+      }
+
+      if (isTimer && format->tTimer.m % 10 == 0 && format->tTimer.s == 0)
+      {
+        isAlarm = true;
       }
     }
 

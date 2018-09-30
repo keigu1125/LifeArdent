@@ -20,8 +20,14 @@ BeepPin2 beep2;
 #define TONE_LIFE 40
 #define TIME_TITLE 3000
 #define BASE_TONE 1000
-#define TONE_ONELIFE 20
+#define TONE_ONELIFE 12.96
 #define TONE_MIN 200
+
+const byte LEDpin[3] = {
+  RED_LED,
+  GREEN_LED,
+  BLUE_LED
+};
 
 Form* activeForm = NULL;
 
@@ -33,12 +39,13 @@ Format format;
 
 bool isTitle = false;
 bool isMain = true;
-bool isSetting = false;
 bool pressFirst = true;
 
 void setup()
 {
+  ab.setRGBled(0, 0, 0);
   init();
+  ab.boot();
 
   menu.ab = &ab;
   life.ab = &ab;
@@ -64,18 +71,17 @@ void setup()
   life.sett = &sett;
   util.sett = &sett;
   sett.sett = &sett;
-  
+  util.beep1 = &beep1;
+  util.beep2 = &beep2;
+
   format.initMode(sett.defaultFormat);
   ab.setFrameRate(sett.frameRateMain);
   ab.invert(sett.blackScreen);
   isTitle = (sett.showTitle == 0x01);
-  format.isSound = (sett.isDefaultSoundOn == 0x01);
-  util.isLedTimer = (sett.isLedTimer == 0x01);
-  util.isLedStorm = (sett.isLedStorm == 0x01);
-  
+  format.isSound = (sett.isSoundDefault == 0x01);
+
   menu.activeMenu();
 
-  ab.boot();
   ab.audio.begin();
   beep1.begin();
   beep2.begin();
@@ -90,6 +96,7 @@ void loop()
   ab.clear();
   button();
   disp();
+  alarm();
   ab.display();
   beep1.timer();
   beep2.timer();
@@ -101,15 +108,15 @@ void disp()
   {
     dispTitle();
   }
+  else if (sett.isCursor)
+  {
+    sett.display();
+  }
   else if (isMain)
   {
     menu.display();
     life.display();
     util.display();
-  }
-  else if (isSetting)
-  {
-    sett.display();
   }
 }
 
@@ -153,6 +160,29 @@ void button()
   buttonSound();
 }
 
+void alarm()
+{
+  if (util.isAlarm)
+  {
+    util.isAlarm = false;
+    for (byte i = 0; i < format.tTimer.m / 10; i++)
+    {
+      if (sett.isLedTimer != 0x00)
+      {
+        ab.setRGBled(LEDpin[sett.isLedTimer - 1], format.tTimer.m);
+      }
+      if (sett.isSoundTimer != 0x00)
+      {
+        beep1.tone(beep1.freq(sett.baseTone1), 1);
+        beep2.tone(beep2.freq(sett.baseTone2), 1);
+      }
+      delay(200);
+      delay(50);
+      ab.setRGBled(LEDpin[sett.isLedTimer - 1], 0);
+    }
+  }
+}
+
 bool someButtonPressed()
 {
   return (ab.pressed(UP_BUTTON)   || ab.pressed(DOWN_BUTTON)  ||
@@ -185,8 +215,9 @@ void buttonSound()
   if (life.isCursor)
   {
     short l = format.p[life.cursor].life;
-    // t = BASE_TONE - (TONE_LIFE * TONE_ONELIFE) - ((l <= 0) ? 0 : ((l > TONE_MIN) ? TONE_MIN : l) * TONE_LIFE);
-    // t =
+    short tAdd = (l >= 100) ? (short)(TONE_ONELIFE * 80) : (l <= -100) ? (short)(TONE_ONELIFE * -120) : ((l - 20) * TONE_ONELIFE);
+    t1 += tAdd;
+    t2 += tAdd;
   }
   beep1.tone(beep1.freq(t1), 1);
   beep2.tone(beep2.freq(t2), 1);

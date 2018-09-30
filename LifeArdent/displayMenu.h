@@ -63,14 +63,6 @@ class DisplayMenu : public Form {
     {
       switch (cursor)
       {
-        case Menu::M_PLAYER:
-        case Menu::M_DICE:
-        case Menu::M_MATCH:
-        case Menu::M_TIME:
-        case Menu::M_DISCARD:
-        case Menu::M_STORM:
-        case Menu::M_COUNT:
-          break;
         case Menu::M_SOUND:
           format->isSound = !format->isSound;
           break;
@@ -95,6 +87,7 @@ class DisplayMenu : public Form {
           format->isSound = !format->isSound;
           break;
         case Menu::M_SETTING:
+          sett->activeSetting();
           break;
       }
     }
@@ -151,7 +144,7 @@ class DisplayMenu : public Form {
         return;
       }
 
-      byte addX = (life >= 100 || life <= -100) ? 3 : (life >= 10 || life <= -10) ? 6 : 11;
+      byte addX = (life >= 100 || life <= -100) ? 3 : (life >= 10 || life <= -10) ? 6 : 10;
       byte addY = 23;
       String txt = (life > 0) ? "+" + String(life) : life;
 

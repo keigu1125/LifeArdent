@@ -14,6 +14,7 @@ class Form
     Form* life = NULL;
     Form* sett = NULL;
 
+    virtual void display() = 0;
     virtual void upButton() = 0;
     virtual void downButton() = 0;
     virtual void leftButton() = 0;

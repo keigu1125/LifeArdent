@@ -131,4 +131,12 @@ class Format
         p[i].counter2 = 0;
       }
     }
+
+    void Format::initMatch()
+    {
+      for (byte i = 0; i < PLAYER_COUNT; i++)
+      {
+        p[i].win = 0;
+      }
+    }
 };
