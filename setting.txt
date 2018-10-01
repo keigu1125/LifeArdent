@@ -1,0 +1,65 @@
+    byte isWritedSetting = 0x00;
+
+GAME
+    byte defaultFormat = 0x00;
+TITLE
+    byte showTitle = 0x00;
+SOUND
+    byte isDefaultSoundOn = 0x00;
+    short baseTone1 = 0;
+    short baseTone2 = 0;
+DISPLAY
+    byte blackScreen = 0x00;
+LED
+    byte isLedTimer = 0x00;
+    byte isLedStorm = 0x00;
+FRAME
+    byte frameRateMain = 0x00;
+    byte frameRateRepeat = 0x00;
+
+
+123456789012345678901
+
+<< GAME  >>
+
+  >>default format
+    [EDH ]
+<< TITLE >>
+
+  >>show Title
+    [ON ]
+
+<< SOUND >>
+
+  >>default sound
+    [OFF]
+  >>base Tone 1
+    [432 Hz]
+  >>base Tone 2
+    [864 Hz]
+  >>alarm
+    [ON ]
+
+<<DISPLAY>>
+
+  >>screen color
+    [BLACK]
+
+<<  LED  >>
+
+  >>timer LED
+    [ON ]
+
+<< FRAME >>
+
+  >>main
+    [20 f/s]
+  >>key repeat
+    [20 f/s]
+
+<< EXIT  >>
+
+  >>save and reboot
+  >>not save, return
+
+  >>erase, reboot

@@ -1,9 +1,6 @@
 class DisplayMenu : public Form {
   private:
     char* image;
-#define imageSizeX 11
-#define imageSizeY 14
-#define LIFE_RESET_SECOND 5000
   public:
     DisplayMenu()
     {
@@ -18,18 +15,13 @@ class DisplayMenu : public Form {
     {
       setImage();
 
-      // ab->drawBitmap(x, y, f_menu, 29, 53, WHITE);
+      ab.drawRect(x, y, 29, 10, WHITE);
+      ab.drawRect(x, y + 43, 29, 10, WHITE);
+      ab.drawRect(x + 1, y + 12, 27, 29, WHITE);
 
-      for (byte i = 0; i < 2; i++)
+      if (format.changeLife == 0)
       {
-        ab->drawRect(x, y + (i * 39), 28, 10, WHITE);
-      }
-      ab->drawRect(x + 1, y + 12, 27, 29, WHITE);
-      // ab->drawRect(x + 2, y + 13, 25, 27, WHITE);
-
-      if (format->changeLife == 0)
-      {
-        ab->drawBitmap(x + 9, y + 19, image, imageSizeX, imageSizeY, WHITE);
+        ab.drawBitmap(x + 9, y + 19, image, imageSizeX, imageSizeY, WHITE);
       }
       else
       {
@@ -38,9 +30,9 @@ class DisplayMenu : public Form {
 
       if (isCursor)
       {
-        ab->drawRect(x + 2, y + 13, 25, 27, WHITE);
-        ab->drawBitmap(x + 9, x + 2, i_arrow_up, 11, 7, WHITE);
-        ab->drawBitmap(x + 9, x + 44, i_arrow_down, 11, 7, WHITE);
+        ab.drawRect(x + 2, y + 13, 25, 27, WHITE);
+        ab.drawBitmap(x + 9, y + 1, i_arrow_up, 11, 7, WHITE);
+        ab.drawBitmap(x + 9, y + 45, i_arrow_down, 11, 7, WHITE);
       }
     }
 
@@ -56,7 +48,7 @@ class DisplayMenu : public Form {
 
     virtual void leftButton()
     {
-      life->cursor = life->format->pCount - 1;
+      life->cursor = format.pCount - 1;
       activeLife();
     }
 
@@ -68,13 +60,9 @@ class DisplayMenu : public Form {
 
     virtual void aButton()
     {
-      switch (cursor)
+      if (cursor == Menu::M_SOUND)
       {
-        case Menu::M_SOUND:
-          format->isSound = !format->isSound;
-          break;
-        case Menu::M_SETTING:
-          break;
+        isSound = !isSound;
       }
     }
 
@@ -91,10 +79,10 @@ class DisplayMenu : public Form {
           activeUtil();
           break;
         case Menu::M_SOUND:
-          format->isSound = !format->isSound;
+          isSound = !isSound;
           break;
         case Menu::M_SETTING:
-          sett->activeSetting();
+          activeSetting();
           break;
       }
     }
@@ -129,7 +117,7 @@ class DisplayMenu : public Form {
           image = i_poison;
           break;
         case Menu::M_SOUND:
-          image =  (format->isSound) ? i_sound_on : i_sound_mute;
+          image =  (isSound) ? i_sound_on : i_sound_mute;
           break;
         case Menu::M_SETTING:
           image = i_setting;
@@ -139,12 +127,12 @@ class DisplayMenu : public Form {
 
     void dispChangeLife()
     {
-      if (abs(format->tPressed.getSubMillisecond()) >= LIFE_RESET_SECOND)
+      if (tPressed.getSecond() >= LIFE_RESET_SECOND)
       {
-        format->changeLife = 0;
+        format.changeLife = 0;
       }
 
-      short life = format->changeLife;
+      short life = format.changeLife;
 
       if (life == 0)
       {
@@ -153,7 +141,7 @@ class DisplayMenu : public Form {
 
       byte addX = (life >= 100 || life <= -100) ? 3 : (life >= 10 || life <= -10) ? 6 : 10;
       byte addY = 23;
-      drawText(ab, x + addX, y + addY, 1, (life > 0) ? "+" + String(life) : life);
+      drawText(x + addX, y + addY, 1, (life > 0) ? "+" + String(life) : life);
     }
 
 };

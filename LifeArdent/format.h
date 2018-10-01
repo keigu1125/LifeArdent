@@ -7,16 +7,28 @@ class Format
     const byte PLAYER_COUNT = 4;
     byte mode = PM_HEAD;
     short changeLife = 0;
-    TimeFormat tPressed;
-    TimeFormat tTimer;
-    bool isSound = true;
+
+    void Format::setXY(byte pC, byte x, byte y, byte w, byte h)
+    {
+      p[pC].x = x;
+      p[pC].y = y;
+      p[pC].w = w;
+      p[pC].h = h;
+    }
 
     void Format::initPlayer()
     {
       for (byte i = 0; i < PLAYER_COUNT; i++)
       {
-        short life = (mode == EDH || (i == 0 && mode == ARCH)) ? 40 : 20;
-        p[i].init(life);
+        short life = (mode == EDH || (mode == ARCH && i == 0)) ? 40 : 20;
+        for (byte j = 0; j < PLAYER_COUNT; j++)
+        {
+          p[i].c[j] = 0;
+        }
+        p[i].life = life;
+        p[i].win = 0;
+        p[i].counter1 = 0;
+        p[i].counter2 = 0;
       }
     }
 
@@ -42,32 +54,32 @@ class Format
       {
         case PlayMode::P1:
           pCount = 1;
-          p[0].setXY( 0,  0, 97, 53);
+          setXY(0,  0,  0, 97, 53);
           break;
         case PlayMode::P2:
           pCount = 2;
-          p[0].setXY( 0,  0, 48, 53);
-          p[1].setXY(49,  0, 48, 53);
+          setXY(0,  0,  0, 48, 53);
+          setXY(1, 49,  0, 48, 53);
           break;
         case PlayMode::P3:
           pCount = 3;
-          p[0].setXY( 0,  0, 48, 27);
-          p[1].setXY(49,  0, 48, 27);
-          p[2].setXY(24, 26, 48, 27);
+          setXY(0,  0,  0, 48, 27);
+          setXY(1, 49,  0, 48, 27);
+          setXY(2, 24, 26, 48, 27);
           break;
         case PlayMode::EDH:
           pCount = 4;
-          p[0].setXY( 0,  0, 48, 27);
-          p[1].setXY(49,  0, 48, 27);
-          p[2].setXY( 0, 26, 48, 27);
-          p[3].setXY(49, 26, 48, 27);
+          setXY(0,  0,  0, 48, 27);
+          setXY(1, 49,  0, 48, 27);
+          setXY(2,  0, 26, 48, 27);
+          setXY(3, 49, 26, 48, 27);
           break;
         case PlayMode::ARCH:
           pCount = 4;
-          p[0].setXY( 0,  0, 97, 27);
-          p[1].setXY( 0, 26, 33, 27);
-          p[2].setXY(32, 26, 33, 27);
-          p[3].setXY(64, 26, 33, 27);
+          setXY(0,  0,  0, 97, 27);
+          setXY(1,  0, 26, 33, 27);
+          setXY(2, 32, 26, 33, 27);
+          setXY(3, 64, 26, 33, 27);
           break;
       }
 
