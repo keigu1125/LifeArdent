@@ -85,7 +85,14 @@ void drawText(byte a, byte b, byte fs, String mes)
   ab.print(mes);
 }
 
-void drawText(byte a, byte b, byte fs, short mes)
+void drawText(byte a, byte b, byte fs, int mes)
+{
+  ab.setCursor(a, b);
+  ab.setTextSize(fs);
+  ab.print(mes);
+}
+
+void drawText(byte a, byte b, byte fs, char* mes)
 {
   ab.setCursor(a, b);
   ab.setTextSize(fs);
@@ -317,6 +324,15 @@ void drawBigDice(byte x, byte y, byte number)
   }
 }
 
+char* getBlackWhite(byte value)
+{
+  return value == 0x00 ? "BLACK" : "WHITE";
+}
+
+char* getOnOff(byte value)
+{
+  return value == 0x00 ? "OFF" : "0N";
+}
 
 void activeMenu()
 {

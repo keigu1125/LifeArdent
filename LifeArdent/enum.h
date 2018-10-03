@@ -45,10 +45,10 @@ enum SettingMenu
 enum PlayMode
 {
   PM_HEAD = 0,
-  P1   = 0,
-  P2   = 1,
-  P3   = 2,
-  EDH  = 3,
-  ARCH = 4,
+  PM_P1   = 0,
+  PM_P2   = 1,
+  PM_P3   = 2,
+  PM_EDH  = 3,
+  PM_ARCH = 4,
   PM_TAIL = 4
 };

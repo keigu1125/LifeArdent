@@ -1,4 +1,5 @@
-class DisplayMenu : public Form {
+class DisplayMenu : public Form
+{
   private:
     char* image;
   public:
@@ -15,13 +16,13 @@ class DisplayMenu : public Form {
     {
       setImage();
 
-      ab.drawRect(x, y, 29, 10, WHITE);
-      ab.drawRect(x, y + 43, 29, 10, WHITE);
-      ab.drawRect(x + 1, y + 12, 27, 29, WHITE);
+      ab.drawRect(x, y, 30, 10, WHITE);
+      ab.drawRect(x, y + 43, 30, 10, WHITE);
+      ab.drawRect(x + 2, y + 12, 27, 29, WHITE);
 
-      if (format.changeLife == 0)
+      if (changeLife == 0)
       {
-        ab.drawBitmap(x + 9, y + 19, image, imageSizeX, imageSizeY, WHITE);
+        ab.drawBitmap(x + 10, y + 19, image, imageSizeX, imageSizeY, WHITE);
       }
       else
       {
@@ -30,9 +31,9 @@ class DisplayMenu : public Form {
 
       if (isCursor)
       {
-        ab.drawRect(x + 2, y + 13, 25, 27, WHITE);
-        ab.drawBitmap(x + 9, y + 1, i_arrow_up, 11, 7, WHITE);
-        ab.drawBitmap(x + 9, y + 45, i_arrow_down, 11, 7, WHITE);
+        ab.drawRect(x + 3, y + 13, 25, 27, WHITE);
+        ab.drawBitmap(x + 10, y + 1, i_arrow_up, 11, 7, WHITE);
+        ab.drawBitmap(x + 10, y + 45, i_arrow_down, 11, 7, WHITE);
       }
     }
 
@@ -48,7 +49,7 @@ class DisplayMenu : public Form {
 
     virtual void leftButton()
     {
-      life->cursor = format.pCount - 1;
+      life->cursor = pCount - 1;
       activeLife();
     }
 
@@ -129,17 +130,17 @@ class DisplayMenu : public Form {
     {
       if (tPressed.getSecond() >= LIFE_RESET_SECOND)
       {
-        format.changeLife = 0;
+        changeLife = 0;
       }
 
-      short life = format.changeLife;
+      int life = changeLife;
 
       if (life == 0)
       {
         return;
       }
 
-      byte addX = (life >= 100 || life <= -100) ? 3 : (life >= 10 || life <= -10) ? 6 : 10;
+      byte addX = (life >= 100 || life <= -100) ? 4 : (life >= 10 || life <= -10) ? 7 : 10;
       byte addY = 23;
       drawText(x + addX, y + addY, 1, (life > 0) ? "+" + String(life) : life);
     }

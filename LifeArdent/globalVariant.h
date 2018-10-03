@@ -1,13 +1,13 @@
 #include "player.h"
 #include "time.h"
 #include "enum.h"
-#include "format.h"
 #include "image.h"
 #include "setting.h"
 #include "form.h"
 
 Arduboy ab;
-Format format;
+Player p[4];
+
 Setting setting;
 TimeFormat tPressed;
 TimeFormat tTimer;
@@ -21,11 +21,10 @@ bool isMain = false;
 bool isSound = true;
 bool pressFirst = true;
 
-const byte LEDpin[3] = {
-  RED_LED,
-  GREEN_LED,
-  BLUE_LED
-};
+byte pCount = 0;
+const byte PLAYER_COUNT = 4;
+byte mode = PM_HEAD;
+int changeLife = 0;
 
 // LifeArdent.ino
 #define BUTTON_REPEAT 350

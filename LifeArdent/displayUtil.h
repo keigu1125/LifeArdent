@@ -4,16 +4,16 @@ class DisplayUtil : public Form
   public:
     byte hand = 7;
     byte discard = 2;
-    byte card[11];
+    byte card[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     byte cursorC = 0;
-    byte storm[7];
+    byte storm[7] = {0, 0, 0, 0, 0, 0, 0};
     byte dCount = 2;
-    byte d[8];
+    byte d[8] = {0, 0, 0, 0, 0, 0, 0, 0};
     byte cPage = 0;
     byte mPage = 0;
     bool isTimer = false;
     // MAX_PLAYER, MAX_DICE, MAX_MATCH, MAX_TIME, MAX_DISCARD, MAX_STORM, MAX_COUNR, MAX_SOUND, MAX_SETTING
-    const byte utilMenuMax[9] = {0, 1, 2, 0, 1, 6, 2, 0, 0};
+    const PROGMEM byte utilMenuMax[9] = {0, 1, 2, 0, 1, 6, 2, 0, 0};
 
     DisplayUtil()
     {
@@ -24,24 +24,22 @@ class DisplayUtil : public Form
       // cursorMax = 0;
 
       // 乱数生成
-      Serial.begin(9600);
-      randomSeed(analogRead(0));
-      Serial.end();
+      ab.initRandomSeed();
     }
 
     void DisplayUtil::display()
     {
-      String out = "";
+      String out;
       if (isCursor)
       {
         switch (menu->cursor)
         {
           case Menu::M_PLAYER:
-            out += format.getModeName(format.mode - 1);
-            out += (format.mode > PM_HEAD) ? " << " : "    ";
-            out += format.getModeName(format.mode);
-            out += (format.mode < PM_TAIL) ? " >> " : "    ";
-            out += format.getModeName(format.mode + 1);
+            out = getModeName(mode - 1)
+                + (mode > PM_HEAD ? " << " : "    ")
+                + getModeName(mode)
+                + (mode < PM_TAIL ? " >> " : "    ")
+                + getModeName(mode + 1);
             break;
           case Menu::M_DICE:
             dispDice();
@@ -99,7 +97,7 @@ class DisplayUtil : public Form
             out = "Count Storm & mana.";
             break;
           case Menu::M_COUNT:
-            if (format.isCounterUsed())
+            if (isCounterUsed())
             {
               dispCounter();
             }
@@ -109,7 +107,8 @@ class DisplayUtil : public Form
             }
             break;
           case Menu::M_SOUND:
-            out = (isSound) ? "Set Sound. [ ON ]" : "Set Sound. [MUTE]";
+            out = "Set Sound. ";
+            out += ((isSound) ? "[ ON ]" : "[MUTE]");
             break;
           case Menu::M_SETTING:
             out = "Life Ardent Settings.";
@@ -130,7 +129,7 @@ class DisplayUtil : public Form
             }
             break;
           case Menu::M_COUNT:
-            if (format.isCounterUsed())
+            if (isCounterUsed())
             {
               dispCounter();
             }
@@ -158,10 +157,10 @@ class DisplayUtil : public Form
               addValue(&mPage, 2);
               break;
             case 1:
-              addValue(&format.p[mPage].win, 4);
+              addValue(&p[mPage].win, 4);
               break;
             case 2:
-              addValue(&format.p[mPage + 1].win, 4);
+              addValue(&p[mPage + 1].win, 4);
               break;
           }
           break;
@@ -187,13 +186,13 @@ class DisplayUtil : public Form
           switch (cursorC)
           {
             case 0:
-              addValue(&cPage, (format.PLAYER_COUNT) - 1);
+              addValue(&cPage, (PLAYER_COUNT) - 1);
               break;
             case 1:
-              addValue(&format.p[cPage].counter1, 10);
+              addValue(&p[cPage].counter1, 10);
               break;
             case 2:
-              addValue(&format.p[cPage].counter2, 10);
+              addValue(&p[cPage].counter2, 10);
               break;
           }
           break;
@@ -222,10 +221,10 @@ class DisplayUtil : public Form
               subValue(&mPage, 0);
               break;
             case 1:
-              subValue(&format.p[mPage].win, 0);
+              subValue(&p[mPage].win, 0);
               break;
             case 2:
-              subValue(&format.p[mPage + 1].win, 0);
+              subValue(&p[mPage + 1].win, 0);
               break;
           }
           break;
@@ -256,10 +255,10 @@ class DisplayUtil : public Form
               subValue(&cPage, 0);
               break;
             case 1:
-              subValue(&format.p[cPage].counter1, 0);
+              subValue(&p[cPage].counter1, 0);
               break;
             case 2:
-              subValue(&format.p[cPage].counter2, 0);
+              subValue(&p[cPage].counter2, 0);
               break;
           }
           break;
@@ -270,7 +269,7 @@ class DisplayUtil : public Form
     {
       if (menu->cursor == 0)
       {
-        format.initMode(format.mode - 1);
+        initMode(mode - 1);
         return;
       }
       rotateDown(&cursorC, 0, utilMenuMax[menu->cursor]);
@@ -280,7 +279,7 @@ class DisplayUtil : public Form
     {
       if (menu->cursor == Menu::M_PLAYER)
       {
-        format.initMode(format.mode + 1);
+        initMode(mode + 1);
         return;
       }
       rotateUp(&cursorC, 0, utilMenuMax[menu->cursor]);
@@ -342,10 +341,10 @@ class DisplayUtil : public Form
           initArray(d, DICE_ALL_MAX);
           break;
         case Menu::M_MATCH:
-          format.initMatch();
+          initMatch();
           break;
         case Menu::M_COUNT:
-          format.initCounter();
+          initCounter();
           break;
       }
     }
@@ -386,7 +385,7 @@ class DisplayUtil : public Form
       ab.drawLine(x + 29, y, x + 29, y + 6, WHITE);
       ab.drawLine(x + 78, y, x + 78, y + 6, WHITE);
 
-      for (byte i = 0; i < format.p[cPage].counter1; i++)
+      for (byte i = 0; i < p[cPage].counter1; i++)
       {
         byte drawX = x + 37 + (i * 4);
         byte drawY = y + 7;
@@ -396,7 +395,7 @@ class DisplayUtil : public Form
 
         ab.fillRect(drawX, drawY - h, w, h, WHITE);
       }
-      for (byte i = 0; i < format.p[cPage].counter2; i++)
+      for (byte i = 0; i < p[cPage].counter2; i++)
       {
         byte drawX = x + 86 + (i * 4);
         byte drawY = y + 7;
@@ -420,14 +419,14 @@ class DisplayUtil : public Form
       ab.drawLine(x + 29, y, x + 29, y + 6, WHITE);
       ab.drawLine(x + 78, y, x + 78, y + 6, WHITE);
 
-      for (byte i = 0; i < format.p[mPage].win; i++)
+      for (byte i = 0; i < p[mPage].win; i++)
       {
         byte drawX = x + 36 + (i * 10);
         byte drawY = y - 1;
 
         ab.drawBitmap(drawX, drawY, i_s_win, 9, 9, WHITE);
       }
-      for (byte i = 0; i < format.p[mPage + 1].win; i++)
+      for (byte i = 0; i < p[mPage + 1].win; i++)
       {
         byte drawX = x + 85 + (i * 10);
         byte drawY = y - 1;

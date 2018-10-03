@@ -1,7 +1,7 @@
 class Setting
 {
 #define DEF_IS_WRITE_SETTING  0x00
-#define DEF_SHOW_TITLE        0x00
+#define DEF_SHOW_TITLE        0x01
 #define DEF_IS_SOUND_DEFAULT  0x01
 #define DEF_IS_SOUND_TIMER    0x01
 #define DEF_BASE_TONE         1000
@@ -16,7 +16,7 @@ class Setting
     byte showTitle = 0x00;
     byte isSoundDefault = 0x00;
     byte isSoundTimer = 0x00;
-    short baseTone = 0;
+    int baseTone = 0;
     byte isLedTimer = 0x00;
     byte defaultFormat = 0x00;
     byte frameRateMain = 0x00;
@@ -26,7 +26,7 @@ class Setting
     void readEepRomSetting()
     {
       byte point = 16;
-      //isWritedSetting = EEPROM.read(point++);
+      isWritedSetting = EEPROM.read(point++);
       if (isWritedSetting == 0x00)
       {
         setDefaultSetting();

@@ -1,6 +1,8 @@
 #include "Arduboy.h"
+#include "string.h"
 #include "globalVariant.h"
 #include "util.h"
+#include "format.h"
 #include "displayMenu.h"
 #include "displayLife.h"
 #include "displayUtil.h"
@@ -19,7 +21,7 @@ void setup()
 
   setting.readEepRomSetting();
 
-  format.initMode(setting.defaultFormat);
+  initMode(setting.defaultFormat);
   ab.setFrameRate(setting.frameRateMain);
   ab.invert(setting.blackScreen);
   isTitle = (setting.showTitle == 0x01);
@@ -43,15 +45,15 @@ void loop()
 
 void disp()
 {
-  if (isMain)
+  if (sett->isCursor)
+  {
+    sett->display();
+  }
+  else if (isMain)
   {
     menu->display();
     life->display();
     util->display();
-  }
-  else if (sett->isCursor)
-  {
-    sett->display();
   }
   else if (isTitle)
   {
@@ -123,10 +125,10 @@ void buttonSound()
     return;
   }
 
-  short t1 = setting.baseTone;
+  int t1 = setting.baseTone;
   if (life->isCursor)
   {
-    short l = format.p[life->cursor].life;
+    int l = p[life->cursor].life;
     t1 += (l >= 100) ? (TONE_ONELIFE * 80) : (l <= -20) ? (TONE_ONELIFE * -40) : ((l - 20) * TONE_ONELIFE);
   }
   ab.tunes.tone(t1, 20);

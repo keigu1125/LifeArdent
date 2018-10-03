@@ -38,7 +38,7 @@ class TimeFormat
       return (byte)(interval / 1000 % 60);
     }
     
-    short TimeFormat::getMillis()
+    int TimeFormat::getMillis()
     {
       return (interval >= 1000) ? 1000 : interval % 1000;
     }
