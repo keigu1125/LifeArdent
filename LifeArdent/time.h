@@ -30,7 +30,7 @@ class TimeFormat
 
     byte TimeFormat::getMinute()
     {
-      return (byte)(interval / 1000 / 60);
+      return (byte)(interval / 1000 / 60 % 60);
     }
 
     byte TimeFormat::getSecond()

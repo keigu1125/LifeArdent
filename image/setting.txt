@@ -32,7 +32,7 @@ FRAME
 << SOUND >>
 
   >>default sound
-    [OFF]
+    [OFF]/Users/vorpal/Downloads/Arduboy.js-master/simulator/index.html
   >>base Tone 1
     [432 Hz]
   >>base Tone 2
