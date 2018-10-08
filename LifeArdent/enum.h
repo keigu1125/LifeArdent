@@ -3,14 +3,13 @@ enum Menu
   M_HEAD = 0,
   M_PLAYER = 0,
   M_DICE = 1,
-  M_MATCH = 2,
-  M_TIME = 3,
-  M_DISCARD = 4,
-  M_STORM = 5,
-  M_COUNT = 6,
-  M_SOUND = 7,
-  M_SETTING = 8,
-  M_TAIL = 8
+  M_TIME = 2,
+  M_DISCARD = 3,
+  M_STORM = 4,
+  M_COUNT = 5,
+  M_SOUND = 6,
+  M_SETTING = 7,
+  M_TAIL = 7
 };
 
 enum SettingMenuTitle

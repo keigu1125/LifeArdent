@@ -1,11 +1,8 @@
 class DisplaySetting : public Form
 {
   private:
-    const byte HIGHT = 8;
-    const byte IND   = 12;
   public:
-    byte cursorC = 0x00;
-    byte cursorCMax = 0x00;
+    byte cursorCMax = 0;
 
     DisplaySetting()
     {
@@ -15,7 +12,6 @@ class DisplaySetting : public Form
       // cursor = Menu::M_HEAD;
       cursorMax = M_TAIL;
     }
-
 
     void DisplaySetting::display()
     {
@@ -128,17 +124,13 @@ class DisplaySetting : public Form
         case SMT_EXIT:
           break;
       }
-
     }
 
-    virtual void aButton()
-    {
-
-    }
+    virtual void aButton() {}
 
     virtual void bButton()
     {
-      if (cursor != SMT_EXIT)
+      if (cursor != SMT_EXIT || cursorC == 0)
       {
         return;
       }
@@ -162,14 +154,10 @@ class DisplaySetting : public Form
       asm volatile ("   jmp 0");
     }
 
-    virtual void abButton()
-    {
-
-    }
+    virtual void abButton() {}
 
   private:
-
-    String getMenuTitle(byte c)
+    char* getMenuTitle(byte c)
     {
       switch (c)
       {
@@ -278,5 +266,4 @@ class DisplaySetting : public Form
 
       drawArrowLeft(1, 13 + ((cursorC - 1) * HIGHT * 2), WHITE);
     }
-
 };

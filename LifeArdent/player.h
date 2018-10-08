@@ -5,7 +5,6 @@ struct Player
     byte y = 0;
     byte w = 0;
     byte h = 0;
-    byte win = 0;
     byte counter1 = 0;
     byte counter2 = 0;
     byte c[4] = {0, 0, 0, 0};

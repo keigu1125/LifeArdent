@@ -3,7 +3,6 @@ class DisplayLife : public Form
   private:
   public:
     bool isCursorC = false;
-    byte cursorC = 0;
 
     DisplayLife()
     {
@@ -18,6 +17,10 @@ class DisplayLife : public Form
     {
       drawFrame();
       drawLife();
+      if (mode == PM_EDH)
+      {
+        drawMiniC();
+      }
 
       if (isCursor)
       {
@@ -137,67 +140,68 @@ class DisplayLife : public Form
       byte cMax = (mode == PM_EDH) ? 4 : 1;
       for (byte i = 0; i < pCount; i++)
       {
-        byte drawX = x + p[i].x;
-        byte drawY = y + p[i].y;
-        ab.drawRect(drawX, drawY, p[i].w, p[i].h, WHITE);
+        Player pl = p[i];
+        byte drawX = pl.x + x;
+        byte drawY = pl.y + y;
+        ab.drawRect(drawX, drawY, pl.w, pl.h, WHITE);
         for (byte j = 0; j < cMax; j++)
         {
           byte drawCX = drawX;
           byte drawCY = drawY;
-          drawCX += (j == 1 || j == 3) ? (p[i].w - rectW - 2) : 0;
-          drawCY += (j == 2 || j == 3) ? (p[i].h - rectH - 2) : 0;
-          ab.drawRect(drawCX, drawCY, rectW + 2, rectH + 2, WHITE);
+          drawCX += (j == 1 || j == 3) ? (pl.w - CURSOR_RECT_W - 2) : 0;
+          drawCY += (j == 2 || j == 3) ? (pl.h - CURSOR_RECT_H - 2) : 0;
+          ab.drawRect(drawCX, drawCY, CURSOR_RECT_W + 2, CURSOR_RECT_H + 2, WHITE);
         }
       }
     }
 
     void DisplayLife::drawCursor()
     {
-      byte drawX = x + p[cursor].x + 1;
-      byte drawY = y + p[cursor].y + 1;
+      Player pl = p[cursor];
+      byte drawX = x + pl.x + 1;
+      byte drawY = y + pl.y + 1;
       if (mode == PM_EDH)
       {
-        drawX += (cursor == 1 || cursor == 3) ? (p[cursor].w - rectW - 2) : 0;
-        drawY += (cursor == 2 || cursor == 3) ? (p[cursor].h - rectH - 2) : 0;
+        drawX += (cursor == 1 || cursor == 3) ? (pl.w - CURSOR_RECT_W - 2) : 0;
+        drawY += (cursor == 2 || cursor == 3) ? (pl.h - CURSOR_RECT_H - 2) : 0;
       }
 
-      ab.fillRect(drawX, drawY, rectW, rectH, 1);
+      ab.fillRect(drawX, drawY, CURSOR_RECT_W, CURSOR_RECT_H, 1);
     }
 
-    void DisplayLife::drawMiniC(byte i, byte drawX, byte drawY)
+    void DisplayLife::drawMiniC()
     {
-      if (mode != PM_EDH)
+      for (int i = 0; i < PLAYER_COUNT; i++)
       {
-        return;
-      }
-
-      for (byte j = 0; j < 4; j++)
-      {
-        if (i == j)
+        Player pl = p[i];
+        for (byte j = 0; j < 4; j++)
         {
-          continue;
+          if (i == j)
+          {
+            continue;
+          }
+          byte miniLife = pl.c[j];
+          byte drawMiniX = pl.x + x + 1;
+          byte drawMiniY = pl.y + y + 1;
+
+          drawMiniX += (j == 1 || j == 3) ? (pl.w - CURSOR_RECT_W - 2) : 0;
+          drawMiniY += (j == 2 || j == 3) ? (pl.h - CURSOR_RECT_H - 2) : 0;
+
+          drawSmallNumber(drawMiniX, drawMiniY, miniLife, true);
         }
-
-        byte drawMiniX = drawX + 1;
-        byte drawMiniY = drawY + 1;
-
-        drawMiniX += (j == 1 || j == 3) ? (p[i].w - rectW - 2) : 0;
-        drawMiniY += (j == 2 || j == 3) ? (p[i].h - rectH - 2) : 0;
-
-        byte miniLife = p[i].c[j];
-        drawSmallNumber(drawMiniX, drawMiniY, miniLife, true);
       }
     }
 
-    void DisplayLife::drawLife()
+    void DisplayLife::_drawLife()
     {
       for (byte i = 0; i < pCount; i++)
       {
-        int life = p[i].life;
+        Player pl = p[i];
+
+        int life = pl.life;
         byte fSize = 2;
-        // 以下、int以外にしない
-        int drawX = p[i].x + x;
-        int drawY = p[i].y + y;
+        byte drawX = pl.x + x;
+        byte drawY = pl.y + y;
 
         switch (mode)
         {
@@ -231,7 +235,6 @@ class DisplayLife : public Form
             break;
           case PM_P3:
           case PM_EDH:
-            drawMiniC(i, drawX, drawY);
             if (life >= 100 || life <= -10)
             {
               drawText(drawX + 15, drawY + 9, 1, life);
@@ -281,78 +284,78 @@ class DisplayLife : public Form
       }
     }
 
-    void DisplayLife::_drawLife()
+    void DisplayLife::drawLife()
     {
       for (byte i = 0; i < pCount; i++)
       {
-        int life = p[i].life;
+        Player pl = p[i];
 
+        int life = pl.life;
         byte fSize = 2;
-        byte drawX = p[i].x + x;
-        byte drawY = p[i].y + y;
+        byte drawX = pl.x + x;
+        byte drawY = pl.y + y;
 
         switch (mode)
         {
           case PM_P1:
             if (life >= 100 || life <= -10)
             {
-              fSize = 4;
               drawX += 14;
               drawY += 11;
+              fSize = 4;
             }
             else if (life >= 0 && life <= 9)
             {
-              fSize = 5;
               drawX += 36;
               drawY += 8;
+              fSize = 5;
             }
             else
             {
-              fSize = 5;
               drawX += 21;
               drawY += 8;
+              fSize = 5;
             }
             break;
           case PM_P2:
             if (life >= 100 || life <= -10)
             {
-              // fSize = 2;
               drawX += 7;
               drawY += 18;
+              fSize = 2;
             }
             else if (life >= 0 && life <= 9)
             {
-              fSize = 3;
               drawX += 18;
               drawY += 15;
+              fSize = 3;
             }
             else
             {
-              fSize = 3;
               drawX += 8;
               drawY += 15;
+              fSize = 3;
             }
             break;
           case PM_P3:
           case PM_EDH:
-            drawMiniC(i, drawX, drawY);
             if (life >= 100 || life <= -10)
             {
-              fSize = 1;
               drawX += 15;
               drawY += 9;
+              fSize = 1;
             }
             else if (life >= 0 && life <= 9)
             {
-              // fSize = 2;
               drawX += 20;
               drawY += 6;
+              fSize = 2;
             }
             else
             {
-              // fSize = 2;
               drawX += 13;
               drawY += 6;
+              fSize = 2;
             }
             break;
           case PM_ARCH:
@@ -360,47 +363,46 @@ class DisplayLife : public Form
             {
               if (life >= 100 || life <= -10)
               {
-                // fSize = 2;
                 drawX += 30;
                 drawY += 6;
+                fSize = 2;
               }
               else if (life >= 0 && life <= 9)
               {
-                // fSize = 2;
                 drawX += 44;
                 drawY += 6;
+                fSize = 2;
               }
               else
               {
-                // fSize = 2;
                 drawX += 37;
                 drawY += 6;
+                fSize = 2;
               }
             }
             else
             {
               if (life >= 100 || life <= -10)
               {
-                fSize = 1;
                 drawX += 8;
                 drawY += 14;
+                fSize = 1;
               }
               else if (life >= 0 && life <= 9)
               {
-                // fSize = 2;
                 drawX += 12;
                 drawY += 10;
+                fSize = 2;
               }
               else
               {
-                // fSize = 2;
                 drawX += 5;
                 drawY += 10;
+                fSize = 2;
               }
             }
             break;
         }
-        String a = String(drawX);
         drawText(drawX, drawY, fSize, life);
       }
     }
@@ -409,8 +411,8 @@ class DisplayLife : public Form
     {
       byte drawX = x + p[cursor].x + 3;
       byte drawY = y + p[cursor].y + 1;
-      drawX += (cursorC == 1 || cursorC == 3) ? (p[cursor].w - rectW - 4) : 0;
-      drawY += rectH + 3;
+      drawX += (cursorC == 1 || cursorC == 3) ? (p[cursor].w - CURSOR_RECT_W - 4) : 0;
+      drawY += CURSOR_RECT_H + 3;
 
       switch (cursorC)
       {
@@ -424,10 +426,4 @@ class DisplayLife : public Form
           break;
       }
     }
-
-    void DisplayLife::drawLife(byte i)
-    {
-
-    }
-
 };

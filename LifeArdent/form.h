@@ -5,6 +5,7 @@ class Form
     byte y = 0;
     byte cursor = 0;
     byte cursorMax = 0;
+    byte cursorC = 0;
     bool isCursor = false;
 
     virtual void display() = 0;

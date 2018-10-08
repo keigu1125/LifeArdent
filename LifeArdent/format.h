@@ -8,14 +8,26 @@ void setXY(byte pC, byte x, byte y, byte w, byte h)
 
 void initPlayerLife()
 {
-  for (byte i = 0; i < PLAYER_COUNT; i++)
+  for (auto& pl : p)
   {
-    int life = (mode == PM_EDH || (i == 0 && mode == PM_ARCH)) ? 40 : 20;
-    p[i].life = life;
-    for (auto &cu : p[i].c)
+    int life = INIT_LIFE_NORMAL;
+
+    if (mode == PM_EDH)
+    {
+      life = INIT_LIFE_EDH;
+    }
+    
+    for (auto &cu : pl.c)
     {
       cu = 0;
     }
+
+    pl.life = life;
+  }
+
+  if (mode == PM_ARCH)
+  {
+    p[0].life = INIT_LIFE_ARCH;
   }
 }
 
@@ -28,18 +40,9 @@ void initCounter()
   }
 }
 
-void initMatch()
-{
-  for (auto &pl : p)
-  {
-    pl.win = 0;
-  }
-}
-
 void initPlayer()
 {
   initPlayerLife();
-  initMatch();
   initCounter();
 }
 

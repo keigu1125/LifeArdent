@@ -8,7 +8,6 @@ class Setting
 #define DEF_IS_LED_TIMER      0x01
 #define DEF_DEFAULT_FORMAT    0x01
 #define DEF_FRAME_RATE_MAIN   20
-#define DEF_FRAME_RATE_REPEAT 20
 #define DEF_BLACK_SCREEN      0x00
 
   public:
@@ -20,7 +19,6 @@ class Setting
     byte isLedTimer = 0x00;
     byte defaultFormat = 0x00;
     byte frameRateMain = 0x00;
-    byte frameRateRepeat = 0x00;
     byte blackScreen = 0x00;
 
     void readEepRomSetting()
@@ -40,7 +38,6 @@ class Setting
       isLedTimer = EEPROM.read(point++);
       defaultFormat = EEPROM.read(point++);
       frameRateMain = EEPROM.read(point++);
-      frameRateRepeat = EEPROM.read(point++);
       blackScreen = EEPROM.read(point++);
     }
 
@@ -57,7 +54,6 @@ class Setting
       EEPROM.write(point++, isLedTimer);
       EEPROM.write(point++, defaultFormat);
       EEPROM.write(point++, frameRateMain);
-      EEPROM.write(point++, frameRateRepeat);
       EEPROM.write(point++, blackScreen);
     }
 
@@ -72,7 +68,6 @@ class Setting
       isLedTimer = DEF_IS_LED_TIMER;
       defaultFormat = DEF_DEFAULT_FORMAT;
       frameRateMain = DEF_FRAME_RATE_MAIN;
-      frameRateRepeat = DEF_FRAME_RATE_REPEAT;
       blackScreen = DEF_BLACK_SCREEN;
     }
 };

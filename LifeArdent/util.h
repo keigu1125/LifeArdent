@@ -1,3 +1,10 @@
+bool someButtonPressed()
+{
+  return (ab.pressed(UP_BUTTON)   || ab.pressed(DOWN_BUTTON)  ||
+          ab.pressed(LEFT_BUTTON) || ab.pressed(RIGHT_BUTTON) ||
+          ab.pressed(A_BUTTON)    || ab.pressed(B_BUTTON));
+}
+
 bool rotateUp(byte* target, byte min, byte max)
 {
   if (*target == max)
@@ -52,6 +59,64 @@ void initArray(byte* ar, byte size)
   {
     *ar++ = 0;
   }
+}
+
+byte getMinute(long l)
+{
+  return (byte)(l / 1000 / 60 % 60);
+}
+
+String getHMS(long lStop)
+{
+  byte h = (byte)(lStop / 1000 / 3600);
+  byte m = getMinute(lStop);
+  byte s = (byte)(lStop / 1000 % 60);
+
+  return String(h) + ":" + ((m < 10) ? "0" + String(m) : String(m)) + ":" + ((s < 10) ? "0" + String(s) : String(s));
+}
+
+void checkAlarm()
+{
+  if (!isTimer || tStop >= millis())
+  {
+    return;
+  }
+
+  pressPole = true;
+  isTimer = false;
+  tStop = 0;
+  byte toneCnt = 0;
+  long toneStart = millis();
+  while (!someButtonPressed())
+  {
+    int time = millis() - toneStart;
+    if ((toneCnt == 0 && time >= 0) || (toneCnt == 1 && time >= 250))
+    {
+      toneCnt++;
+      if (setting.isLedTimer)
+      {
+        ab.setRGBled(1, 0, 0);
+      }
+      if (setting.isSoundTimer)
+      {
+        ab.tunes.tone(setting.baseTone, 200);
+      }
+    }
+    else if (toneCnt == 2)
+    {
+      toneCnt++;
+      ab.setRGBled(0, 0, 0);
+    }
+    else if (time > 1000)
+    {
+      toneCnt = 0;
+      toneStart = millis();
+    }
+  }
+
+  ab.setRGBled(0, 0, 0);
+  pressPole = true;
+  pressFirst = false;
 }
 
 void drawArrowLeft(byte x, byte y, bool white)

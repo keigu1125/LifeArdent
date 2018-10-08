@@ -1,5 +1,4 @@
 #include "Arduboy.h"
-#include "string.h"
 #include "globalVariant.h"
 #include "util.h"
 #include "format.h"
@@ -24,9 +23,9 @@ void setup()
   initMode(setting.defaultFormat);
   ab.setFrameRate(setting.frameRateMain);
   ab.invert(setting.blackScreen);
-  isTitle = (setting.showTitle == 0x01);
+  isTitle = (setting.showTitle);
   isMain = !isTitle;
-  isSound = (setting.isSoundDefault == 0x01);
+  isSound = (setting.isSoundDefault);
 
   activeMenu();
 }
@@ -38,9 +37,10 @@ void loop()
     return;
   }
   ab.clear();
-  button();
   disp();
   ab.display();
+  checkAlarm();
+  button();
 }
 
 void disp()
@@ -77,8 +77,12 @@ void button()
 {
   if (!someButtonPressed())
   {
-    tPressed.setStop();
     pressFirst = true;
+    pressPole = false;
+    if (tPressed + LIFE_RESET_SECOND < millis())
+    {
+      tPressed = 0;
+    }
     return;
   }
 
@@ -87,35 +91,30 @@ void button()
     return;
   }
 
+  if (pressFirst)
+  {
+    pressFirst = false;
+    tPressed = millis() + BUTTON_REPEAT;
+  }
+  else
+  {
+    tPressed = millis();
+  }
+
   if (isTitle)
   {
     isTitle = false;
     isMain = true;
-    return true;
+    return;
   }
 
   pressButton();
   buttonSound();
 }
 
-bool someButtonPressed()
-{
-  return (ab.pressed(UP_BUTTON)   || ab.pressed(DOWN_BUTTON)  ||
-          ab.pressed(LEFT_BUTTON) || ab.pressed(RIGHT_BUTTON) ||
-          ab.pressed(A_BUTTON)    || ab.pressed(B_BUTTON));
-}
-
 bool allowButtonPress()
 {
-  tPressed.setNow();
-
-  if (pressFirst)
-  {
-    pressFirst = false;
-    return true;
-  }
-
-  return (tPressed.getMillis() >= BUTTON_REPEAT);
+  return pressFirst || (!pressPole && (tPressed < millis()));
 }
 
 void buttonSound()

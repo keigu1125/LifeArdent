@@ -1,7 +1,6 @@
 class DisplayMenu : public Form
 {
   private:
-    char* image;
   public:
     DisplayMenu()
     {
@@ -14,26 +13,24 @@ class DisplayMenu : public Form
 
     void DisplayMenu::display()
     {
-      setImage();
-
-      ab.drawRect(x, y, 30, 10, WHITE);
-      ab.drawRect(x, y + 43, 30, 10, WHITE);
+      ab.drawRect(x    , y     , 30, 10, WHITE);
+      ab.drawRect(x    , y + 43, 30, 10, WHITE);
       ab.drawRect(x + 2, y + 12, 27, 29, WHITE);
-
-      if (changeLife == 0)
-      {
-        ab.drawBitmap(x + 10, y + 19, image, imageSizeX, imageSizeY, WHITE);
-      }
-      else
-      {
-        dispChangeLife();
-      }
 
       if (isCursor)
       {
         ab.drawRect(x + 3, y + 13, 25, 27, WHITE);
         ab.drawBitmap(x + 10, y + 1, i_arrow_up, 11, 7, WHITE);
         ab.drawBitmap(x + 10, y + 45, i_arrow_down, 11, 7, WHITE);
+      }
+
+      if (changeLife == 0)
+      {
+        ab.drawBitmap(x + 10, y + 19, setImage(), MENU_ICON_SIZE_X, MENU_ICON_SIZE_Y, WHITE);
+      }
+      else
+      {
+        dispChangeLife();
       }
     }
 
@@ -72,7 +69,6 @@ class DisplayMenu : public Form
       switch (cursor) {
         case Menu::M_PLAYER:
         case Menu::M_DICE:
-        case Menu::M_MATCH:
         case Menu::M_TIME:
         case Menu::M_DISCARD:
         case Menu::M_STORM:
@@ -88,61 +84,46 @@ class DisplayMenu : public Form
       }
     }
 
-    virtual void abButton()
-    {
-    }
+    virtual void abButton() {}
 
   private:
-    void DisplayMenu::setImage()
+    char* DisplayMenu::setImage()
     {
       switch (cursor) {
         case Menu::M_PLAYER:
-          image = i_player;
-          break;
+          return i_player;
         case Menu::M_DICE:
-          image = i_dice;
-          break;
-        case Menu::M_MATCH:
-          image = i_match;
-          break;
+          return i_dice;
         case Menu::M_TIME:
-          image = i_timer;
-          break;
+          return i_timer;
         case Menu::M_DISCARD:
-          image = i_discard;
-          break;
+          return i_discard;
         case Menu::M_STORM:
-          image = i_storm;
-          break;
+          return i_storm;
         case Menu::M_COUNT:
-          image = i_poison;
-          break;
+          return i_poison;
         case Menu::M_SOUND:
-          image =  (isSound) ? i_sound_on : i_sound_mute;
-          break;
+          return  (isSound) ? i_sound_on : i_sound_mute;
         case Menu::M_SETTING:
-          image = i_setting;
-          break;
+          return i_setting;
       }
     }
 
     void dispChangeLife()
     {
-      if (tPressed.getSecond() >= LIFE_RESET_SECOND)
+      if (tPressed == 0)
       {
         changeLife = 0;
       }
 
-      int life = changeLife;
-
-      if (life == 0)
+      if (changeLife == 0)
       {
         return;
       }
 
-      byte addX = (life >= 100 || life <= -100) ? 4 : (life >= 10 || life <= -10) ? 7 : 10;
+      byte addX = (changeLife >= 100 || changeLife <= -100) ? 4 : (changeLife >= 10 || changeLife <= -10) ? 7 : 10;
       byte addY = 23;
-      drawText(x + addX, y + addY, 1, (life > 0) ? "+" + String(life) : life);
+      drawText(x + addX, y + addY, 1, (changeLife > 0) ? "+" + String(changeLife) : changeLife);
     }
 
 };

@@ -5,15 +5,13 @@ class DisplayUtil : public Form
     byte hand = 7;
     byte discard = 2;
     byte card[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    byte cursorC = 0;
     byte storm[7] = {0, 0, 0, 0, 0, 0, 0};
     byte dCount = 2;
     byte d[8] = {0, 0, 0, 0, 0, 0, 0, 0};
     byte cPage = 0;
     byte mPage = 0;
-    bool isTimer = false;
-    // MAX_PLAYER, MAX_DICE, MAX_MATCH, MAX_TIME, MAX_DISCARD, MAX_STORM, MAX_COUNR, MAX_SOUND, MAX_SETTING
-    const PROGMEM byte utilMenuMax[9] = {0, 1, 2, 0, 1, 6, 2, 0, 0};
+    // MAX_PLAYER, MAX_DICE, MAX_TIME, MAX_DISCARD, MAX_STORM, MAX_COUNR, MAX_SOUND, MAX_SETTING
+    const PROGMEM byte utilMenuMax[9] = {0, 1, 0, 1, 6, 2, 0, 0};
 
     DisplayUtil()
     {
@@ -23,29 +21,25 @@ class DisplayUtil : public Form
       // cursor = 0;
       // cursorMax = 0;
 
-      // 乱数生成
       ab.initRandomSeed();
     }
 
     void DisplayUtil::display()
     {
-      String out;
+      String out = "";
       if (isCursor)
       {
         switch (menu->cursor)
         {
           case Menu::M_PLAYER:
             out = getModeName(mode - 1)
-                + (mode > PM_HEAD ? " << " : "    ")
-                + getModeName(mode)
-                + (mode < PM_TAIL ? " >> " : "    ")
-                + getModeName(mode + 1);
+                  + (mode > PM_HEAD ? " << " : "    ")
+                  + getModeName(mode)
+                  + (mode < PM_TAIL ? " >> " : "    ")
+                  + getModeName(mode + 1);
             break;
           case Menu::M_DICE:
             dispDice();
-            break;
-          case Menu::M_MATCH:
-            dispMatch();
             break;
           case Menu::M_TIME:
             dispTimer();
@@ -75,10 +69,7 @@ class DisplayUtil : public Form
             out = "Select Format.";
             break;
           case Menu::M_DICE:
-            out = "Dice Roll, max 5D6.";
-            break;
-          case Menu::M_MATCH:
-            out = "Count Match win.";
+            out = "Dice Roll, max 3D6.";
             break;
           case Menu::M_TIME:
             if (isTimer)
@@ -87,11 +78,11 @@ class DisplayUtil : public Form
             }
             else
             {
-              out = "50 min stopwatch.";
+              out = "Clock Timer.";
             }
             break;
           case Menu::M_DISCARD:
-            out = "Choose Random Discard.";
+            out = "Choose Random Cards.";
             break;
           case Menu::M_STORM:
             out = "Count Storm & mana.";
@@ -119,9 +110,6 @@ class DisplayUtil : public Form
       {
         switch (menu->cursor)
         {
-          case Menu::M_MATCH:
-            dispMatch();
-            break;
           case Menu::M_TIME:
             if (isTimer)
             {
@@ -149,22 +137,11 @@ class DisplayUtil : public Form
         case Menu::M_DICE:
           addValue(&dCount, DICE_MAX);
           break;
-        case Menu::M_MATCH:
-          switch (cursorC)
-          {
-            case 0:
-              addValue(&mPage, 2);
-              addValue(&mPage, 2);
-              break;
-            case 1:
-              addValue(&p[mPage].win, 4);
-              break;
-            case 2:
-              addValue(&p[mPage + 1].win, 4);
-              break;
-          }
-          break;
         case Menu::M_TIME:
+          if (!isTimer)
+          {
+            tStop += 60000;
+          }
           break;
         case Menu::M_DISCARD:
           switch (cursorC)
@@ -186,7 +163,7 @@ class DisplayUtil : public Form
           switch (cursorC)
           {
             case 0:
-              addValue(&cPage, (PLAYER_COUNT) - 1);
+              addValue(&cPage, (pCount) - 1);
               break;
             case 1:
               addValue(&p[cPage].counter1, 10);
@@ -213,22 +190,15 @@ class DisplayUtil : public Form
         case Menu::M_DICE:
           subValue(&dCount, 1);
           break;
-        case Menu::M_MATCH:
-          switch (cursorC)
-          {
-            case 0:
-              subValue(&mPage, 0);
-              subValue(&mPage, 0);
-              break;
-            case 1:
-              subValue(&p[mPage].win, 0);
-              break;
-            case 2:
-              subValue(&p[mPage + 1].win, 0);
-              break;
-          }
-          break;
         case Menu::M_TIME:
+          if (!isTimer)
+          {
+            tStop -= 60000;
+            if (tStop < 0)
+            {
+              tStop = 0;
+            }
+          }
           break;
         case Menu::M_DISCARD:
           switch (cursorC)
@@ -310,12 +280,15 @@ class DisplayUtil : public Form
           diceRoll();
           break;
         case Menu::M_TIME:
-          if (!isTimer)
-          {
-            tTimer.setStop();
-            tTimer.addInterval();
-          }
           isTimer = !isTimer;
+          if (isTimer)
+          {
+            tStop += millis();
+          }
+          else
+          {
+            tStop -= millis();
+          }
           break;
         case Menu::M_DISCARD:
           discardRoll();
@@ -329,7 +302,7 @@ class DisplayUtil : public Form
       {
         case Menu::M_TIME:
           isTimer = false;
-          tTimer.reset();
+          tStop = 0;
           break;
         case Menu::M_DISCARD:
           initArray(card, CARD_MAX);
@@ -339,9 +312,6 @@ class DisplayUtil : public Form
           break;
         case Menu::M_DICE:
           initArray(d, DICE_ALL_MAX);
-          break;
-        case Menu::M_MATCH:
-          initMatch();
           break;
         case Menu::M_COUNT:
           initCounter();
@@ -367,9 +337,9 @@ class DisplayUtil : public Form
 
     void DisplayUtil::diceRoll()
     {
-      for (byte i = 0; i < DICE_ALL_MAX; i++)
+      for (auto &dice : d)
       {
-        d[i] = random(6) + 1;
+        dice = random(6) + 1;
       }
     }
 
@@ -404,34 +374,6 @@ class DisplayUtil : public Form
         byte h = (i == 4) ? 4 : (i == 9) ? 7 : 2;
 
         ab.fillRect(drawX, drawY - h, w, h, WHITE);
-      }
-    }
-
-    void DisplayUtil::dispMatch()
-    {
-      if (isCursor)
-      {
-        drawArrowLeft(x + ((cursorC == 0) ? 0 : x + 30 + ((cursorC - 1) * 49)), y, WHITE);
-      }
-
-      drawText(x + 6, y, 1, String(mPage + 1) + " " + String(mPage + 2));
-      drawText(x + 12, y + 2, 1, "~");
-      ab.drawLine(x + 29, y, x + 29, y + 6, WHITE);
-      ab.drawLine(x + 78, y, x + 78, y + 6, WHITE);
-
-      for (byte i = 0; i < p[mPage].win; i++)
-      {
-        byte drawX = x + 36 + (i * 10);
-        byte drawY = y - 1;
-
-        ab.drawBitmap(drawX, drawY, i_s_win, 9, 9, WHITE);
-      }
-      for (byte i = 0; i < p[mPage + 1].win; i++)
-      {
-        byte drawX = x + 85 + (i * 10);
-        byte drawY = y - 1;
-
-        ab.drawBitmap(drawX, drawY, i_s_win, 9, 9, WHITE);
       }
     }
 
@@ -491,21 +433,26 @@ class DisplayUtil : public Form
       }
     }
 
-    int count = 1;
     void DisplayUtil::dispTimer()
     {
-      if (isTimer)
-      {
-        tTimer.setNow();
-      }
       if (isCursor)
       {
         drawArrowLeft(x, y, WHITE);
       }
 
       ab.drawBitmap(x + 51, y - 1, (isTimer) ? i_s_play : i_s_stop, 9, 9, WHITE);
-      drawText(x + 6, y, 1, tTimer.getHMS());
-      ab.fillRect(x + 64, y, tTimer.getMinute() > 60 ? 60 : tTimer.getMinute(), 3, WHITE);
+      byte w = 0;
+      if (isTimer)
+      {
+        drawText(x + 6, y, 1, getHMS(tStop - millis()));
+        w = getMinute(tStop - millis());
+      }
+      else
+      {
+        drawText(x + 6, y, 1, getHMS(tStop));
+        w = getMinute(tStop);
+      }
+      ab.fillRect(x + 64, y, w > 60 ? 60 : w, 3, WHITE);
       ab.drawLine(x + 64, y + 6, x + 124, y + 6, WHITE);
 
       for (byte i = 0; i <= 60; i += 5)
@@ -514,37 +461,6 @@ class DisplayUtil : public Form
         byte lineX = x + 64 + i;
         byte lineY = y + 6;
         ab.drawLine(lineX, lineY - hight, lineX, lineY, WHITE);
-      }
-
-      if (isTimer && tTimer.getMinute() > 0 && tTimer.getMinute() % 10 == 0 && tTimer.getSecond() == 0)
-      {
-        alarm();
-      }
-    }
-
-    void alarmOnce()
-    {
-      for (int j = 0; j < 2; j++)
-      {
-        if (setting.isLedTimer != 0x00)
-        {
-          ab.setRGBled(1, 0, 0);
-        }
-        if (setting.isSoundTimer != 0x00)
-        {
-          ab.tunes.tone(setting.baseTone, 200);
-        }
-        delay(250);
-      }
-      ab.setRGBled(0, 0, 0);
-      delay(500);
-    }
-
-    void alarm()
-    {
-      for (byte i = 0; i < tTimer.getMinute() / 10; i++)
-      {
-        alarmOnce();
       }
     }
 };
