@@ -58,9 +58,14 @@ class DisplayMenu : public Form
 
     virtual void aButton()
     {
-      if (cursor == Menu::M_SOUND)
+      switch (cursor)
       {
-        isSound = !isSound;
+        case Menu::M_PLAYER:
+          setting.invertOpponent = !setting.invertOpponent;
+          break;
+        case Menu::M_SOUND:
+          isSound = !isSound;
+          break;
       }
     }
 

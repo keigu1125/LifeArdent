@@ -416,7 +416,7 @@ class DisplayUtil : public Form
         drawBigDice(x + 82 + (10 * i), y, d[i + 4]);
         dSum2 += d[i + 4];
       }
-      drawText(x + 113, y, 1, dSum2);
+      drawText(x + 113, y, 1, dSum2, setting.invertOpponent);
     }
 
     void DisplayUtil::dispDiscard()

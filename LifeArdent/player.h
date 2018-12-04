@@ -9,4 +9,5 @@ struct Player
     byte counter2 = 0;
     byte c[4] = {0, 0, 0, 0};
     int life = 0;
+    bool invert = false;
 };

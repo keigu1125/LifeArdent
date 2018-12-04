@@ -64,7 +64,15 @@ class DisplaySetting : public Form
           }
           break;
         case SMT_DISPLAY:
-          subValue(&setting.blackScreen, 0x00);
+          switch (cursorC)
+          {
+            case 1:
+              subValue(&setting.blackScreen, 0x00);
+              break;
+            case 2:
+              subValue(&setting.invertOpponent, 0x00);
+              break;
+          }
           break;
         case SMT_LED:
           subValue(&setting.isLedTimer, 0x00);
@@ -112,8 +120,15 @@ class DisplaySetting : public Form
           }
           break;
         case SMT_DISPLAY:
-          addValue(&setting.blackScreen, 0x01);
-          break;
+          switch (cursorC)
+          {
+            case 1:
+              addValue(&setting.blackScreen, 0x01);
+              break;
+            case 2:
+              addValue(&setting.invertOpponent, 0x01);
+              break;
+          }
         case SMT_LED:
           addValue(&setting.isLedTimer, 0x01);
           break;
@@ -221,7 +236,7 @@ class DisplaySetting : public Form
           cursorCMax = 1;
           break;
         case SMT_SOUND:
-          drawText(drawX, drawY + (row++ * HIGHT), 1, "Sounds Default");
+          drawText(drawX, drawY + (row++ * HIGHT), 1, "Default Sound");
           drawText(drawX + IND, drawY + (row++ * HIGHT) + 1, 1, getOnOff(setting.isSoundDefault));
           drawText(drawX, drawY + (row++ * HIGHT), 1, "Base Tone");
           drawText(drawX + IND, drawY + (row++ * HIGHT) + 1, 1, String(setting.baseTone) + " Hz");
@@ -232,8 +247,9 @@ class DisplaySetting : public Form
         case SMT_DISPLAY:
           drawText(drawX, drawY + (row++ * HIGHT), 1, "Screen Color");
           drawText(drawX + IND, drawY + (row++ * HIGHT) + 1, 1, getBlackWhite(setting.blackScreen));
-          row++;
-          cursorCMax = 1;
+          drawText(drawX, drawY + (row++ * HIGHT), 1, "Invert Opponent Val");
+          drawText(drawX + IND, drawY + (row++ * HIGHT) + 1, 1, getOnOff(setting.invertOpponent));
+          cursorCMax = 2;
           break;
         case SMT_LED:
           drawText(drawX, drawY + (row++ * HIGHT), 1, "Timer LED");
@@ -246,11 +262,11 @@ class DisplaySetting : public Form
           cursorCMax = 1;
           break;
         case SMT_EXIT:
-          drawText(drawX, drawY + (row++ * HIGHT), 1, "Save, and Reboot");
+          drawText(drawX, drawY + (row++ * HIGHT), 1, "Save and Reboot.");
           row++;
-          drawText(drawX, drawY + (row++ * HIGHT), 1, "Not Save, Return");
+          drawText(drawX, drawY + (row++ * HIGHT), 1, "Discard Changes.");
           row++;
-          drawText(drawX, drawY + (row++ * HIGHT), 1, "Erase Save, Reboot");
+          drawText(drawX, drawY + (row++ * HIGHT), 1, "*Erase and Reboot.");
           row++;
           cursorCMax = 3;
           break;

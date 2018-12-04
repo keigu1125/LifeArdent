@@ -60,17 +60,23 @@ void initMode(byte value)
     case PM_P1:
       pCount = 1;
       setXY(0,  0,  0, 97, 53);
+      p[0].invert = false;
       break;
     case PM_P2:
       pCount = 2;
       setXY(0,  0,  0, 48, 53);
       setXY(1, 49,  0, 48, 53);
+      p[0].invert = false;
+      p[1].invert = true;
       break;
     case PM_P3:
       pCount = 3;
       setXY(0,  0,  0, 48, 27);
       setXY(1, 49,  0, 48, 27);
       setXY(2, 24, 26, 48, 27);
+      p[0].invert = true;
+      p[1].invert = true;
+      p[2].invert = false;
       break;
     case PM_EDH:
       pCount = 4;
@@ -78,6 +84,10 @@ void initMode(byte value)
       setXY(1, 49,  0, 48, 27);
       setXY(2,  0, 26, 48, 27);
       setXY(3, 49, 26, 48, 27);
+      p[0].invert = true;
+      p[1].invert = true;
+      p[2].invert = false;
+      p[3].invert = false;
       break;
     case PM_ARCH:
       pCount = 4;
@@ -85,6 +95,10 @@ void initMode(byte value)
       setXY(1,  0, 26, 33, 27);
       setXY(2, 32, 26, 33, 27);
       setXY(3, 64, 26, 33, 27);
+      p[0].invert = true;
+      p[1].invert = false;
+      p[2].invert = false;
+      p[3].invert = false;
       break;
   }
   initPlayer();

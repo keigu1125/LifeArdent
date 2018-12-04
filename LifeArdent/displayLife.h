@@ -192,98 +192,6 @@ class DisplayLife : public Form
       }
     }
 
-    void DisplayLife::_drawLife()
-    {
-      for (byte i = 0; i < pCount; i++)
-      {
-        Player pl = p[i];
-
-        int life = pl.life;
-        byte fSize = 2;
-        byte drawX = pl.x + x;
-        byte drawY = pl.y + y;
-
-        switch (mode)
-        {
-          case PM_P1:
-            if (life >= 100 || life <= -10)
-            {
-              drawText(drawX + 14, drawY + 11, 4, life);
-            }
-            else if (life >= 0 && life <= 9)
-            {
-              drawText(drawX + 36, drawY + 8, 5, life);
-            }
-            else
-            {
-              drawText(drawX + 21, drawY + 8, 5, life);
-            }
-            break;
-          case PM_P2:
-            if (life >= 100 || life <= -10)
-            {
-              drawText(drawX + 7, drawY + 18, 2, life);
-            }
-            else if (life >= 0 && life <= 9)
-            {
-              drawText(drawX + 18, drawY + 15, 3, life);
-            }
-            else
-            {
-              drawText(drawX + 8, drawY + 15, 3, life);
-            }
-            break;
-          case PM_P3:
-          case PM_EDH:
-            if (life >= 100 || life <= -10)
-            {
-              drawText(drawX + 15, drawY + 9, 1, life);
-            }
-            else if (life >= 0 && life <= 9)
-            {
-              drawText(drawX + 20, drawY + 6, 2, life);
-            }
-            else
-            {
-              drawText(drawX + 13, drawY + 6, 2, life);
-            }
-            break;
-          case PM_ARCH:
-            if (i == 0)
-            {
-              if (life >= 100 || life <= -10)
-              {
-                drawText(drawX + 30, drawY + 6, 2, life);
-              }
-              else if (life >= 0 && life <= 9)
-              {
-                drawText(drawX + 44, drawY + 6, 2, life);
-              }
-              else
-              {
-                drawText(drawX + 37, drawY + 6, 2, life);
-              }
-            }
-            else
-            {
-              if (life >= 100 || life <= -10)
-              {
-                drawText(drawX + 8, drawY + 14, 1, life);
-              }
-              else if (life >= 0 && life <= 9)
-              {
-                drawText(drawX + 12, drawY + 10, 2, life);
-              }
-              else
-              {
-                drawText(drawX + 5, drawY + 10, 2, life);
-              }
-            }
-            break;
-        }
-      }
-    }
-
     void DisplayLife::drawLife()
     {
       for (byte i = 0; i < pCount; i++)
@@ -294,6 +202,7 @@ class DisplayLife : public Form
         byte fSize = 2;
         byte drawX = pl.x + x;
         byte drawY = pl.y + y;
+        bool invert = false;
 
         switch (mode)
         {
@@ -321,19 +230,19 @@ class DisplayLife : public Form
             if (life >= 100 || life <= -10)
             {
               drawX += 7;
-              drawY += 18;
+              drawY += 19;
               fSize = 2;
             }
             else if (life >= 0 && life <= 9)
             {
-              drawX += 18;
-              drawY += 15;
+              drawX += 17;
+              drawY += 16;
               fSize = 3;
             }
             else
             {
               drawX += 8;
-              drawY += 15;
+              drawY += 16;
               fSize = 3;
             }
             break;
@@ -342,19 +251,19 @@ class DisplayLife : public Form
             if (life >= 100 || life <= -10)
             {
               drawX += 15;
-              drawY += 9;
+              drawY += 10;
               fSize = 1;
             }
             else if (life >= 0 && life <= 9)
             {
-              drawX += 20;
-              drawY += 6;
+              drawX += 19;
+              drawY += 7;
               fSize = 2;
             }
             else
             {
               drawX += 13;
-              drawY += 6;
+              drawY += 7;
               fSize = 2;
             }
             break;
@@ -403,7 +312,7 @@ class DisplayLife : public Form
             }
             break;
         }
-        drawText(drawX, drawY, fSize, life);
+        drawText(drawX, drawY, fSize, life, (setting.invertOpponent && pl.invert));
       }
     }
 

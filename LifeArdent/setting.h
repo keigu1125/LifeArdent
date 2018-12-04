@@ -9,17 +9,19 @@ class Setting
 #define DEF_DEFAULT_FORMAT    0x01
 #define DEF_FRAME_RATE_MAIN   20
 #define DEF_BLACK_SCREEN      0x00
+#define DEF_INVERT_OPPONENT   0x00
 
   public:
     byte isWritedSetting = 0x00;
     byte showTitle = 0x00;
     byte isSoundDefault = 0x00;
     byte isSoundTimer = 0x00;
-    int baseTone = 0;
+    int  baseTone = 0;
     byte isLedTimer = 0x00;
     byte defaultFormat = 0x00;
     byte frameRateMain = 0x00;
     byte blackScreen = 0x00;
+    byte invertOpponent = 0x00;
 
     void readEepRomSetting()
     {
@@ -39,6 +41,7 @@ class Setting
       defaultFormat = EEPROM.read(point++);
       frameRateMain = EEPROM.read(point++);
       blackScreen = EEPROM.read(point++);
+      invertOpponent = EEPROM.read(point++);
     }
 
     void writeEepRomSetting()
@@ -55,6 +58,7 @@ class Setting
       EEPROM.write(point++, defaultFormat);
       EEPROM.write(point++, frameRateMain);
       EEPROM.write(point++, blackScreen);
+      EEPROM.write(point++, invertOpponent);
     }
 
   private:
@@ -69,5 +73,6 @@ class Setting
       defaultFormat = DEF_DEFAULT_FORMAT;
       frameRateMain = DEF_FRAME_RATE_MAIN;
       blackScreen = DEF_BLACK_SCREEN;
+      invertOpponent = DEF_INVERT_OPPONENT;
     }
 };

@@ -164,135 +164,174 @@ void drawText(byte a, byte b, byte fs, char* mes)
   ab.print(mes);
 }
 
-void drawOneSmallNumber(byte x, byte y, byte number, bool white)
+void drawTextInvert(byte a, byte b, byte fs, int num)
+{
+  bool isMinus = (num < 0);
+  char str[10] = {0};
+  int i = 0;
+
+  if (isMinus)
+  {
+    num *= -1;
+  }
+
+  do
+  {
+    str[i++] = num % 10 + 0x10;
+    num /= 10;
+  }
+  while (num > 0);
+
+  if (isMinus)
+  {
+    str[i++] = '-';
+  }
+  str[i] = '\0';
+
+  drawText(a, b, fs, str);
+}
+
+void drawText(byte a, byte b, byte fs, int num, bool isInvert)
+{
+  if (isInvert)
+  {
+    drawTextInvert(a, b, fs, num);
+  }
+  else
+  {
+    drawText(a, b, fs, num);
+  }
+}
+
+void drawOneSmallNumber(byte x, byte y, byte number, bool color)
 {
   switch (number)
   {
     case 0:
-      ab.drawPixel(x + 1, y + 1, white);
-      ab.drawPixel(x + 2, y + 1, white);
-      ab.drawPixel(x + 3, y + 1, white);
-      ab.drawPixel(x + 1, y + 2, white);
-      ab.drawPixel(x + 3, y + 2, white);
-      ab.drawPixel(x + 1, y + 3, white);
-      ab.drawPixel(x + 3, y + 3, white);
-      ab.drawPixel(x + 1, y + 4, white);
-      ab.drawPixel(x + 3, y + 4, white);
-      ab.drawPixel(x + 1, y + 5, white);
-      ab.drawPixel(x + 2, y + 5, white);
-      ab.drawPixel(x + 3, y + 5, white);
+      ab.drawPixel(x + 1, y + 1, color);
+      ab.drawPixel(x + 2, y + 1, color);
+      ab.drawPixel(x + 3, y + 1, color);
+      ab.drawPixel(x + 1, y + 2, color);
+      ab.drawPixel(x + 3, y + 2, color);
+      ab.drawPixel(x + 1, y + 3, color);
+      ab.drawPixel(x + 3, y + 3, color);
+      ab.drawPixel(x + 1, y + 4, color);
+      ab.drawPixel(x + 3, y + 4, color);
+      ab.drawPixel(x + 1, y + 5, color);
+      ab.drawPixel(x + 2, y + 5, color);
+      ab.drawPixel(x + 3, y + 5, color);
       break;
     case 1:
-      ab.drawPixel(x + 3, y + 1, white);
-      ab.drawPixel(x + 3, y + 2, white);
-      ab.drawPixel(x + 3, y + 3, white);
-      ab.drawPixel(x + 3, y + 4, white);
-      ab.drawPixel(x + 3, y + 5, white);
+      ab.drawPixel(x + 3, y + 1, color);
+      ab.drawPixel(x + 3, y + 2, color);
+      ab.drawPixel(x + 3, y + 3, color);
+      ab.drawPixel(x + 3, y + 4, color);
+      ab.drawPixel(x + 3, y + 5, color);
       break;
     case 2:
-      ab.drawPixel(x + 1, y + 1, white);
-      ab.drawPixel(x + 2, y + 1, white);
-      ab.drawPixel(x + 3, y + 1, white);
-      ab.drawPixel(x + 3, y + 2, white);
-      ab.drawPixel(x + 1, y + 3, white);
-      ab.drawPixel(x + 2, y + 3, white);
-      ab.drawPixel(x + 3, y + 3, white);
-      ab.drawPixel(x + 1, y + 4, white);
-      ab.drawPixel(x + 1, y + 5, white);
-      ab.drawPixel(x + 2, y + 5, white);
-      ab.drawPixel(x + 3, y + 5, white);
+      ab.drawPixel(x + 1, y + 1, color);
+      ab.drawPixel(x + 2, y + 1, color);
+      ab.drawPixel(x + 3, y + 1, color);
+      ab.drawPixel(x + 3, y + 2, color);
+      ab.drawPixel(x + 1, y + 3, color);
+      ab.drawPixel(x + 2, y + 3, color);
+      ab.drawPixel(x + 3, y + 3, color);
+      ab.drawPixel(x + 1, y + 4, color);
+      ab.drawPixel(x + 1, y + 5, color);
+      ab.drawPixel(x + 2, y + 5, color);
+      ab.drawPixel(x + 3, y + 5, color);
       break;
     case 3:
-      ab.drawPixel(x + 1, y + 1, white);
-      ab.drawPixel(x + 2, y + 1, white);
-      ab.drawPixel(x + 3, y + 1, white);
-      ab.drawPixel(x + 3, y + 2, white);
-      ab.drawPixel(x + 1, y + 3, white);
-      ab.drawPixel(x + 2, y + 3, white);
-      ab.drawPixel(x + 3, y + 3, white);
-      ab.drawPixel(x + 3, y + 4, white);
-      ab.drawPixel(x + 1, y + 5, white);
-      ab.drawPixel(x + 2, y + 5, white);
-      ab.drawPixel(x + 3, y + 5, white);
+      ab.drawPixel(x + 1, y + 1, color);
+      ab.drawPixel(x + 2, y + 1, color);
+      ab.drawPixel(x + 3, y + 1, color);
+      ab.drawPixel(x + 3, y + 2, color);
+      ab.drawPixel(x + 1, y + 3, color);
+      ab.drawPixel(x + 2, y + 3, color);
+      ab.drawPixel(x + 3, y + 3, color);
+      ab.drawPixel(x + 3, y + 4, color);
+      ab.drawPixel(x + 1, y + 5, color);
+      ab.drawPixel(x + 2, y + 5, color);
+      ab.drawPixel(x + 3, y + 5, color);
       break;
     case 4:
-      ab.drawPixel(x + 1, y + 1, white);
-      ab.drawPixel(x + 3, y + 1, white);
-      ab.drawPixel(x + 1, y + 2, white);
-      ab.drawPixel(x + 3, y + 2, white);
-      ab.drawPixel(x + 1, y + 3, white);
-      ab.drawPixel(x + 2, y + 3, white);
-      ab.drawPixel(x + 3, y + 3, white);
-      ab.drawPixel(x + 3, y + 4, white);
-      ab.drawPixel(x + 3, y + 5, white);
+      ab.drawPixel(x + 1, y + 1, color);
+      ab.drawPixel(x + 3, y + 1, color);
+      ab.drawPixel(x + 1, y + 2, color);
+      ab.drawPixel(x + 3, y + 2, color);
+      ab.drawPixel(x + 1, y + 3, color);
+      ab.drawPixel(x + 2, y + 3, color);
+      ab.drawPixel(x + 3, y + 3, color);
+      ab.drawPixel(x + 3, y + 4, color);
+      ab.drawPixel(x + 3, y + 5, color);
       break;
     case 5:
-      ab.drawPixel(x + 1, y + 1, white);
-      ab.drawPixel(x + 2, y + 1, white);
-      ab.drawPixel(x + 3, y + 1, white);
-      ab.drawPixel(x + 1, y + 2, white);
-      ab.drawPixel(x + 1, y + 3, white);
-      ab.drawPixel(x + 2, y + 3, white);
-      ab.drawPixel(x + 3, y + 3, white);
-      ab.drawPixel(x + 3, y + 4, white);
-      ab.drawPixel(x + 1, y + 5, white);
-      ab.drawPixel(x + 2, y + 5, white);
-      ab.drawPixel(x + 3, y + 5, white);
+      ab.drawPixel(x + 1, y + 1, color);
+      ab.drawPixel(x + 2, y + 1, color);
+      ab.drawPixel(x + 3, y + 1, color);
+      ab.drawPixel(x + 1, y + 2, color);
+      ab.drawPixel(x + 1, y + 3, color);
+      ab.drawPixel(x + 2, y + 3, color);
+      ab.drawPixel(x + 3, y + 3, color);
+      ab.drawPixel(x + 3, y + 4, color);
+      ab.drawPixel(x + 1, y + 5, color);
+      ab.drawPixel(x + 2, y + 5, color);
+      ab.drawPixel(x + 3, y + 5, color);
       break;
     case 6:
-      ab.drawPixel(x + 1, y + 1, white);
-      ab.drawPixel(x + 1, y + 2, white);
-      ab.drawPixel(x + 1, y + 3, white);
-      ab.drawPixel(x + 2, y + 3, white);
-      ab.drawPixel(x + 3, y + 3, white);
-      ab.drawPixel(x + 1, y + 4, white);
-      ab.drawPixel(x + 3, y + 4, white);
-      ab.drawPixel(x + 1, y + 5, white);
-      ab.drawPixel(x + 2, y + 5, white);
-      ab.drawPixel(x + 3, y + 5, white);
+      ab.drawPixel(x + 1, y + 1, color);
+      ab.drawPixel(x + 1, y + 2, color);
+      ab.drawPixel(x + 1, y + 3, color);
+      ab.drawPixel(x + 2, y + 3, color);
+      ab.drawPixel(x + 3, y + 3, color);
+      ab.drawPixel(x + 1, y + 4, color);
+      ab.drawPixel(x + 3, y + 4, color);
+      ab.drawPixel(x + 1, y + 5, color);
+      ab.drawPixel(x + 2, y + 5, color);
+      ab.drawPixel(x + 3, y + 5, color);
       break;
     case 7:
-      ab.drawPixel(x + 1, y + 1, white);
-      ab.drawPixel(x + 2, y + 1, white);
-      ab.drawPixel(x + 3, y + 1, white);
-      ab.drawPixel(x + 3, y + 2, white);
-      ab.drawPixel(x + 3, y + 3, white);
-      ab.drawPixel(x + 3, y + 4, white);
-      ab.drawPixel(x + 3, y + 5, white);
+      ab.drawPixel(x + 1, y + 1, color);
+      ab.drawPixel(x + 2, y + 1, color);
+      ab.drawPixel(x + 3, y + 1, color);
+      ab.drawPixel(x + 3, y + 2, color);
+      ab.drawPixel(x + 3, y + 3, color);
+      ab.drawPixel(x + 3, y + 4, color);
+      ab.drawPixel(x + 3, y + 5, color);
       break;
     case 8:
-      ab.drawPixel(x + 1, y + 1, white);
-      ab.drawPixel(x + 2, y + 1, white);
-      ab.drawPixel(x + 3, y + 1, white);
-      ab.drawPixel(x + 1, y + 2, white);
-      ab.drawPixel(x + 3, y + 2, white);
-      ab.drawPixel(x + 1, y + 3, white);
-      ab.drawPixel(x + 2, y + 3, white);
-      ab.drawPixel(x + 3, y + 3, white);
-      ab.drawPixel(x + 1, y + 4, white);
-      ab.drawPixel(x + 3, y + 4, white);
-      ab.drawPixel(x + 1, y + 5, white);
-      ab.drawPixel(x + 2, y + 5, white);
-      ab.drawPixel(x + 3, y + 5, white);
+      ab.drawPixel(x + 1, y + 1, color);
+      ab.drawPixel(x + 2, y + 1, color);
+      ab.drawPixel(x + 3, y + 1, color);
+      ab.drawPixel(x + 1, y + 2, color);
+      ab.drawPixel(x + 3, y + 2, color);
+      ab.drawPixel(x + 1, y + 3, color);
+      ab.drawPixel(x + 2, y + 3, color);
+      ab.drawPixel(x + 3, y + 3, color);
+      ab.drawPixel(x + 1, y + 4, color);
+      ab.drawPixel(x + 3, y + 4, color);
+      ab.drawPixel(x + 1, y + 5, color);
+      ab.drawPixel(x + 2, y + 5, color);
+      ab.drawPixel(x + 3, y + 5, color);
       break;
     case 9:
-      ab.drawPixel(x + 1, y + 1, white);
-      ab.drawPixel(x + 2, y + 1, white);
-      ab.drawPixel(x + 3, y + 1, white);
-      ab.drawPixel(x + 1, y + 2, white);
-      ab.drawPixel(x + 3, y + 2, white);
-      ab.drawPixel(x + 1, y + 3, white);
-      ab.drawPixel(x + 2, y + 3, white);
-      ab.drawPixel(x + 3, y + 3, white);
-      ab.drawPixel(x + 3, y + 4, white);
-      ab.drawPixel(x + 1, y + 5, white);
-      ab.drawPixel(x + 2, y + 5, white);
-      ab.drawPixel(x + 3, y + 5, white);
+      ab.drawPixel(x + 1, y + 1, color);
+      ab.drawPixel(x + 2, y + 1, color);
+      ab.drawPixel(x + 3, y + 1, color);
+      ab.drawPixel(x + 1, y + 2, color);
+      ab.drawPixel(x + 3, y + 2, color);
+      ab.drawPixel(x + 1, y + 3, color);
+      ab.drawPixel(x + 2, y + 3, color);
+      ab.drawPixel(x + 3, y + 3, color);
+      ab.drawPixel(x + 3, y + 4, color);
+      ab.drawPixel(x + 1, y + 5, color);
+      ab.drawPixel(x + 2, y + 5, color);
+      ab.drawPixel(x + 3, y + 5, color);
       break;
   }
 }
 
-void drawSmallNumber(byte x, byte y, byte num, bool white)
+void drawSmallNumber(byte x, byte y, byte num, bool color)
 {
   byte s = num;
   byte maxDigit = 2;
@@ -338,7 +377,7 @@ void drawSmallNumber(byte x, byte y, byte num, bool white)
 
   for (byte i = 0; i < digit; i++)
   {
-    drawOneSmallNumber(x + (i * 4), y, sb[digit - 1 - i], white);
+    drawOneSmallNumber(x + (i * 4), y, sb[digit - 1 - i], color);
   }
 }
 
