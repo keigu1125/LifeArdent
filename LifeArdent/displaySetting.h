@@ -266,7 +266,7 @@ class DisplaySetting : public Form
           row++;
           drawText(drawX, drawY + (row++ * HIGHT), 1, "Discard Changes.");
           row++;
-          drawText(drawX, drawY + (row++ * HIGHT), 1, "*Erase and Reboot.");
+          drawText(drawX, drawY + (row++ * HIGHT), 1, "*Erase and Reboot*");
           row++;
           cursorCMax = 3;
           break;

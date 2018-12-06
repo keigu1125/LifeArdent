@@ -187,7 +187,7 @@ class DisplayLife : public Form
           drawMiniX += (j == 1 || j == 3) ? (pl.w - CURSOR_RECT_W - 2) : 0;
           drawMiniY += (j == 2 || j == 3) ? (pl.h - CURSOR_RECT_H - 2) : 0;
 
-          drawSmallNumber(drawMiniX, drawMiniY, miniLife, true);
+          drawSmallNumber(drawMiniX, drawMiniY, miniLife, true, pl.invert);
         }
       }
     }
@@ -312,7 +312,7 @@ class DisplayLife : public Form
             }
             break;
         }
-        drawText(drawX, drawY, fSize, life, (setting.invertOpponent && pl.invert));
+        drawText(drawX, drawY, fSize, life, pl.invert);
       }
     }
 

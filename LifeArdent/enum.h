@@ -25,22 +25,6 @@ enum SettingMenuTitle
   SMT_TAIL = 6,
 };
 
-enum SettingMenu
-{
-  SM_HEAD = 0,
-  SM_SHOW_TITLE = 0,
-  SM_DEFAULT_SOUND = 1,
-  SM_ALARM_SOUND = 2,
-  SM_DEFAULT_BASETONE1 = 3,
-  SM_DEFAULT_BASETONE2 = 4,
-  SM_LED_TIMER = 5,
-  SM_DEFAULT_FORMAT = 6,
-  SM_FRAME_RATE_BASE = 7,
-  SM_FRAME_RATE_REPEAT = 8,
-  SM_BLACK_SCREEN = 9,
-  SM_TAIL = 9,
-};
-
 enum PlayMode
 {
   PM_HEAD = 0,

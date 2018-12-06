@@ -193,7 +193,7 @@ void drawTextInvert(byte a, byte b, byte fs, int num)
 
 void drawText(byte a, byte b, byte fs, int num, bool isInvert)
 {
-  if (isInvert)
+  if (setting.invertOpponent && isInvert)
   {
     drawTextInvert(a, b, fs, num);
   }
@@ -208,130 +208,116 @@ void drawOneSmallNumber(byte x, byte y, byte number, bool color)
   switch (number)
   {
     case 0:
-      ab.drawPixel(x + 1, y + 1, color);
-      ab.drawPixel(x + 2, y + 1, color);
-      ab.drawPixel(x + 3, y + 1, color);
-      ab.drawPixel(x + 1, y + 2, color);
-      ab.drawPixel(x + 3, y + 2, color);
-      ab.drawPixel(x + 1, y + 3, color);
-      ab.drawPixel(x + 3, y + 3, color);
-      ab.drawPixel(x + 1, y + 4, color);
-      ab.drawPixel(x + 3, y + 4, color);
-      ab.drawPixel(x + 1, y + 5, color);
-      ab.drawPixel(x + 2, y + 5, color);
-      ab.drawPixel(x + 3, y + 5, color);
+      ab.drawRect(x + 1, y + 1, 3, 5, color);
       break;
     case 1:
-      ab.drawPixel(x + 3, y + 1, color);
-      ab.drawPixel(x + 3, y + 2, color);
-      ab.drawPixel(x + 3, y + 3, color);
-      ab.drawPixel(x + 3, y + 4, color);
-      ab.drawPixel(x + 3, y + 5, color);
+      ab.drawLine(x + 3, y + 1, x + 3, y + 5, color);
       break;
     case 2:
-      ab.drawPixel(x + 1, y + 1, color);
-      ab.drawPixel(x + 2, y + 1, color);
-      ab.drawPixel(x + 3, y + 1, color);
-      ab.drawPixel(x + 3, y + 2, color);
-      ab.drawPixel(x + 1, y + 3, color);
+      ab.drawRect(x + 1, y + 1, 3, 5, color);
       ab.drawPixel(x + 2, y + 3, color);
-      ab.drawPixel(x + 3, y + 3, color);
-      ab.drawPixel(x + 1, y + 4, color);
-      ab.drawPixel(x + 1, y + 5, color);
-      ab.drawPixel(x + 2, y + 5, color);
-      ab.drawPixel(x + 3, y + 5, color);
+      ab.drawPixel(x + 1, y + 2, !color);
+      ab.drawPixel(x + 3, y + 4, !color);
       break;
     case 3:
-      ab.drawPixel(x + 1, y + 1, color);
-      ab.drawPixel(x + 2, y + 1, color);
-      ab.drawPixel(x + 3, y + 1, color);
-      ab.drawPixel(x + 3, y + 2, color);
-      ab.drawPixel(x + 1, y + 3, color);
+      ab.drawRect(x + 1, y + 1, 3, 5, color);
       ab.drawPixel(x + 2, y + 3, color);
-      ab.drawPixel(x + 3, y + 3, color);
-      ab.drawPixel(x + 3, y + 4, color);
-      ab.drawPixel(x + 1, y + 5, color);
-      ab.drawPixel(x + 2, y + 5, color);
-      ab.drawPixel(x + 3, y + 5, color);
+      ab.drawPixel(x + 1, y + 2, !color);
+      ab.drawPixel(x + 1, y + 4, !color);
       break;
     case 4:
+      ab.drawLine(x + 3, y + 1, x + 3, y + 5, color);
       ab.drawPixel(x + 1, y + 1, color);
-      ab.drawPixel(x + 3, y + 1, color);
       ab.drawPixel(x + 1, y + 2, color);
-      ab.drawPixel(x + 3, y + 2, color);
       ab.drawPixel(x + 1, y + 3, color);
       ab.drawPixel(x + 2, y + 3, color);
-      ab.drawPixel(x + 3, y + 3, color);
-      ab.drawPixel(x + 3, y + 4, color);
-      ab.drawPixel(x + 3, y + 5, color);
       break;
     case 5:
-      ab.drawPixel(x + 1, y + 1, color);
-      ab.drawPixel(x + 2, y + 1, color);
-      ab.drawPixel(x + 3, y + 1, color);
-      ab.drawPixel(x + 1, y + 2, color);
-      ab.drawPixel(x + 1, y + 3, color);
+      ab.drawRect(x + 1, y + 1, 3, 5, color);
       ab.drawPixel(x + 2, y + 3, color);
-      ab.drawPixel(x + 3, y + 3, color);
-      ab.drawPixel(x + 3, y + 4, color);
-      ab.drawPixel(x + 1, y + 5, color);
-      ab.drawPixel(x + 2, y + 5, color);
-      ab.drawPixel(x + 3, y + 5, color);
+      ab.drawPixel(x + 3, y + 2, !color);
+      ab.drawPixel(x + 1, y + 4, !color);
       break;
     case 6:
-      ab.drawPixel(x + 1, y + 1, color);
-      ab.drawPixel(x + 1, y + 2, color);
-      ab.drawPixel(x + 1, y + 3, color);
+      ab.drawRect(x + 1, y + 1, 3, 5, color);
       ab.drawPixel(x + 2, y + 3, color);
-      ab.drawPixel(x + 3, y + 3, color);
-      ab.drawPixel(x + 1, y + 4, color);
-      ab.drawPixel(x + 3, y + 4, color);
-      ab.drawPixel(x + 1, y + 5, color);
-      ab.drawPixel(x + 2, y + 5, color);
-      ab.drawPixel(x + 3, y + 5, color);
+      ab.drawPixel(x + 3, y + 2, !color);
       break;
     case 7:
+      ab.drawLine(x + 3, y + 1, x + 3, y + 5, color);
       ab.drawPixel(x + 1, y + 1, color);
       ab.drawPixel(x + 2, y + 1, color);
-      ab.drawPixel(x + 3, y + 1, color);
-      ab.drawPixel(x + 3, y + 2, color);
-      ab.drawPixel(x + 3, y + 3, color);
-      ab.drawPixel(x + 3, y + 4, color);
-      ab.drawPixel(x + 3, y + 5, color);
       break;
     case 8:
-      ab.drawPixel(x + 1, y + 1, color);
-      ab.drawPixel(x + 2, y + 1, color);
-      ab.drawPixel(x + 3, y + 1, color);
-      ab.drawPixel(x + 1, y + 2, color);
-      ab.drawPixel(x + 3, y + 2, color);
-      ab.drawPixel(x + 1, y + 3, color);
+      ab.drawRect(x + 1, y + 1, 3, 5, color);
       ab.drawPixel(x + 2, y + 3, color);
-      ab.drawPixel(x + 3, y + 3, color);
-      ab.drawPixel(x + 1, y + 4, color);
-      ab.drawPixel(x + 3, y + 4, color);
-      ab.drawPixel(x + 1, y + 5, color);
-      ab.drawPixel(x + 2, y + 5, color);
-      ab.drawPixel(x + 3, y + 5, color);
       break;
     case 9:
-      ab.drawPixel(x + 1, y + 1, color);
-      ab.drawPixel(x + 2, y + 1, color);
-      ab.drawPixel(x + 3, y + 1, color);
-      ab.drawPixel(x + 1, y + 2, color);
-      ab.drawPixel(x + 3, y + 2, color);
-      ab.drawPixel(x + 1, y + 3, color);
+      ab.drawRect(x + 1, y + 1, 3, 5, color);
       ab.drawPixel(x + 2, y + 3, color);
-      ab.drawPixel(x + 3, y + 3, color);
-      ab.drawPixel(x + 3, y + 4, color);
-      ab.drawPixel(x + 1, y + 5, color);
-      ab.drawPixel(x + 2, y + 5, color);
-      ab.drawPixel(x + 3, y + 5, color);
+      ab.drawPixel(x + 1, y + 4, !color);
       break;
   }
 }
 
-void drawSmallNumber(byte x, byte y, byte num, bool color)
+void drawInvertOneSmallNumber(byte x, byte y, byte number, bool color)
+{
+  switch (number)
+  {
+    case 0:
+      ab.drawRect(x + 1, y + 1, 3, 5, color);
+      break;
+    case 1:
+      ab.drawLine(x + 1, y + 1, x + 1, y + 5, color);
+      break;
+    case 2:
+      ab.drawRect(x + 1, y + 1, 3, 5, color);
+      ab.drawPixel(x + 2, y + 3, color);
+      ab.drawPixel(x + 1, y + 2, !color);
+      ab.drawPixel(x + 3, y + 4, !color);
+      break;
+    case 3:
+      ab.drawRect(x + 1, y + 1, 3, 5, color);
+      ab.drawPixel(x + 2, y + 3, color);
+      ab.drawPixel(x + 3, y + 2, !color);
+      ab.drawPixel(x + 3, y + 4, !color);
+      break;
+    case 4:
+      ab.drawLine(x + 1, y + 1, x + 1, y + 5, color);
+      ab.drawPixel(x + 3, y + 5, color);
+      ab.drawPixel(x + 3, y + 4, color);
+      ab.drawPixel(x + 3, y + 3, color);
+      ab.drawPixel(x + 2, y + 3, color);
+      break;
+    case 5:
+      ab.drawRect(x + 1, y + 1, 3, 5, color);
+      ab.drawPixel(x + 2, y + 3, color);
+      ab.drawPixel(x + 3, y + 2, !color);
+      ab.drawPixel(x + 1, y + 4, !color);
+      break;
+    case 6:
+      ab.drawRect(x + 1, y + 1, 3, 5, color);
+      ab.drawPixel(x + 2, y + 3, color);
+      ab.drawPixel(x + 1, y + 4, !color);
+      break;
+    case 7:
+      ab.drawLine(x + 1, y + 1, x + 1, y + 5, color);
+      ab.drawPixel(x + 3, y + 5, color);
+      ab.drawPixel(x + 2, y + 5, color);
+      break;
+    case 8:
+      ab.drawRect(x + 1, y + 1, 3, 5, color);
+      ab.drawPixel(x + 2, y + 3, color);
+      break;
+    case 9:
+      ab.drawRect(x + 1, y + 1, 3, 5, color);
+      ab.drawPixel(x + 2, y + 3, color);
+      ab.drawPixel(x + 3, y + 2, !color);
+      break;
+  }
+}
+
+void drawSmallNumber(byte x, byte y, byte num, bool color, bool isInvert)
 {
   byte s = num;
   byte maxDigit = 2;
@@ -375,9 +361,19 @@ void drawSmallNumber(byte x, byte y, byte num, bool color)
     }
   }
 
-  for (byte i = 0; i < digit; i++)
+  if (setting.invertOpponent && isInvert)
   {
-    drawOneSmallNumber(x + (i * 4), y, sb[digit - 1 - i], color);
+    for (byte i = 0; i < digit; i++)
+    {
+      drawInvertOneSmallNumber(x + (digit - i - 1) * 4, y, sb[digit - i - 1], color);
+    }
+  }
+  else
+  {
+    for (byte i = 0; i < digit; i++)
+    {
+      drawOneSmallNumber(x + i * 4, y, sb[digit - i - 1], color);
+    }
   }
 }
 
@@ -390,41 +386,31 @@ void drawBigDice(byte x, byte y, byte number)
 
   ab.fillRect(x, y, 8, 8, WHITE);
 
-  switch (number)
+  if (number == 6)
   {
-    case 1:
+    ab.drawRect(x + 1, y + 0, 2, 2, BLACK);
+    ab.drawRect(x + 1, y + 3, 2, 2, BLACK);
+    ab.drawRect(x + 1, y + 6, 2, 2, BLACK);
+    ab.drawRect(x + 5, y + 0, 2, 2, BLACK);
+    ab.drawRect(x + 5, y + 3, 2, 2, BLACK);
+    ab.drawRect(x + 5, y + 6, 2, 2, BLACK);
+  }
+  else
+  {
+    if (number & 0x01)
+    {
       ab.drawRect(x + 3, y + 3, 2, 2, BLACK);
-      break;
-    case 2:
+    }
+    if (number >= 2)
+    {
       ab.drawRect(x + 5, y + 1, 2, 2, BLACK);
       ab.drawRect(x + 1, y + 5, 2, 2, BLACK);
-      break;
-    case 3:
-      ab.drawRect(x + 3, y + 3, 2, 2, BLACK);
-      ab.drawRect(x + 5, y + 1, 2, 2, BLACK);
-      ab.drawRect(x + 1, y + 5, 2, 2, BLACK);
-      break;
-    case 4:
+    }
+    if (number >= 4)
+    {
       ab.drawRect(x + 1, y + 1, 2, 2, BLACK);
-      ab.drawRect(x + 5, y + 1, 2, 2, BLACK);
-      ab.drawRect(x + 1, y + 5, 2, 2, BLACK);
       ab.drawRect(x + 5, y + 5, 2, 2, BLACK);
-      break;
-    case 5:
-      ab.drawRect(x + 3, y + 3, 2, 2, BLACK);
-      ab.drawRect(x + 1, y + 1, 2, 2, BLACK);
-      ab.drawRect(x + 5, y + 1, 2, 2, BLACK);
-      ab.drawRect(x + 1, y + 5, 2, 2, BLACK);
-      ab.drawRect(x + 5, y + 5, 2, 2, BLACK);
-      break;
-    case 6:
-      ab.drawRect(x + 1, y + 0, 2, 2, BLACK);
-      ab.drawRect(x + 1, y + 3, 2, 2, BLACK);
-      ab.drawRect(x + 1, y + 6, 2, 2, BLACK);
-      ab.drawRect(x + 5, y + 0, 2, 2, BLACK);
-      ab.drawRect(x + 5, y + 3, 2, 2, BLACK);
-      ab.drawRect(x + 5, y + 6, 2, 2, BLACK);
-      break;
+    }
   }
 }
 
