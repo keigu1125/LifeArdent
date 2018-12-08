@@ -17,3 +17,4 @@ class Form
     virtual void bButton() = 0;
     virtual void abButton() = 0;
 };
+

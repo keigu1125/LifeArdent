@@ -33,10 +33,10 @@ class DisplayUtil : public Form
         {
           case Menu::M_PLAYER:
             out = getModeName(mode - 1)
-                  + (mode > PM_HEAD ? " << " : "    ")
-                  + getModeName(mode)
-                  + (mode < PM_TAIL ? " >> " : "    ")
-                  + getModeName(mode + 1);
+                + (mode > PM_HEAD ? " << " : "    ")
+                + getModeName(mode)
+                + (mode < PM_TAIL ? " >> " : "    ")
+                + getModeName(mode + 1);
             break;
           case Menu::M_DICE:
             dispDice();
@@ -54,10 +54,11 @@ class DisplayUtil : public Form
             dispCounter();
             break;
           case Menu::M_SOUND:
+          case Menu::M_INVERT:
             activeMenu();
             break;
           case Menu::M_SETTING:
-            out = "Life Ardent Settings.";
+            out = "Life Ardent Setting.";
             break;
         }
       }
@@ -99,7 +100,11 @@ class DisplayUtil : public Form
             break;
           case Menu::M_SOUND:
             out = "Set Sound. ";
-            out += ((isSound) ? "[ ON ]" : "[MUTE]");
+            out += (isSound ? "[ON ]" : "[OFF]");
+            break;
+          case Menu::M_INVERT:
+            out = "Invert Opponent.";
+            out += (isInvertOpponent ? "[ON ]" : "[OFF]");
             break;
           case Menu::M_SETTING:
             out = "Life Ardent Settings.";
@@ -416,7 +421,7 @@ class DisplayUtil : public Form
         drawBigDice(x + 82 + (10 * i), y, d[i + 4]);
         dSum2 += d[i + 4];
       }
-      drawText(x + 113, y, 1, dSum2, setting.invertOpponent);
+      drawText(x + 113, y, 1, dSum2, isInvertOpponent);
     }
 
     void DisplayUtil::dispDiscard()
@@ -464,3 +469,4 @@ class DisplayUtil : public Form
       }
     }
 };
+

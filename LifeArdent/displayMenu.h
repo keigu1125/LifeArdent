@@ -60,11 +60,11 @@ class DisplayMenu : public Form
     {
       switch (cursor)
       {
-        case Menu::M_PLAYER:
-          setting.invertOpponent = !setting.invertOpponent;
-          break;
         case Menu::M_SOUND:
           isSound = !isSound;
+          break;
+        case Menu::M_INVERT:
+          isInvertOpponent = !isInvertOpponent;
           break;
       }
     }
@@ -82,6 +82,9 @@ class DisplayMenu : public Form
           break;
         case Menu::M_SOUND:
           isSound = !isSound;
+          break;
+        case Menu::M_INVERT:
+          isInvertOpponent = !isInvertOpponent;
           break;
         case Menu::M_SETTING:
           activeSetting();
@@ -108,7 +111,9 @@ class DisplayMenu : public Form
         case Menu::M_COUNT:
           return i_poison;
         case Menu::M_SOUND:
-          return  (isSound) ? i_sound_on : i_sound_mute;
+          return (isSound) ? i_sound_on : i_sound_mute;
+        case Menu::M_INVERT:
+          return (isInvertOpponent) ? i_invert_on : i_invert_off;
         case Menu::M_SETTING:
           return i_setting;
       }
@@ -132,3 +137,4 @@ class DisplayMenu : public Form
     }
 
 };
+

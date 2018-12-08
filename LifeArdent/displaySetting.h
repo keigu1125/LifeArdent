@@ -283,3 +283,4 @@ class DisplaySetting : public Form
       drawArrowLeft(1, 13 + ((cursorC - 1) * HIGHT * 2), WHITE);
     }
 };
+

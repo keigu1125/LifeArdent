@@ -9,7 +9,7 @@ Player p[4];
 
 Setting setting;
 long tStop = 3000000;
-long tPressed;
+long tPressed = 0;
 Form* menu;
 Form* life;
 Form* util;
@@ -18,6 +18,7 @@ Form* sett;
 bool isTitle = false;
 bool isMain = false;
 bool isSound = true;
+bool isInvertOpponent = false;
 bool isTimer = false;
 bool pressFirst = true;
 bool pressPole = false;
@@ -60,3 +61,4 @@ byte mode = PM_HEAD;
 #define INIT_LIFE_NORMAL 20
 #define INIT_LIFE_ARCH   40
 #define INIT_LIFE_EDH    40
+

@@ -143,13 +143,15 @@ class DisplayLife : public Form
         Player pl = p[i];
         byte drawX = pl.x + x;
         byte drawY = pl.y + y;
-        ab.drawRect(drawX, drawY, pl.w, pl.h, WHITE);
+        byte w = pl.w;
+        byte h = pl.h;
+        ab.drawRect(drawX, drawY, w, h, WHITE);
         for (byte j = 0; j < cMax; j++)
         {
           byte drawCX = drawX;
           byte drawCY = drawY;
-          drawCX += (j == 1 || j == 3) ? (pl.w - CURSOR_RECT_W - 2) : 0;
-          drawCY += (j == 2 || j == 3) ? (pl.h - CURSOR_RECT_H - 2) : 0;
+          drawCX += (j == 1 || j == 3) ? (w - CURSOR_RECT_W - 2) : 0;
+          drawCY += (j == 2 || j == 3) ? (h - CURSOR_RECT_H - 2) : 0;
           ab.drawRect(drawCX, drawCY, CURSOR_RECT_W + 2, CURSOR_RECT_H + 2, WHITE);
         }
       }
@@ -187,7 +189,7 @@ class DisplayLife : public Form
           drawMiniX += (j == 1 || j == 3) ? (pl.w - CURSOR_RECT_W - 2) : 0;
           drawMiniY += (j == 2 || j == 3) ? (pl.h - CURSOR_RECT_H - 2) : 0;
 
-          drawSmallNumber(drawMiniX, drawMiniY, miniLife, true, pl.invert);
+          drawSmallNumber(drawMiniX, drawMiniY, miniLife, true, isInvertOpponent && pl.invert);
         }
       }
     }
@@ -202,7 +204,6 @@ class DisplayLife : public Form
         byte fSize = 2;
         byte drawX = pl.x + x;
         byte drawY = pl.y + y;
-        bool invert = false;
 
         switch (mode)
         {
@@ -312,7 +313,7 @@ class DisplayLife : public Form
             }
             break;
         }
-        drawText(drawX, drawY, fSize, life, pl.invert);
+        drawText(drawX, drawY, fSize, life, isInvertOpponent && pl.invert);
       }
     }
 
@@ -336,3 +337,4 @@ class DisplayLife : public Form
       }
     }
 };
+

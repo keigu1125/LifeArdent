@@ -8,8 +8,9 @@ enum Menu
   M_STORM = 4,
   M_COUNT = 5,
   M_SOUND = 6,
-  M_SETTING = 7,
-  M_TAIL = 7
+  M_INVERT = 7,
+  M_SETTING = 8,
+  M_TAIL = 8
 };
 
 enum SettingMenuTitle
@@ -35,3 +36,4 @@ enum PlayMode
   PM_ARCH = 4,
   PM_TAIL = 4
 };
+

@@ -134,3 +134,4 @@ bool isCounterUsed()
   }
   return false;
 }
+

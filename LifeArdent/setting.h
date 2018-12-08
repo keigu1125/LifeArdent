@@ -76,3 +76,4 @@ class Setting
       invertOpponent = DEF_INVERT_OPPONENT;
     }
 };
+

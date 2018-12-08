@@ -193,7 +193,7 @@ void drawTextInvert(byte a, byte b, byte fs, int num)
 
 void drawText(byte a, byte b, byte fs, int num, bool isInvert)
 {
-  if (setting.invertOpponent && isInvert)
+  if (isInvert)
   {
     drawTextInvert(a, b, fs, num);
   }
@@ -361,7 +361,7 @@ void drawSmallNumber(byte x, byte y, byte num, bool color, bool isInvert)
     }
   }
 
-  if (setting.invertOpponent && isInvert)
+  if (isInvert)
   {
     for (byte i = 0; i < digit; i++)
     {
@@ -455,3 +455,4 @@ void activeSetting()
   util->isCursor = false;
   sett->isCursor = true;
 }
+

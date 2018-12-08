@@ -26,6 +26,7 @@ void setup()
   isTitle = (setting.showTitle);
   isMain = !isTitle;
   isSound = (setting.isSoundDefault);
+  isInvertOpponent = (setting.invertOpponent);
 
   activeMenu();
 }
@@ -196,3 +197,4 @@ void pressButton()
     activeForm->bButton();
   }
 }
+

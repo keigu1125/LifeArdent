@@ -11,3 +11,4 @@ struct Player
     int life = 0;
     bool invert = false;
 };
+
