@@ -71,7 +71,7 @@ void dispTitle()
     return;
   }
 
-  ab.drawBitmap(0, 17, mtg_logo, 128, 34, WHITE);
+  ab.drawBitmap(0, 0, mtg_logo, 128, 64, WHITE);
 }
 
 void button()

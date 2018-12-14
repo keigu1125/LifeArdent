@@ -155,6 +155,10 @@ class DisplayLife : public Form
           ab.drawRect(drawCX, drawCY, CURSOR_RECT_W + 2, CURSOR_RECT_H + 2, WHITE);
         }
       }
+      if (mode == PM_ARCH)
+      {
+        ab.drawBitmap(x + 17, y + 1, symbol_arch, 63, 24, WHITE);
+      }
     }
 
     void DisplayLife::drawCursor()
