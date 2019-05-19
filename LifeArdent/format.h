@@ -1,142 +1,137 @@
-class Format
+void setXY(byte pC, byte x, byte y, byte w, byte h)
 {
-  private:
-  public:
-    byte PLAYER_COUNT = 6;
-    Player p[6];
-    byte pCount = 0;
-    byte mode = PM_HEAD;
-    short changeLife = 0;
-    TimeFormat tPressed;
-    TimeFormat tTimer;
-    bool isSound = true;
+  p[pC].x = x;
+  p[pC].y = y;
+  p[pC].w = w;
+  p[pC].h = h;
+}
 
-    void Format::initPlayer()
+void initPlayerLife()
+{
+  for (auto& pl : p)
+  {
+    int life = INIT_LIFE_NORMAL;
+
+    if (mode == PM_EDH)
     {
-      for (byte i = 0; i < PLAYER_COUNT; i++)
-      {
-        short life = (mode == EDH || (i == 0 && mode == ARCH)) ? 40 : 20;
-        p[i].init(life);
-      }
+      life = INIT_LIFE_EDH;
+    }
+    
+    for (auto &cu : pl.c)
+    {
+      cu = 0;
     }
 
-    void Format::initPlayerLife()
+    pl.life = life;
+  }
+
+  if (mode == PM_ARCH)
+  {
+    p[0].life = INIT_LIFE_ARCH;
+  }
+}
+
+void initCounter()
+{
+  for (auto &pl : p)
+  {
+    pl.counter1 = 0;
+    pl.counter2 = 0;
+  }
+}
+
+void initPlayer()
+{
+  initPlayerLife();
+  initCounter();
+}
+
+void initMode(byte value)
+{
+  if (value > PM_TAIL || value < PM_HEAD)
+  {
+    return;
+  }
+
+  mode = value;
+
+  switch (mode)
+  {
+    case PM_P1:
+      pCount = 1;
+      setXY(0,  0,  0, 97, 53);
+      p[0].invert = false;
+      break;
+    case PM_P2:
+      pCount = 2;
+      setXY(0,  0,  0, 48, 53);
+      setXY(1, 49,  0, 48, 53);
+      p[0].invert = false;
+      p[1].invert = true;
+      break;
+    case PM_P3:
+      pCount = 3;
+      setXY(0,  0,  0, 48, 27);
+      setXY(1, 49,  0, 48, 27);
+      setXY(2, 24, 26, 48, 27);
+      p[0].invert = true;
+      p[1].invert = true;
+      p[2].invert = false;
+      break;
+    case PM_EDH:
+      pCount = 4;
+      setXY(0,  0,  0, 48, 27);
+      setXY(1, 49,  0, 48, 27);
+      setXY(2,  0, 26, 48, 27);
+      setXY(3, 49, 26, 48, 27);
+      p[0].invert = true;
+      p[1].invert = true;
+      p[2].invert = false;
+      p[3].invert = false;
+      break;
+    case PM_ARCH:
+      pCount = 4;
+      setXY(0,  0,  0, 97, 27);
+      setXY(1,  0, 26, 33, 27);
+      setXY(2, 32, 26, 33, 27);
+      setXY(3, 64, 26, 33, 27);
+      p[0].invert = true;
+      p[1].invert = false;
+      p[2].invert = false;
+      p[3].invert = false;
+      break;
+  }
+  initPlayer();
+}
+
+String getModeName(byte m)
+{
+  switch (m)
+  {
+    case PM_P1:
+      return "Solo";
+    case PM_P2:
+      return "VS 2";
+    case PM_P3:
+      return "VS 3";
+    case PM_EDH:
+      return "EDH ";
+    case PM_ARCH:
+      return "Arch";
+    default:
+      return "    ";
+  }
+}
+
+bool isCounterUsed()
+{
+  for (Player pl : p)
+  {
+    if (pl.counter1 != 0 || pl.counter2 != 0)
     {
-      for (byte i = 0; i < PLAYER_COUNT; i++)
-      {
-        short life = (mode == EDH || (i == 0 && mode == ARCH)) ? 40 : 20;
-        p[i].life = life;
-      }
+      return true;
     }
+  }
+  return false;
+}
 
-    void Format::initMode(byte value)
-    {
-      if (value > PlayMode::PM_TAIL || value < PlayMode::PM_HEAD)
-      {
-        return;
-      }
-
-      mode = value;
-
-      switch (mode)
-      {
-        case PlayMode::P1:
-          pCount = 1;
-          p[0].setXY( 0,  0, 97, 53);
-          break;
-        case PlayMode::P2:
-          pCount = 2;
-          p[0].setXY( 0,  0, 48, 53);
-          p[1].setXY(49,  0, 48, 53);
-          break;
-        case PlayMode::P3:
-          pCount = 3;
-          p[0].setXY( 0,  0, 48, 27);
-          p[1].setXY(49,  0, 48, 27);
-          p[2].setXY(24, 26, 48, 27);
-          break;
-        case PlayMode::EDH:
-          pCount = 4;
-          p[0].setXY( 0,  0, 48, 27);
-          p[1].setXY(49,  0, 48, 27);
-          p[2].setXY( 0, 26, 48, 27);
-          p[3].setXY(49, 26, 48, 27);
-          break;
-        case PlayMode::ARCH:
-          pCount = 4;
-          p[0].setXY( 0,  0, 97, 27);
-          p[1].setXY( 0, 26, 33, 27);
-          p[2].setXY(32, 26, 33, 27);
-          p[3].setXY(64, 26, 33, 27);
-          break;
-        case PlayMode::EMP:
-          pCount = 6;
-          p[0].setXY( 0,  0, 33, 27);
-          p[1].setXY(32,  0, 33, 27);
-          p[2].setXY(64,  0, 33, 27);
-          p[3].setXY( 0, 26, 33, 27);
-          p[4].setXY(32, 26, 33, 27);
-          p[5].setXY(64, 26, 33, 27);
-          break;
-      }
-
-      initPlayer();
-    }
-
-    String Format::getModeName(PlayMode m)
-    {
-      String ret = "    ";
-      switch (m)
-      {
-        case PlayMode::P1:
-          ret = "Solo";
-          break;
-        case PlayMode::P2:
-          ret = "VS 2";
-          break;
-        case PlayMode::P3:
-          ret = "VS 3";
-          break;
-        case PlayMode::EDH:
-          ret = "EDH ";
-          break;
-        case PlayMode::ARCH:
-          ret = "Arch";
-          break;
-        case PlayMode::EMP:
-          ret = "Empr";
-          break;
-      }
-
-      return ret;
-    }
-
-    bool Format::isCounterUsed()
-    {
-      for (Player pl : p)
-      {
-        if (pl.counter1 != 0 || pl.counter2 != 0)
-        {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    void Format::initCounter()
-    {
-      for (byte i = 0; i < PLAYER_COUNT; i++)
-      {
-        p[i].counter1 = 0;
-        p[i].counter2 = 0;
-      }
-    }
-
-    void Format::initMatch()
-    {
-      for (byte i = 0; i < PLAYER_COUNT; i++)
-      {
-        p[i].win = 0;
-      }
-    }
-};

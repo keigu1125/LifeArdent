@@ -1,90 +1,34 @@
-#include "Arduboy2.h"
-#include "time.h"
-#include "enum.h"
-#include "drawUtil.h"
-#include "image_form.h"
-#include "image_icon.h"
-#include "player.h"
+#include "Arduboy.h"
+#include "globalVariant.h"
+#include "util.h"
 #include "format.h"
-#include "form.h"
 #include "displayMenu.h"
 #include "displayLife.h"
 #include "displayUtil.h"
 #include "displaySetting.h"
 
-Arduboy2 ab;
-BeepPin1 beep1;
-BeepPin2 beep2;
-
-#define BUTTON_REPEAT 350
-#define TONE_LIFE 40
-#define TIME_TITLE 3000
-#define BASE_TONE 1000
-#define TONE_ONELIFE 12.96
-#define TONE_MIN 200
-
-const byte LEDpin[3] = {
-  RED_LED,
-  GREEN_LED,
-  BLUE_LED
-};
-
-Form* activeForm = NULL;
-
-DisplayMenu menu;
-DisplayLife life;
-DisplayUtil util;
-DisplaySetting sett;
-Format format;
-
-bool isTitle = false;
-bool isMain = true;
-bool pressFirst = true;
-
 void setup()
 {
-  ab.setRGBled(0, 0, 0);
   init();
-  ab.boot();
+  ab.beginNoLogo();
+  ab.setRGBled(0, 0, 0);
 
-  menu.ab = &ab;
-  life.ab = &ab;
-  util.ab = &ab;
-  sett.ab = &ab;
-  menu.format = &format;
-  life.format = &format;
-  util.format = &format;
-  sett.format = &format;
-  menu.menu = &menu;
-  life.menu = &menu;
-  util.menu = &menu;
-  sett.menu = &menu;
-  menu.life = &life;
-  util.life = &life;
-  life.life = &life;
-  sett.life = &life;
-  menu.util = &util;
-  life.util = &util;
-  util.util = &util;
-  sett.util = &util;
-  menu.sett = &sett;
-  life.sett = &sett;
-  util.sett = &sett;
-  sett.sett = &sett;
-  util.beep1 = &beep1;
-  util.beep2 = &beep2;
+  menu = new DisplayMenu();
+  life = new DisplayLife();
+  util = new DisplayUtil();
+  sett = new DisplaySetting();
 
-  format.initMode(sett.defaultFormat);
-  ab.setFrameRate(sett.frameRateMain);
-  ab.invert(sett.blackScreen);
-  isTitle = (sett.showTitle == 0x01);
-  format.isSound = (sett.isSoundDefault == 0x01);
+  setting.readEepRomSetting();
 
-  menu.activeMenu();
+  initMode(setting.defaultFormat);
+  ab.setFrameRate(setting.frameRateMain);
+  ab.invert(setting.blackScreen);
+  isTitle = (setting.showTitle);
+  isMain = !isTitle;
+  isSound = (setting.isSoundDefault);
+  isInvertOpponent = (setting.invertOpponent);
 
-  ab.audio.begin();
-  beep1.begin();
-  beep2.begin();
+  activeMenu();
 }
 
 void loop()
@@ -94,29 +38,40 @@ void loop()
     return;
   }
   ab.clear();
-  button();
   disp();
-  alarm();
   ab.display();
-  beep1.timer();
-  beep2.timer();
+  checkAlarm();
+  button();
+  fpsSetting();
 }
 
 void disp()
 {
-  if (isTitle)
+  if (sett->isCursor)
   {
-    dispTitle();
-  }
-  else if (sett.isCursor)
-  {
-    sett.display();
+    sett->display();
   }
   else if (isMain)
   {
-    menu.display();
-    life.display();
-    util.display();
+    menu->display();
+    life->display();
+    util->display();
+  }
+  else if (isTitle)
+  {
+    dispTitle();
+  }
+}
+
+void fpsSetting()
+{
+  if (tPressed == 0)
+  {
+    ab.setFrameRate(setting.frameRateSleep);
+  }
+  else
+  {
+    ab.setFrameRate(setting.frameRateMain);
   }
 }
 
@@ -129,125 +84,96 @@ void dispTitle()
     return;
   }
 
-  ab.drawBitmap(0, 17, mtg_logo, 128, 34, WHITE);
+  ab.drawBitmap(0, 0, mtg_logo, 128, 64, WHITE);
 }
 
 void button()
 {
   if (!someButtonPressed())
   {
-    ab.setFrameRate(sett.frameRateMain);
-    format.tPressed.setDefaultTime();
     pressFirst = true;
+    pressPole = false;
+    if (tPressed + LIFE_RESET_SECOND < millis())
+    {
+      tPressed = 0;
+    }
     return;
   }
 
-  if (!arrowButtonPress())
+  if (!allowButtonPress())
   {
     return;
+  }
+
+  if (pressFirst)
+  {
+    pressFirst = false;
+    tPressed = millis() + BUTTON_REPEAT;
+  }
+  else
+  {
+    tPressed = millis();
   }
 
   if (isTitle)
   {
     isTitle = false;
     isMain = true;
-    return true;
+    return;
   }
-
-  ab.setFrameRate(sett.frameRateRepeat);
 
   pressButton();
   buttonSound();
 }
 
-void alarm()
+bool allowButtonPress()
 {
-  if (util.isAlarm)
-  {
-    util.isAlarm = false;
-    for (byte i = 0; i < format.tTimer.m / 10; i++)
-    {
-      if (sett.isLedTimer != 0x00)
-      {
-        ab.setRGBled(LEDpin[sett.isLedTimer - 1], format.tTimer.m);
-      }
-      if (sett.isSoundTimer != 0x00)
-      {
-        beep1.tone(beep1.freq(sett.baseTone1), 1);
-        beep2.tone(beep2.freq(sett.baseTone2), 1);
-      }
-      delay(200);
-      delay(50);
-      ab.setRGBled(LEDpin[sett.isLedTimer - 1], 0);
-    }
-  }
-}
-
-bool someButtonPressed()
-{
-  return (ab.pressed(UP_BUTTON)   || ab.pressed(DOWN_BUTTON)  ||
-          ab.pressed(LEFT_BUTTON) || ab.pressed(RIGHT_BUTTON) ||
-          ab.pressed(A_BUTTON)    || ab.pressed(B_BUTTON));
-}
-
-bool arrowButtonPress()
-{
-  format.tPressed.setStopTime();
-
-  if (pressFirst)
-  {
-    pressFirst = false;
-    return true;
-  }
-
-  return (abs(format.tPressed.getSubMillisecond()) >= BUTTON_REPEAT);
+  return pressFirst || (!pressPole && (tPressed < millis()));
 }
 
 void buttonSound()
 {
-  if (!format.isSound)
+  if (!isSound)
   {
     return;
   }
 
-  short t1 = sett.baseTone1;
-  short t2 = sett.baseTone2;
-  if (life.isCursor)
+  int t1 = setting.baseTone;
+  if (life->isCursor)
   {
-    short l = format.p[life.cursor].life;
-    short tAdd = (l >= 100) ? (short)(TONE_ONELIFE * 80) : (l <= -100) ? (short)(TONE_ONELIFE * -120) : ((l - 20) * TONE_ONELIFE);
-    t1 += tAdd;
-    t2 += tAdd;
+    int l = p[life->cursor].life;
+    t1 += (l >= 100) ? (TONE_ONELIFE * 80) : (l <= -20) ? (TONE_ONELIFE * -40) : ((l - 20) * TONE_ONELIFE);
   }
-  beep1.tone(beep1.freq(t1), 1);
-  beep2.tone(beep2.freq(t2), 1);
+  ab.tunes.tone(t1, 20);
 }
 
-void setActiveForm()
+Form* setActiveForm()
 {
-  activeForm = NULL;
+  Form* activeForm = NULL;
 
-  if (menu.isCursor)
+  if (menu->isCursor)
   {
-    activeForm = &menu;
+    activeForm = menu;
   }
-  else if (life.isCursor)
+  else if (life->isCursor)
   {
-    activeForm = &life;
+    activeForm = life;
   }
-  else if (util.isCursor)
+  else if (util->isCursor)
   {
-    activeForm = &util;
+    activeForm = util;
   }
-  else if (sett.isCursor)
+  else if (sett->isCursor)
   {
-    activeForm = &sett;
+    activeForm = sett;
   }
+
+  return activeForm;
 }
 
 void pressButton()
 {
-  setActiveForm();
+  Form* activeForm = setActiveForm();
 
   if (activeForm == NULL)
   {
