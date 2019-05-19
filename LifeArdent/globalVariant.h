@@ -20,9 +20,9 @@ bool isMain = false;
 bool isSound = true;
 bool isInvertOpponent = false;
 bool isTimer = false;
+bool isTwoSideFromt = true;
 bool pressFirst = true;
 bool pressPole = false;
-
 int changeLife = 0;
 byte pCount = 0;
 byte mode = PM_HEAD;

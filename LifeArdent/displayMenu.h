@@ -60,6 +60,9 @@ class DisplayMenu : public Form
     {
       switch (cursor)
       {
+        case Menu::M_DICE:
+          isTwoSideFromt = random(2);
+          break;
         case Menu::M_SOUND:
           isSound = !isSound;
           break;
@@ -101,7 +104,7 @@ class DisplayMenu : public Form
         case Menu::M_PLAYER:
           return i_player;
         case Menu::M_DICE:
-          return i_dice;
+          return (isTwoSideFromt) ? i_dice_b : i_dice_w;
         case Menu::M_TIME:
           return i_timer;
         case Menu::M_DISCARD:

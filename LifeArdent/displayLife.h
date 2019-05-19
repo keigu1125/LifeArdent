@@ -106,8 +106,11 @@ class DisplayLife : public Form
       }
       else if (mode == PM_EDH)
       {
-        isCursorC = !isCursorC;
-        cursorC = cursor;
+        if (isCursorC)
+        {
+          isCursorC = !isCursorC;
+          cursorC = cursor;          
+        }
       }
     }
 
@@ -123,6 +126,16 @@ class DisplayLife : public Form
       }
       else if (mode == PM_EDH)
       {
+        if (isCursorC && cursorC == cursor)
+        {
+          // Mana Crypt Challenge
+          if (random(2))
+          {
+            p[cursor].life -= 3;
+            changeLife -= 3;
+          }
+        }
+        
         isCursorC = !isCursorC;
         cursorC = cursor;
       }
